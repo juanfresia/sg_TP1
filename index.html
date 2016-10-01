@@ -1,0 +1,227 @@
+<html>
+
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Prueba de sg</title>
+	
+	<style>
+		body{ background-color: #00E676; }
+		canvas{ background-color: #C51162; }
+		textarea{ background-color: black; foreground-color: white;}
+	</style>
+	
+	<script type="text/javascript" src="gl-matrix.js"></script>
+	<script type="text/javascript" src="dat.gui.js"></script>
+	<script type="text/javascript" src="grid.js"></script>
+	<script type="text/javascript" src="scene.js"></script>
+	<script type="text/javascript" src="surfaces.js"></script>
+	<script type="text/javascript" src="curves.js"></script>
+	<script type="text/javascript" src="terna.js"></script>
+	
+	<!-- Shader de vértices -->
+	<script id="shader-vs" type="x-shader/x-vertex">
+		attribute vec3 aVertexPosition;
+		attribute vec3 aVertexColor;
+		
+		uniform mat4 uMVMatrix;
+		uniform mat4 uPMatrix;
+		
+		varying highp vec4 vColor;
+	
+		void main(void) {
+			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+			vColor = vec4(aVertexColor, 1.0);
+		}
+	
+	</script>
+	
+	
+	<!-- Shader de fragmentos -->
+	<script id="shader-fs" type="x-shader/x-fragment">
+		varying highp vec4 vColor;
+		
+		void main(void) {
+			gl_FragColor = vColor;
+		}
+	</script>
+	
+	
+	<!-- El script posta -->
+	<script>
+	
+	var canvas = null;
+	var gl = null;
+	var glProgram = null;
+	
+	var params = {
+		periodoC1:1.0,
+		reiniciar:loadScene
+	
+	};
+	
+	
+	 // SHADERS FUNCTION
+	function getShader(gl, id) {
+		var shaderScript, src, currentChild, shader;
+
+		// Obtenemos el elemento <script> que contiene el código fuente del shader.
+		shaderScript = document.getElementById(id);
+		if (!shaderScript) {
+			return null;
+		}
+
+		// Extraemos el contenido de texto del <script>.
+		src = "";
+		currentChild = shaderScript.firstChild;
+		while(currentChild) {
+			if (currentChild.nodeType == currentChild.TEXT_NODE) {
+				src += currentChild.textContent;
+			}
+			currentChild = currentChild.nextSibling;
+		}
+
+		// Creamos un shader WebGL según el atributo type del <script>.
+		if (shaderScript.type == "x-shader/x-fragment") {
+			shader = gl.createShader(gl.FRAGMENT_SHADER);
+		} else if (shaderScript.type == "x-shader/x-vertex") {
+			shader = gl.createShader(gl.VERTEX_SHADER);
+		} else {
+			return null;
+		}
+
+		// Le decimos a WebGL que vamos a usar el texto como fuente para el shader.
+		gl.shaderSource(shader, src);
+
+		// Compilamos el shader.
+		gl.compileShader(shader);  
+		  
+		// Chequeamos y reportamos si hubo algún error.
+		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {  
+			alert("Error compilando los shaders: " + 
+			gl.getShaderInfoLog(shader));  
+			return null;  
+		}
+		  
+		return shader;
+	}
+	
+	// Carga el canvas y obtiene el rendering context
+	function initWebGL() {
+		canvas = document.getElementById("my_canvas");
+		try {
+			gl = canvas.getContext("webgl");
+		} catch (e) {
+			console.log("Error cargando WebGL");
+		}
+	}
+	
+	// Configuración del canvas
+	function setupWebGL() {
+		gl.clearColor(0.77, 0.07, 0.243, 1.0);
+		
+		// Habilitando y configurando cómo tratar el buffer de profundidad
+		gl.enable(gl.DEPTH_TEST);
+		gl.depthFunc(gl.LEQUAL);
+		
+		gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+		
+		// Configurando el viewport
+		gl.viewport(0, 0, canvas.width, canvas.height);
+		
+	}
+	
+	function initShaders() {
+		var fragmentShader = getShader(gl, "shader-fs");
+		var vertexShader = getShader(gl, "shader-vs");
+		
+		glProgram = gl.createProgram();
+		
+		gl.attachShader(glProgram, vertexShader);
+		gl.attachShader(glProgram, fragmentShader);
+		
+		gl.linkProgram(glProgram);
+		
+		if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+			alert("Error cargando los shaders.  " + gl.getProgramInfoLog(glProgram));
+			return null;
+		}
+		
+		gl.useProgram(glProgram);
+	}
+	
+	////////
+	var time = 0;
+	var pMatrix = mat4.create();
+	var my_scene = null;
+	function drawScene() {
+		// Esto garantiza que se llame continuamente al drawScene
+		requestAnimationFrame(drawScene);
+		
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		
+		// Esta es la proyección perspectiva, que se asigna a los shader por separado.
+		var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
+		// Preparamos una matriz de perspectiva. (FOV, aspectRatio, z_front y z_back).
+		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 100.0);
+		gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
+
+		
+		// Acá vendría todo lo que controla la cámara
+		
+		var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
+		my_scene.draw(u_model_view_matrix, time);
+		time += 0.01;
+	}
+	
+	
+	
+	function loadScene() {
+		my_scene = new Scene();
+		my_scene.init();
+	}
+	
+	
+	function setupGUI() {
+	
+		var gui = new dat.GUI();
+		
+		var group1 = gui.addFolder('Curva1');
+		group1.add(params, 'periodoC1', 0.0, 8.0).name('Período').step(0.1);
+		group1.add(params, 'reiniciar').name("Reiniciar");
+
+	}
+		
+	function main() {
+		initWebGL();
+		if (gl) {
+			setupWebGL();
+			initShaders();
+			setupGUI();
+			
+			loadScene();
+			requestAnimationFrame(drawScene);
+		} else {
+			console.log("Parece que no hay soporte WebGL");
+			alert("Error: no hay soporte WebGL.");
+		}		
+	}
+	
+	
+	
+	
+	</script>
+
+	
+</head>
+
+
+<!-- El cuerpo con el canvas definido -->
+<body onload="main()">
+	<center>
+		<h1> Esto es una prueba </h1>
+		<canvas id="my_canvas" width="1280" height="768"></canvas>
+	</center>
+</body>
+
+
+</html>
