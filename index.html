@@ -18,32 +18,70 @@
 	<script type="text/javascript" src="curves.js"></script>
 	<script type="text/javascript" src="terna.js"></script>
 	
-	<!-- Shader de vértices -->
+	<!-- Shader de vértices sin texturas -->
 	<script id="shader-vs" type="x-shader/x-vertex">
+		// Atributos del vértice
 		attribute vec3 aVertexPosition;
+		attribute vec3 aVertexNormal;
 		attribute vec3 aVertexColor;
 		
-		uniform mat4 uMVMatrix;
+		// Matrices de Vista, Modelo, Proyección y Normales
+		uniform mat4 uVMatrix;
+		uniform mat4 uMMatrix;
 		uniform mat4 uPMatrix;
+		uniform mat3 uNMatrix;
 		
+		// Decide si se usa o no la iluminación
+		uniform bool uUseLighting;
+		
+		// Parámetros de iluminación
+		uniform vec3 uAmbientColor;
+		uniform vec3 uLightPosition;
+		uniform vec3 uDirectionalColor;				
 		varying highp vec4 vColor;
-	
+		varying vec3 vVertexColor;
+		varying vec3 vLightWeighting;
+		
 		void main(void) {
-			gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-			vColor = vec4(aVertexColor, 1.0);
+			// Consigo la posición proyectada del punto multiplicando por todas las matrices.
+			vec4 model_view_pos = uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
+			gl_Position = uPMatrix * model_view_pos;
+			
+			// El color a utilizar es el mismo del vértice (no hay texturas).
+			vVertexColor = aVertexColor;
+			
+			// ILUMINACIÓN
+			
+			// Calculo la posición relativa de la fuente de luz dirigida respecto al vértice y normalizo
+			
+			vec3 light_dir = uLightPosition - vec3(model_view_pos);
+			normalize(light_dir);
+			if (!uUseLighting) {
+				vLightWeighting = vec3(1.0, 1.0, 1.0);
+			} else {
+				vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+				float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+				vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+			}
 		}
 	
 	</script>
 	
 	
-	<!-- Shader de fragmentos -->
+	<!-- Shader de fragmentos sin texturas -->
 	<script id="shader-fs" type="x-shader/x-fragment">
-		varying highp vec4 vColor;
-		
+		precision mediump float;
+
+		varying vec3 vVertexColor;
+		varying vec3 vLightWeighting;
+
+		uniform sampler2D uSampler;
+
 		void main(void) {
-			gl_FragColor = vColor;
+			gl_FragColor = vec4(vVertexColor.rgb * vLightWeighting, 1.0);
 		}
 	</script>
+	
 	
 	
 	<!-- El script posta -->
@@ -51,12 +89,11 @@
 	
 	var canvas = null;
 	var gl = null;
-	var glProgram = null;
+	var glShaderColor;
 	
 	var params = {
 		periodoC1:1.0,
 		reiniciar:loadScene
-	
 	};
 	
 	
@@ -129,24 +166,46 @@
 		gl.viewport(0, 0, canvas.width, canvas.height);
 		
 	}
-	
+			
 	function initShaders() {
+		// Creo el programa con los shaders para objetos coloreados
 		var fragmentShader = getShader(gl, "shader-fs");
 		var vertexShader = getShader(gl, "shader-vs");
 		
-		glProgram = gl.createProgram();
+		glShaderColor = gl.createProgram();
 		
-		gl.attachShader(glProgram, vertexShader);
-		gl.attachShader(glProgram, fragmentShader);
+		gl.attachShader(glShaderColor, vertexShader);
+		gl.attachShader(glShaderColor, fragmentShader);
 		
-		gl.linkProgram(glProgram);
+		gl.linkProgram(glShaderColor);
 		
-		if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
-			alert("Error cargando los shaders.  " + gl.getProgramInfoLog(glProgram));
+		if (!gl.getProgramParameter(glShaderColor, gl.LINK_STATUS)) {
+			alert("Error cargando los shaders.  " + gl.getProgramInfoLog(glShaderColor));
 			return null;
 		}
 		
-		gl.useProgram(glProgram);
+		// Punteros a los atributos del shader
+		glShaderColor.aVertexPosition = gl.getAttribLocation(glShaderColor, "aVertexPosition");
+		gl.enableVertexAttribArray(glShaderColor.aVertexPosition);
+		
+		glShaderColor.aVertexNormal = gl.getAttribLocation(glShaderColor, "aVertexNormal");
+		gl.enableVertexAttribArray(glShaderColor.aVertexNormal);
+		
+		glShaderColor.aVertexColor = gl.getAttribLocation(glShaderColor, "aVertexColor");
+		gl.enableVertexAttribArray(glShaderColor.aVertexColor);
+		
+		// Punteros a las matrices y parámetros uniform
+		glShaderColor.uVMatrix = gl.getUniformLocation(glShaderColor, "uVMatrix");
+		glShaderColor.uMMatrix = gl.getUniformLocation(glShaderColor, "uMMatrix");
+		glShaderColor.uPMatrix = gl.getUniformLocation(glShaderColor, "uPMatrix");
+		glShaderColor.uNMatrix = gl.getUniformLocation(glShaderColor, "uNMatrix");
+			// Parámetros de iluminación
+		glShaderColor.uUseLighting = gl.getUniformLocation(glShaderColor, "uUseLighting");
+		glShaderColor.uAmbientColor = gl.getUniformLocation(glShaderColor, "uAmbientColor");
+		glShaderColor.uLightPosition = gl.getUniformLocation(glShaderColor, "uLightPosition");
+		glShaderColor.uDirectionalColor = gl.getUniformLocation(glShaderColor, "uDirectionalColor");
+				
+		gl.useProgram(glShaderColor);
 	}
 	
 	////////
@@ -159,22 +218,15 @@
 		
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
-		// Esta es la proyección perspectiva, que se asigna a los shader por separado.
-		var u_proj_matrix = gl.getUniformLocation(glProgram, "uPMatrix");
 		// Preparamos una matriz de perspectiva. (FOV, aspectRatio, z_front y z_back).
 		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 100.0);
-		gl.uniformMatrix4fv(u_proj_matrix, false, pMatrix);
-
+		gl.uniformMatrix4fv(glShaderColor.uPMatrix, false, pMatrix);
 		
-		// Acá vendría todo lo que controla la cámara
-		
-		var u_model_view_matrix = gl.getUniformLocation(glProgram, "uMVMatrix");
-		my_scene.draw(u_model_view_matrix, time);
+		my_scene.draw(time);
 		time += 0.01;
 	}
 	
-	
-	
+		
 	function loadScene() {
 		my_scene = new Scene();
 		my_scene.init();

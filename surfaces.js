@@ -69,8 +69,10 @@ function Surface() {
 			var path_point = this.pathCurve.at(u1);
 			var path_tan = this.pathCurve.tan_at(u1);
 				
-			var tmp_mat = mat4.create();
-			mat4.identity(tmp_mat);
+			var translate_mat = mat4.create();
+			var rotate_mat = mat4.create();
+			mat4.identity(translate_mat);
+			mat4.identity(rotate_mat);
 						
 			// Obtengo la tangente del camino normalizada
 			vec3.normalize(path_tan, this.pathCurve.tan_at(u1));
@@ -79,18 +81,21 @@ function Surface() {
 			vec3.cross(axis, path_tan, base_orient);
 			var angle = Math.acos(vec3.dot(path_tan, base_orient));
 			
-			mat4.translate(tmp_mat, tmp_mat, path_point);
+			mat4.translate(translate_mat, translate_mat, path_point);
 			if (this.follow_normal && angle != 0) {
-				mat4.rotate(tmp_mat, tmp_mat, -angle, axis);
+				mat4.rotate(rotate_mat, rotate_mat, -angle, axis);
 			}
-									
 			
 			for (j = 0; j < this.cols; j++) {
 				var u2 = j*len_c2/(this.cols-1);
 				var base_point = this.baseCurve.at(u2);
+				
 				var base_norm = this.baseCurve.norm_at(u2);
+				vec3.normalize(base_norm, base_norm);
 
-				vec3.transformMat4(base_point, base_point, tmp_mat);
+				vec3.transformMat4(base_point, base_point, rotate_mat);
+				vec3.transformMat4(base_point, base_point, translate_mat);
+				vec3.transformMat4(base_norm, base_norm, rotate_mat);
 												
 				this.normal_buffer.push(base_norm[0]);
 				this.normal_buffer.push(base_norm[1]);
@@ -99,10 +104,10 @@ function Surface() {
 				this.position_buffer.push(base_point[0]);
 				this.position_buffer.push(base_point[1]);
 				this.position_buffer.push(base_point[2]);
-	
-				this.color_buffer.push(1.0/this.rows * i);
+				
+				this.color_buffer.push(0.8/this.rows * i);
 				this.color_buffer.push(0.2);
-				this.color_buffer.push(1.0/this.cols * j);
+				this.color_buffer.push(0.8/this.cols * j);
 			}
 		}
 	}
@@ -131,16 +136,15 @@ function Surface() {
 	}
 
 	this.draw = function(){
-
-		var vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
-		gl.enableVertexAttribArray(vertexPositionAttribute);
+	
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-		gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(glShaderColor.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 
-		var vertexColorAttribute = gl.getAttribLocation(glProgram, "aVertexColor");
-		gl.enableVertexAttribArray(vertexColorAttribute);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-		gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(glShaderColor.aVertexColor, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+		gl.vertexAttribPointer(glShaderColor.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
