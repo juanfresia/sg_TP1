@@ -59,7 +59,19 @@ function VertexGrid() {
 		//console.log(this.color_buffer);
 	}
 
-	this.draw = function(){
+	this.draw = function(view_matrix, model_matrix){
+		var tmp = mat4.create();
+		mat4.identity(tmp);
+		var norm_matrix = mat3.create();
+		
+		mat4.mul(tmp, model_matrix, view_matrix);
+		mat3.fromMat4(norm_matrix, tmp);
+		mat3.invert(norm_matrix, norm_matrix);
+		mat3.transpose(norm_matrix, norm_matrix);	
+		
+		gl.uniformMatrix3fv(glShaderColor.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glShaderColor.uMMatrix, false, model_matrix);
+		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
 		gl.vertexAttribPointer(glShaderColor.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 
@@ -72,7 +84,11 @@ function VertexGrid() {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
 		// Dibujamos.
-		gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		if (params.line_strip) {
+			gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		} else {
+			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		}
 	}
 }
 //

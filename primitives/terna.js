@@ -26,8 +26,19 @@ function Terna() {
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
 	}
 
-	this.draw = function(){
-
+	this.draw = function(view_matrix, model_matrix){
+		var tmp = mat4.create();
+		mat4.identity(tmp);
+		var norm_matrix = mat3.create();
+		
+		mat4.mul(tmp, view_matrix, model_matrix);
+		mat3.fromMat4(norm_matrix, tmp);
+		mat3.invert(norm_matrix, norm_matrix);
+		mat3.transpose(norm_matrix, norm_matrix);	
+		
+		gl.uniformMatrix3fv(glShaderColor.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glShaderColor.uMMatrix, false, model_matrix);
+		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
 		gl.vertexAttribPointer(glShaderColor.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 

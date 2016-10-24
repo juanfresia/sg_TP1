@@ -12,11 +12,15 @@
 	
 	<script type="text/javascript" src="gl-matrix.js"></script>
 	<script type="text/javascript" src="dat.gui.js"></script>
-	<script type="text/javascript" src="grid.js"></script>
 	<script type="text/javascript" src="scene.js"></script>
-	<script type="text/javascript" src="surfaces.js"></script>
-	<script type="text/javascript" src="bspline.js"></script>
-	<script type="text/javascript" src="terna.js"></script>
+	
+	<script type="text/javascript" src="primitives\grid.js"></script>
+	<script type="text/javascript" src="primitives\surfaces.js"></script>
+	<script type="text/javascript" src="primitives\segment_curve.js"></script>
+	<script type="text/javascript" src="primitives\bspline.js"></script>
+	<script type="text/javascript" src="primitives\terna.js"></script>
+	<script type="text/javascript" src="objects\tower_base.js"></script>
+	<script type="text/javascript" src="objects\tower.js"></script>
 	
 	<!-- Shader de vértices sin texturas -->
 	<script id="shader-vs" type="x-shader/x-vertex">
@@ -59,7 +63,7 @@
 			if (!uUseLighting) {
 				vLightWeighting = vec3(1.0, 1.0, 1.0);
 			} else {
-				vec3 transformedNormal = normalize(uNMatrix * aVertexNormal);
+				vec3 transformedNormal = normalize(uNMatrix * normalize(aVertexNormal));
 				float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
 				vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 			}
@@ -91,7 +95,15 @@
 	var glShaderColor;
 	
 	var params = {
-		periodoC1:1.0,
+		torre_h1:5,
+		torre_h2:5,
+		ancho_corte:0.2,
+		prof_corte:0.2,
+		reduccion:0.8,
+	
+		line_strip:false,
+		debug_mode:true,
+		zoom:30,
 		reiniciar:loadScene
 	};
 	
@@ -236,10 +248,20 @@
 	function setupGUI() {
 	
 		var gui = new dat.GUI();
+
+		var group1 = gui.addFolder('Torre');
+		group1.add(params, 'torre_h1', 1.0, 10.0).name('H1').step(0.1);
+		group1.add(params, 'torre_h2', 1.0, 10.0).name('H2').step(0.1);
+		group1.add(params, 'ancho_corte', 0.1, 0.9).name('Ancho corte').step(0.05);
+		group1.add(params, 'prof_corte', 0.1, 1.0).name('Prof. corte').step(0.05);
+		group1.add(params, 'reduccion', 0.5, 1.0).name('Reduccion').step(0.05);
+
 		
-		var group1 = gui.addFolder('Curva1');
-		group1.add(params, 'periodoC1', 0.0, 8.0).name('Período').step(0.1);
-		group1.add(params, 'reiniciar').name("Reiniciar");
+		var group2 = gui.addFolder('General');
+		group2.add(params, 'debug_mode').name('Debug');
+		group2.add(params, 'line_strip').name('LINE_STRIP?');
+		group2.add(params, 'zoom', 1, 50).name('Zoom');
+		group2.add(params, 'reiniciar').name("Reiniciar");
 
 	}
 		

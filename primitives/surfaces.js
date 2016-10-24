@@ -8,8 +8,17 @@ function Surface() {
 	this.setFollowNormal = function(bool) {
 		this.follow_normal = bool;
 	}
-		
+				
+	this.set_debug = function(debug) {
+		this.debug = debug;
+	}
+	
 	this.create = function(c1, rows, c2, cols) {
+		// Terna para debug
+		this.debug = true;
+		this.terna = new Terna();
+		this.terna.create();
+	
 		this.cols = cols;
 		this.rows = rows;
 		
@@ -77,7 +86,11 @@ function Surface() {
 		this.grid.setupWebGLBuffers();
 	}
 	
-	this.draw = function() {
-		this.grid.draw();
+	this.draw = function(view_matrix, model_matrix) {
+		this.grid.draw(view_matrix, model_matrix);
+		if (this.debug) {
+			this.terna.draw(view_matrix, model_matrix);
+		}
+		
 	}
 }
