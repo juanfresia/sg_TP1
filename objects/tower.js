@@ -85,7 +85,8 @@ function Tower() {
 	
 	this.draw = function(view_matrix, model_matrix) {
 		for (i = 0; i < this.segmentos.length; i++) {
-			var tmp = this.matrices[i];
+			var tmp = mat4.create();
+			mat4.copy(tmp, this.matrices[i]);
 			mat4.mul(tmp, model_matrix, tmp);
 			this.segmentos[i].draw(view_matrix, tmp);
 		}

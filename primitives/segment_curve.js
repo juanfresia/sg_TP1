@@ -102,6 +102,6 @@ function SegmentCurve() {
 		
 	this.draw = function(view_matrix, model_matrix){
 		if (this.grid)
-			this.grid.draw();
+			this.grid.draw(view_matrix, model_matrix);
 	}
 }

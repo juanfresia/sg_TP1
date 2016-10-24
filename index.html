@@ -21,6 +21,7 @@
 	<script type="text/javascript" src="primitives\terna.js"></script>
 	<script type="text/javascript" src="objects\tower_base.js"></script>
 	<script type="text/javascript" src="objects\tower.js"></script>
+	<script type="text/javascript" src="objects\bridge_base.js"></script>
 	
 	<!-- Shader de vértices sin texturas -->
 	<script id="shader-vs" type="x-shader/x-vertex">
@@ -94,19 +95,7 @@
 	var gl = null;
 	var glShaderColor;
 	
-	var params = {
-		torre_h1:5,
-		torre_h2:5,
-		ancho_corte:0.2,
-		prof_corte:0.2,
-		reduccion:0.8,
-	
-		line_strip:false,
-		debug_mode:true,
-		zoom:30,
-		reiniciar:loadScene
-	};
-	
+
 	
 	 // SHADERS FUNCTION
 	function getShader(gl, id) {
@@ -245,6 +234,22 @@
 	}
 	
 	
+	var params = {
+		torre_h1:8,
+		torre_h2:10,
+		ancho_corte:0.2,
+		prof_corte:0.2,
+		reduccion:0.8,
+	
+		line_strip:false,
+		debug_mode:true,
+		view_x:0.0,
+		view_y:-10.0,
+		view_z:-30.0,
+		angle:Math.PI,
+		reiniciar:loadScene
+	};
+	
 	function setupGUI() {
 	
 		var gui = new dat.GUI();
@@ -260,7 +265,10 @@
 		var group2 = gui.addFolder('General');
 		group2.add(params, 'debug_mode').name('Debug');
 		group2.add(params, 'line_strip').name('LINE_STRIP?');
-		group2.add(params, 'zoom', 1, 50).name('Zoom');
+		group2.add(params, 'view_x', -20, 20).name('View x').step(0.1);
+		group2.add(params, 'view_y', -20, 20).name('View y').step(0.1);
+		group2.add(params, 'view_z', -50, 0.0).name('View z').step(1);
+		group2.add(params, 'angle', -2*Math.PI, 2*Math.PI).name('Angulo');
 		group2.add(params, 'reiniciar').name("Reiniciar");
 
 	}

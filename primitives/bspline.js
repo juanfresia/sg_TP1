@@ -31,8 +31,13 @@ function CubicBSpline() {
 	// Colección de puntos y cantidad de puntos		
 	this.control_points = null;
 	this.num_control_points = null;
-	this.normal_vector = vec3.fromValues(0.0, 1.0, 0.0);
+	this.binormal_vector = vec3.fromValues(0.0, 0.0, 1.0);
 	this.grid = null;
+	
+	
+	this.set_up_binormal = function(vector) {
+		this.binormal_vector = vector;
+	}
 	
 	// Longitud de la curva, es decir el valor máximo que puede adoptar
 	// el parámetro u en C(u)
@@ -46,8 +51,8 @@ function CubicBSpline() {
 		this.num_control_points = points.length;
 	}
 
-	this.at = function(u) {
-		
+	
+	this.at = function(u) {		
 		if (this.control_points < 4) {
 			console.log("ERROR: insuficiente cantidad de puntos de control para determinar curva B-Spline\n");
 			return vec3.fromValues(0.0, 0.0, 0.0);
@@ -69,10 +74,10 @@ function CubicBSpline() {
 	
 	this.norm_at = function(u){
 		var tan = this.tan_at(u);
-		var tmp = this.normal_vector;
-		vec3.cross(tmp, tan, tmp);
+		var tmp = vec3.create();
+		vec3.cross(tmp, this.binormal_vector, tan);
 		
-		vec3.cross(tmp, tmp, tan);
+		//vec3.cross(tmp, tmp, tan);
 		vec3.normalize(tmp, tmp);
 		return tmp;
 	}
@@ -153,7 +158,7 @@ function CubicBSpline() {
 		this.grid.setupWebGLBuffers();
 	}
 		
-	this.draw = function(){
-		this.grid.draw();
+	this.draw = function(view_matrix, model_matrix){
+		this.grid.draw(view_matrix, model_matrix);
 	}
 }

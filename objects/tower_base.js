@@ -31,6 +31,7 @@ function TowerBase() {
 		this.debug = debug;
 	}
 	
+
 	this.create = function(x_out, y_out, x_in, y_in, reduccion, alto) {	
 		// Terna para debug
 		this.terna = new Terna();
@@ -41,6 +42,8 @@ function TowerBase() {
 		this.grid.position_buffer = [];
 		this.grid.color_buffer = [];
 		this.grid.normal_buffer = [];
+		
+		// El perfil de la columna tiene 24 puntos, y dos niveles
 		this.grid.createIndexBuffer(2, 24);
 	
 		// Color y parámetros de la viga
@@ -68,6 +71,8 @@ function TowerBase() {
 		var normal3 = vec3.fromValues(this.z[1], 0, 1-this.x_out[1]);
 		var normal4 = vec3.fromValues(0.0, -this.z[1], 1-this.y_out[1]);
 				
+				
+		// Voy a insertar los puntos dos veces, para poder definirle dos normales a cada uno de manera de crear un facetado.
 		for (i = 0; i <= 1; i++) {
 		
 			// Primer cuadrante
@@ -144,6 +149,8 @@ function TowerBase() {
 		this.grid.setupWebGLBuffers();
 	}
 	
+	// Devuelve los parámetros de la parte superior de la pieza, para poder fácilmente generar otra que empalme bien (devuelve las dimensiones
+	// de la H reducida).
 	this.nueva_seccion = function() {
 		var seccion = {};
 		seccion.x_out = this.x_out[1];
