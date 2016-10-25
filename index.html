@@ -44,6 +44,7 @@
 		uniform vec3 uLightPosition;
 		uniform vec3 uDirectionalColor;				
 		varying highp vec4 vColor;
+		
 		varying vec3 vVertexColor;
 		varying vec3 vLightWeighting;
 		
@@ -59,13 +60,20 @@
 			
 			// Calculo la posición relativa de la fuente de luz dirigida respecto al vértice y normalizo
 			
-			vec3 light_dir = uLightPosition - vec3(model_view_pos);
-			normalize(light_dir);
+			
+			vec4 new_light_position = vec4(uLightPosition, 1.0);
+			new_light_position = uVMatrix * new_light_position;
+			
+			
+			
+			vec3 light_dir = vec3(new_light_position) - vec3(model_view_pos);
+			light_dir = normalize(light_dir);
+			
 			if (!uUseLighting) {
 				vLightWeighting = vec3(1.0, 1.0, 1.0);
 			} else {
 				vec3 transformedNormal = normalize(uNMatrix * normalize(aVertexNormal));
-				float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
+				highp float directionalLightWeighting = max(dot(transformedNormal, light_dir), 0.0);
 				vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 			}
 		}

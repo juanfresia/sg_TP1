@@ -116,15 +116,18 @@ function BridgeBase() {
 		points.push([0.0, 0.0, 0.0]);
 		points.push([0.0, 0.0, 0.0]);
 		points.push([0.0, 0.0, 0.0]);
+		points.push([10.0, 2.0, 0.0]);
 		points.push([20.0, 2.0, 0.0]);
+		points.push([30.0, 2.0, 0.0]);
 		points.push([40.0, 0.0, 0.0]);
 		points.push([40.0, 0.0, 0.0]);
 		points.push([40.0, 0.0, 0.0]);
 		this.path.create(points);
 		this.path.setupWebGLBuffers(20);
 		
-		console.log(this.path.at(1.75));
-		console.log(this.path.at(2.25));
+		for (var i = 0; i <= 7; i+=0.1) {
+			console.log(this.path.at(i));
+		}
 		
 		this.surface.create_from_shape(this.path, 50, this.profile.shape, this.profile.shape_norm);		
 	}
