@@ -89,6 +89,37 @@ function VertexGrid() {
 		} else {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
+		
+	}
+	
+	// Exactamente que la funcion draw, pero fuerza a graficar una línea (usar para ver las curvas de las superficies de barrido)
+	this.draw_line = function(view_matrix, model_matrix){
+		var tmp = mat4.create();
+		mat4.identity(tmp);
+		var norm_matrix = mat3.create();
+		
+		mat4.mul(tmp, model_matrix, view_matrix);
+		mat3.fromMat4(norm_matrix, tmp);
+		mat3.invert(norm_matrix, norm_matrix);
+		mat3.transpose(norm_matrix, norm_matrix);	
+		
+		gl.uniformMatrix3fv(glShaderColor.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glShaderColor.uMMatrix, false, model_matrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+		gl.vertexAttribPointer(glShaderColor.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+		gl.vertexAttribPointer(glShaderColor.aVertexColor, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+		gl.vertexAttribPointer(glShaderColor.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+
+		// Dibujamos.
+		gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+				
 	}
 }
 //

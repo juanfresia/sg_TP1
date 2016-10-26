@@ -9,21 +9,15 @@ function Scene() {
 	var norm_matrix = mat3.create();
 
 	var prueba = null;
-	var pilares = [[10, 0, 4.5],[10, 0, -4.5],[35, 0, 4.5],[35, 0, -4.5]];
-	var h1 = 6.12;
 	var terna = null;
-	var pilar = null;
 	
 	// Crea todas las estructuras de la scena
 	this.init = function() {
 		terna = new Terna();
 		terna.create();
-		
-		prueba = new BridgeBase();
+				
+		prueba = new Bridge();
 		prueba.create();
-		
-		pilar = new Tower();
-		pilar.create(1,1,params.ancho_corte,params.prof_corte,params.reduccion);
 		
 	}
 	
@@ -48,19 +42,7 @@ function Scene() {
 		
 		mat4.identity(model_matrix);
 		terna.draw(view_matrix, model_matrix);
-		
-		mat4.translate(model_matrix, model_matrix, [-20, 5, 0]);
 		prueba.draw(view_matrix, model_matrix);
-		
-		var i = 0;
-		for (i = 0; i < 4; i = i + 1) {
-			mat4.identity(model_matrix);
-			mat4.translate(model_matrix, model_matrix, [-20, 0, 0]);
-			mat4.translate(model_matrix, model_matrix, pilares[i]);
-			mat4.rotate(model_matrix, model_matrix, -Math.PI/2, [1, 0, 0]);
-			pilar.draw(view_matrix, model_matrix);
-		}
-		
 		
 	}
 }

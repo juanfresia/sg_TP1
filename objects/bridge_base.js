@@ -43,7 +43,7 @@ function BridgeBase() {
 		this.profile.shape = [];
 		this.profile.shape_norm = [];
 		
-		var ancho = 9; 					// Ancho del puente (de -ancho/2 a ancho/2)
+		var ancho = params.puente_ancho;// Ancho del puente (de -ancho/2 a ancho/2)
 		var ancho_cordon = 1; 			// Ancho de la sección elevada en los extremos
 		var alto_calzada = 0.5; 		// Altura de la calzada (la altura del cordón es 2*alto_calzada)
 		
@@ -102,9 +102,9 @@ function BridgeBase() {
 	
 	
 	// Creador
-	this.create = function() {
+	this.create = function(path) {
 		// Terna para debug
-		this.debug = true;
+		this.debug = false;
 		this.terna = new Terna();
 		this.terna.create();
 		
@@ -112,22 +112,7 @@ function BridgeBase() {
 		this.surface.set_color(BridgeBase.prototype.color);
 		this.surface.set_follow_normal(true);
 		
-		var points = [];
-		points.push([0.0, 0.0, 0.0]);
-		points.push([0.0, 0.0, 0.0]);
-		points.push([0.0, 0.0, 0.0]);
-		points.push([10.0, 2.0, 0.0]);
-		points.push([20.0, 2.0, 0.0]);
-		points.push([30.0, 2.0, 0.0]);
-		points.push([40.0, 0.0, 0.0]);
-		points.push([40.0, 0.0, 0.0]);
-		points.push([40.0, 0.0, 0.0]);
-		this.path.create(points);
-		this.path.setupWebGLBuffers(20);
-		
-		for (var i = 0; i <= 7; i+=0.1) {
-			console.log(this.path.at(i));
-		}
+		this.path = path;
 		
 		this.surface.create_from_shape(this.path, 50, this.profile.shape, this.profile.shape_norm);		
 	}
@@ -135,7 +120,7 @@ function BridgeBase() {
 	
 	this.draw = function(view_matrix, model_matrix) {
 		this.surface.draw(view_matrix, model_matrix);
-		if (params.debug_mode) {
+		if (this.debug) {
 			this.terna.draw(view_matrix, model_matrix);
 		}
 	}

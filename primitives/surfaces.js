@@ -24,17 +24,17 @@ function Surface() {
 		buffer.push(point[2]);
 	}
 	
-	this.create = function(c1, rows, c2, cols) {
+	this.create = function(path, rows, base, cols) {
 		// Terna para debug
-		this.debug = true;
+		this.debug = false;
 		this.terna = new Terna();
 		this.terna.create();
 	
 		this.cols = cols;
 		this.rows = rows;
 		
-		this.pathCurve = c1;
-		this.baseCurve = c2;
+		this.pathCurve = path;
+		this.baseCurve = base;
 
 		this.grid.position_buffer = [];
 		this.grid.color_buffer = [];
@@ -42,8 +42,8 @@ function Surface() {
 	
 		this.grid.createIndexBuffer(rows, cols);
 		
-		var len_c1 = c1.length();
-		var len_c2 = c2.length();
+		var len_c1 = path.length();
+		var len_c2 = base.length();
 		
 		var base_orient = vec3.fromValues(0, 0, 1);
 		
@@ -148,12 +148,17 @@ function Surface() {
 				vec3.normalize(tmp, tmp);
 				
 				vec3.cross(axis, path_norm, tmp);
-				angle = Math.acos(vec3.dot(tmp, path_norm));
-				var segunda_rotacion = mat4.create();
-				mat4.identity(segunda_rotacion);
-				mat4.rotate(segunda_rotacion, segunda_rotacion, -angle, axis);
-				
-				mat4.mul(rotate_mat, segunda_rotacion, rotate_mat);
+				var cos = vec3.dot(tmp, path_norm);
+				if (cos > 1)
+					cos = 1;
+				angle = Math.acos(cos);
+				if (angle != 0) {
+					var segunda_rotacion = mat4.create();
+					mat4.identity(segunda_rotacion);
+					mat4.rotate(segunda_rotacion, segunda_rotacion, -angle, axis);
+					
+					mat4.mul(rotate_mat, segunda_rotacion, rotate_mat);
+				}
 			}
 			
 			for (j = 0; j < this.cols; j++) {

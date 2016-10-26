@@ -19,9 +19,13 @@
 	<script type="text/javascript" src="primitives\segment_curve.js"></script>
 	<script type="text/javascript" src="primitives\bspline.js"></script>
 	<script type="text/javascript" src="primitives\terna.js"></script>
+	<script type="text/javascript" src="primitives\circumference.js"></script>
 	<script type="text/javascript" src="objects\tower_base.js"></script>
+	<script type="text/javascript" src="objects\tensor.js"></script>
 	<script type="text/javascript" src="objects\tower.js"></script>
 	<script type="text/javascript" src="objects\bridge_base.js"></script>
+	<script type="text/javascript" src="objects\bridge_side.js"></script>
+	<script type="text/javascript" src="objects\bridge.js"></script>
 	
 	<!-- Shader de vértices sin texturas -->
 	<script id="shader-vs" type="x-shader/x-vertex">
@@ -227,7 +231,7 @@
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
 		// Preparamos una matriz de perspectiva. (FOV, aspectRatio, z_front y z_back).
-		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 100.0);
+		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 1000.0);
 		
 		gl.uniformMatrix4fv(glShaderColor.uPMatrix, false, pMatrix);
 		
@@ -243,17 +247,28 @@
 	
 	
 	var params = {
-		torre_h1:8,
-		torre_h2:10,
+		// Torres
 		ancho_corte:0.2,
 		prof_corte:0.2,
 		reduccion:0.8,
+		
+		// Puente
+		puente_ph1:10,
+		puente_ph2:2,
+		puente_ph3:20,
+		puente_num_torres:2,
+		puente_largo:420,
+		puente_cur:0.8,
+		puente_sep:2.5,
+		puente_ancho:9.0,
+		puente_nivel:true,
+		
 	
 		line_strip:false,
 		debug_mode:true,
 		view_x:0.0,
 		view_y:-10.0,
-		view_z:-30.0,
+		view_z:-200.0,
 		angle:Math.PI,
 		reiniciar:loadScene
 	};
@@ -262,21 +277,29 @@
 	
 		var gui = new dat.GUI();
 
-		var group1 = gui.addFolder('Torre');
-		group1.add(params, 'torre_h1', 1.0, 10.0).name('H1').step(0.1);
-		group1.add(params, 'torre_h2', 1.0, 10.0).name('H2').step(0.1);
+		var group_puente = gui.addFolder('Puente');
+		group_puente.add(params, 'puente_ph1', 0.0, 20.0).name('Altura de la base').step(0.1);
+		group_puente.add(params, 'puente_ph2', 0.0, 3.0).name('Elevación de la carretera').step(0.1);
+		group_puente.add(params, 'puente_ph3', 10.0, 50.0).name('Altura de las torres').step(1.0);
+		group_puente.add(params, 'puente_num_torres', 2.0, 4.0).name('Cantidad de torres').step(1.0);
+		group_puente.add(params, 'puente_largo', 50.0, 500.0).name('Largo del puente').step(10.0);
+		group_puente.add(params, 'puente_cur', 0.2, 0.8).name('Curvatura de la carretera').step(0.05);
+		group_puente.add(params, 'puente_sep', 1.0, 3.0).name('Separacion de los tirantes').step(0.5);
+		group_puente.add(params, 'puente_ancho', 8.0, 10.0).name('Ancho del puente').step(1);
+		group_puente.add(params, 'puente_nivel').name('Nivelar altura máxima?');
+		
+		var group1 = group_puente.addFolder('Torre');
 		group1.add(params, 'ancho_corte', 0.1, 0.9).name('Ancho corte').step(0.05);
 		group1.add(params, 'prof_corte', 0.1, 1.0).name('Prof. corte').step(0.05);
 		group1.add(params, 'reduccion', 0.5, 1.0).name('Reduccion').step(0.05);
-
 		
 		var group2 = gui.addFolder('General');
 		group2.add(params, 'debug_mode').name('Debug');
 		group2.add(params, 'line_strip').name('LINE_STRIP?');
-		group2.add(params, 'view_x', -20, 20).name('View x').step(0.1);
-		group2.add(params, 'view_y', -20, 20).name('View y').step(0.1);
-		group2.add(params, 'view_z', -50, 0.0).name('View z').step(1);
-		group2.add(params, 'angle', -2*Math.PI, 2*Math.PI).name('Angulo');
+		group2.add(params, 'view_x', -200, 200).name('View x').step(1);
+		group2.add(params, 'view_y', -200, 200).name('View y').step(1);
+		group2.add(params, 'view_z', -800, 0.0).name('View z').step(1);
+		group2.add(params, 'angle', -2*Math.PI, 2*Math.PI).name('Angulo').step(0.01);
 		group2.add(params, 'reiniciar').name("Reiniciar");
 
 	}

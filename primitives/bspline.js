@@ -142,7 +142,7 @@ function CubicBSpline() {
 	this.setupWebGLBuffers = function(step) {
 		this.grid = new VertexGrid();
 		this.grid.createIndexBuffer(this.length()/0.1, 1);
-		for (i = 0; i <= (this.length()); i+=0.1) {
+		for (var i = 0; i <= (this.length()); i+=0.1) {
 				var aux = this.at(i);
 				var aux2 = this.norm_at(i);
 				this.grid.position_buffer.push(aux[0]);
@@ -159,6 +159,6 @@ function CubicBSpline() {
 	}
 		
 	this.draw = function(view_matrix, model_matrix){
-		this.grid.draw(view_matrix, model_matrix);
+		this.grid.draw_line(view_matrix, model_matrix);
 	}
 }
