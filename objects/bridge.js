@@ -267,8 +267,7 @@ function Bridge() {
 			mat4.mul(tmp, model_matrix, tmp);
 			this.side.draw(view_matrix, tmp);
 		}
-		
-		
+				
 		if (this.debug) {
 			this.terna.draw(view_matrix, model_matrix);
 		}
