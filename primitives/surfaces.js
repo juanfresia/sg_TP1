@@ -100,7 +100,7 @@ function Surface() {
 	
 	this.create_from_shape = function(c1, rows, shape, shape_normals) {
 		// Terna para debug
-		this.debug = true;
+		this.debug = false;
 		this.terna = new Terna();
 		this.terna.create();
 	

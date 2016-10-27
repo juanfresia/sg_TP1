@@ -190,7 +190,7 @@ function Bridge() {
 		var step = (2*tower_span)/(num_torres-1);
 		var act = -tower_span;
 		for (var i = 0; i < num_torres; i++) {
-			this.tower_heights[i] = this.curva_at_x(this.curva_carretera, act, 0, this.curva_carretera.length())[1];
+			this.tower_heights[i] = this.curva_at_x(this.curva_carretera, act, 0, this.curva_carretera.length())[1] + 1;
 			act += step;
 		}
 	}

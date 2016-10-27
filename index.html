@@ -241,18 +241,20 @@
 		time += 0.01;
 	}
 		
+	function loadHandler() {
+		handler = new InputHandler();
+		handler.setup_handlers();
+	}	
+	
 	function loadScene() {
 		my_scene = new Scene();
 		my_scene.init();
-		
-		handler = new InputHandler();
-		handler.setup_handlers();
 	}	
 	
 	var params = {
 		// Torres
 		ancho_corte:0.2,
-		prof_corte:0.2,
+		prof_corte:0.7,
 		reduccion:0.8,
 		
 		// Puente
@@ -269,10 +271,6 @@
 	
 		line_strip:false,
 		debug_mode:true,
-		view_x:0.0,
-		view_y:-10.0,
-		view_z:-200.0,
-		angle:Math.PI,
 		reiniciar:loadScene
 	};
 	
@@ -282,13 +280,13 @@
 
 		var group_puente = gui.addFolder('Puente');
 		group_puente.add(params, 'puente_ph1', 0.0, 20.0).name('Altura de la base').step(0.1);
-		group_puente.add(params, 'puente_ph2', 0.0, 3.0).name('Elevación de la carretera').step(0.1);
+		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elevación de la carretera').step(0.1);
 		group_puente.add(params, 'puente_ph3', 10.0, 50.0).name('Altura de las torres').step(1.0);
-		group_puente.add(params, 'puente_num_torres', 2.0, 4.0).name('Cantidad de torres').step(1.0);
+		group_puente.add(params, 'puente_num_torres', 2.0, 6.0).name('Cantidad de torres').step(1.0);
 		group_puente.add(params, 'puente_largo', 50.0, 500.0).name('Largo del puente').step(10.0);
 		group_puente.add(params, 'puente_cur', 0.2, 0.8).name('Curvatura de la carretera').step(0.05);
-		group_puente.add(params, 'puente_sep', 1.0, 3.0).name('Separacion de los tirantes').step(0.5);
-		group_puente.add(params, 'puente_ancho', 8.0, 10.0).name('Ancho del puente').step(1);
+		group_puente.add(params, 'puente_sep', 1.0, 3.0).name('Separacion de los tirantes').step(0.2);
+		group_puente.add(params, 'puente_ancho', 8.0, 10.0).name('Ancho del puente').step(0.5);
 		group_puente.add(params, 'puente_nivel').name('Nivelar altura máxima?');
 		
 		var group1 = group_puente.addFolder('Torre');
@@ -299,10 +297,6 @@
 		var group2 = gui.addFolder('General');
 		group2.add(params, 'debug_mode').name('Debug');
 		group2.add(params, 'line_strip').name('LINE_STRIP?');
-		group2.add(params, 'view_x', -200, 200).name('View x').step(1);
-		group2.add(params, 'view_y', -200, 200).name('View y').step(1);
-		group2.add(params, 'view_z', -800, 0.0).name('View z').step(1);
-		group2.add(params, 'angle', -2*Math.PI, 2*Math.PI).name('Angulo').step(0.01);
 		group2.add(params, 'reiniciar').name("Reiniciar");
 
 	}
@@ -313,7 +307,7 @@
 			setupWebGL();
 			initShaders();
 			setupGUI();
-			
+			loadHandler();
 			loadScene();
 			requestAnimationFrame(drawScene);
 			
@@ -332,7 +326,7 @@
 <!-- El cuerpo con el canvas definido -->
 <body onload="main()" id="my_body">
 	<center>
-		<h1> Esto es una prueba </h1>
+		<!--<h1> Esto es una prueba </h1>-->
 		<canvas id="my_canvas" width="1280" height="768"></canvas>
 	</center>
 </body>

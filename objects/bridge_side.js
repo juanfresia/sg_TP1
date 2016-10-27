@@ -33,7 +33,7 @@ function BridgeSide() {
 		this.torres_mat = [];
 		
 		for (var i = 0; i < torre_pos.length; i++) {
-			var h1 = torre_alt[i] + params.puente_ph1;				// La altura del terreno + la altura de la calle sobre el terreno
+			var h1 = params.puente_ph1 + torre_alt[i];	// La altura del terreno + la altura de la calle sobre el terreno
 			var h2 = params.puente_ph3 - torre_alt[i];		// Considero h3 la altura sobre el terreno
 			this.torres[i] = new Tower();
 			this.torres[i].create(1, 1, params.ancho_corte,params.prof_corte,params.reduccion, h1, h2);
