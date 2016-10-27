@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="gl-matrix.js"></script>
 	<script type="text/javascript" src="dat.gui.js"></script>
 	<script type="text/javascript" src="scene.js"></script>
+	<script type="text/javascript" src="input_handler.js"></script>
 	
 	<script type="text/javascript" src="primitives\grid.js"></script>
 	<script type="text/javascript" src="primitives\surfaces.js"></script>
@@ -224,6 +225,7 @@
 	var time = 0;
 	var pMatrix = mat4.create();
 	var my_scene = null;
+	var handler = null;
 	function drawScene() {
 		// Esto garantiza que se llame continuamente al drawScene
 		requestAnimationFrame(drawScene);
@@ -235,16 +237,17 @@
 		
 		gl.uniformMatrix4fv(glShaderColor.uPMatrix, false, pMatrix);
 		
-		my_scene.draw(time);
+		my_scene.draw(time, handler.get_view_matrix());
 		time += 0.01;
 	}
-	
 		
 	function loadScene() {
 		my_scene = new Scene();
 		my_scene.init();
-	}
-	
+		
+		handler = new InputHandler();
+		handler.setup_handlers();
+	}	
 	
 	var params = {
 		// Torres
@@ -313,23 +316,21 @@
 			
 			loadScene();
 			requestAnimationFrame(drawScene);
+			
 		} else {
 			console.log("Parece que no hay soporte WebGL");
 			alert("Error: no hay soporte WebGL.");
 		}		
 	}
 	
-	
-	
+
 	
 	</script>
-
 	
 </head>
 
-
 <!-- El cuerpo con el canvas definido -->
-<body onload="main()">
+<body onload="main()" id="my_body">
 	<center>
 		<h1> Esto es una prueba </h1>
 		<canvas id="my_canvas" width="1280" height="768"></canvas>
