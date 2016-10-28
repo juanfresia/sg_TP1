@@ -258,7 +258,6 @@ function Bridge() {
 		mat4.copy(tmp, this.carretera_mat);
 		mat4.mul(tmp, model_matrix, tmp);
 		this.carretera.draw(view_matrix, tmp);
-		this.carretera.path.draw(view_matrix, tmp);
 		
 		// Dibujo los lados
 		for (var i = 0; i < this.side_mat.length; i++) {
