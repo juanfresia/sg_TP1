@@ -255,10 +255,11 @@
 	
 	var params = {
 		// Terreno
-		ter_ancho:100,
+		ter_ancho:260,
 		ter_alto:10,
-		rio_ancho:20,
-		agua_alto:1,
+		rio_ancho:120,
+		agua_alto:8,
+		puente_pos:0.5,
 	
 		// Torres
 		ancho_corte:0.2,
@@ -266,7 +267,6 @@
 		reduccion:0.8,
 		
 		// Puente
-		puente_ph1:10,
 		puente_ph2:2,
 		puente_ph3:20,
 		puente_num_torres:3,
@@ -289,11 +289,11 @@
 		var group_terrain = gui.addFolder('Terreno');
 		group_terrain.add(params, 'ter_ancho', 200.0, 500.0).name('Tamaño del mapa').step(10);
 		group_terrain.add(params, 'ter_alto', 2.0, 20.0).name('Elevacion del terreno').step(1);
-		group_terrain.add(params, 'rio_ancho', 10.0, 100.0).name('Ancho del rio').step(1);
-		group_terrain.add(params, 'agua_alto', 1.0, 5.0).name('Altura del agua').step(1);
+		group_terrain.add(params, 'rio_ancho', 10.0, 200.0).name('Ancho del rio').step(1);
+		group_terrain.add(params, 'agua_alto', 1.0, 8.0).name('Altura del agua').step(1);
+		group_terrain.add(params, 'puente_pos', 0.1, 0.9).name('Posicion del puente').step(0.1);
 
 		var group_puente = gui.addFolder('Puente');
-		group_puente.add(params, 'puente_ph1', 0.0, 20.0).name('Altura de la base').step(0.1);
 		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elevación de la carretera').step(0.1);
 		group_puente.add(params, 'puente_ph3', 10.0, 50.0).name('Altura de las torres').step(1.0);
 		group_puente.add(params, 'puente_num_torres', 2.0, 6.0).name('Cantidad de torres').step(1.0);

@@ -20,6 +20,9 @@ function BridgeSide() {
 	}
 	
 	this.create = function(curva_cables, torre_pos, torre_alt, tensor_alt) {
+		
+		var puente_ph1 = params.ter_alto;
+	
 		// Terna para debug
 		this.debug = false;
 		this.terna = new Terna();
@@ -33,14 +36,14 @@ function BridgeSide() {
 		this.torres_mat = [];
 		
 		for (var i = 0; i < torre_pos.length; i++) {
-			var h1 = params.puente_ph1 + torre_alt[i];	// La altura del terreno + la altura de la calle sobre el terreno
+			var h1 = puente_ph1 + torre_alt[i];	// La altura del terreno + la altura de la calle sobre el terreno
 			var h2 = params.puente_ph3 - torre_alt[i];		// Considero h3 la altura sobre el terreno
 			this.torres[i] = new Tower();
-			this.torres[i].create(1, 1, params.ancho_corte,params.prof_corte,params.reduccion, h1, h2);
+			this.torres[i].create(1, 1, params.ancho_corte, params.prof_corte, params.reduccion, h1, h2);
 			
 			this.torres_mat[i] = mat4.create();
 			mat4.copy(this.torres_mat[i], matriz_aux);
-			mat4.translate(this.torres_mat[i], this.torres_mat[i], [torre_pos[i], -params.puente_ph1, 0.0]);
+			mat4.translate(this.torres_mat[i], this.torres_mat[i], [torre_pos[i], -puente_ph1, 0.0]);
 			mat4.rotate(this.torres_mat[i], this.torres_mat[i], -Math.PI/2, [1.0, 0.0, 0.0]);
 		}
 		

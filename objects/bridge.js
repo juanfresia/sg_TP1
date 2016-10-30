@@ -3,6 +3,8 @@
 
 function Bridge() {
 
+	var TOWER_SPAN_RATIO = 0.7;
+
 	// Variables y funciones auxiliares para determinar el color y la terna del modo debug
 	this.terna = null;
 	this.debug = null;
@@ -11,8 +13,7 @@ function Bridge() {
 	this.tower_locations = null;
 	this.tower_heights = null;
 	this.support_heights = null;
-	
-	
+		
 	// Las curvas asocaidas al puente
 	this.curva_carretera = null;
 	this.curva_cables = null;
@@ -56,7 +57,7 @@ function Bridge() {
 		// Interpolo el punto final
 		points.push([semi_largo, 0.0, 0.0]);
 		points.push([semi_largo, 0.0, 0.0]);
-		points.push([semi_largo, 0.0, 0.0]);	
+		points.push([semi_largo, 0.0, 0.0]);
 		
 		this.curva_carretera = new CubicBSpline();
 		this.curva_carretera.create(points);
@@ -65,18 +66,18 @@ function Bridge() {
 	this.crear_curva_cables = function(largo, elev_torres, num_torres) {
 		var points = [];
 		var semi_largo = largo/2;
-		var tower_span = semi_largo * 0.7;			// Proporción del puente que ocuparán las torres, ubicación de las torres de los extremos
+		var tower_span = semi_largo * TOWER_SPAN_RATIO;	// Proporción del puente que ocuparán las torres, ubicación de las torres de los extremos
 		var decay_inicial = (semi_largo - tower_span)/3;
 		var altura_cables = elev_torres * 0.3;		// Que tan cerca se acercarán los cables colgando a la carretera
 		
 		// Interpolo el punto de inicio
-		points.push([-semi_largo, altura_cables, 0.0]);
-		points.push([-semi_largo, altura_cables, 0.0]);
-		points.push([-semi_largo, altura_cables, 0.0]);
+		points.push([-semi_largo, 0.0, 0.0]);
+		points.push([-semi_largo, 0.0, 0.0]);
+		points.push([-semi_largo, 0.0, 0.0]);
 		
 		// Primer torre
-		points.push([-2*decay_inicial - tower_span, altura_cables, 0.0]);
-		points.push([-decay_inicial - tower_span, altura_cables, 0.0]);
+		points.push([-2*decay_inicial - tower_span, 0.0, 0.0]);
+		points.push([-decay_inicial - tower_span, 0.0, 0.0]);
 		points.push([-tower_span, elev_torres, 0.0]);
 		points.push([-tower_span, elev_torres, 0.0]);
 		points.push([-tower_span, elev_torres, 0.0]);
@@ -102,13 +103,13 @@ function Bridge() {
 		}
 		
 		// Última sección de cables
-		points.push([decay_inicial+tower_span, altura_cables, 0.0]);
-		points.push([2*decay_inicial+tower_span, altura_cables, 0.0]);
+		points.push([decay_inicial+tower_span, 0.0, 0.0]);
+		points.push([2*decay_inicial+tower_span, 0.0, 0.0]);
 		
 		// Interpolo el punto final
-		points.push([semi_largo, altura_cables, 0.0]);
-		points.push([semi_largo, altura_cables, 0.0]);
-		points.push([semi_largo, altura_cables, 0.0]);	
+		points.push([semi_largo, 0.0, 0.0]);
+		points.push([semi_largo, 0.0, 0.0]);
+		points.push([semi_largo, 0.0, 0.0]);	
 		
 		this.curva_cables = new CubicBSpline();
 		this.curva_cables.create(points);
@@ -184,7 +185,7 @@ function Bridge() {
 	
 	this.calcular_altura_torres = function(largo, num_torres) {
 		var semi_largo = largo/2;
-		var tower_span = semi_largo * 0.7;
+		var tower_span = semi_largo * TOWER_SPAN_RATIO;
 		
 		
 		var step = (2*tower_span)/(num_torres-1);
@@ -206,6 +207,9 @@ function Bridge() {
 		
 	// Creador
 	this.create = function() {
+		// Asocio la variable a la altura del terreno
+		var puente_ph1 = params.ter_alto;
+	
 		// Terna para debug
 		this.debug = false;
 		this.terna = new Terna();
@@ -218,7 +222,7 @@ function Bridge() {
 		
 		// Creo las curvas que formarán los caminos para las superficies de barrido de los cables y la carretera
 		this.crear_curva_cables(params.puente_largo, params.puente_ph3, params.puente_num_torres);
-		this.crear_curva_carretera(params.puente_largo, params.puente_ph2, params.puente_cur, params.puente_nivel);
+		this.crear_curva_carretera(params.puente_largo, params.puente_ph2, params.puente_cur, params.puente_nivel, params.ter_ancho);
 				
 		// Creo la carretera y obtengo los parámetros para crear el lado
 		this.carretera = new BridgeBase();
@@ -232,7 +236,7 @@ function Bridge() {
 			
 		this.carretera_mat = mat4.create();
 		mat4.identity(this.carretera_mat);
-		mat4.translate(this.carretera_mat, this.carretera_mat, [0.0, params.puente_ph1, 0.0]);
+		mat4.translate(this.carretera_mat, this.carretera_mat, [0.0, puente_ph1, 0.0]);
 		
 		
 		// Creo el lado del puente
@@ -243,11 +247,11 @@ function Bridge() {
 		this.side.create(this.curva_cables, this.tower_locations, this.tower_heights, this.support_heights);
 		this.side_mat[0] = mat4.create();
 		mat4.identity(this.side_mat[0]);
-		mat4.translate(this.side_mat[0], this.side_mat[0], [0.0, params.puente_ph1, -params.puente_ancho/2 + 0.5]);
+		mat4.translate(this.side_mat[0], this.side_mat[0], [0.0, puente_ph1, -params.puente_ancho/2 + 0.5]);
 		
 		this.side_mat[1] = mat4.create();
 		mat4.identity(this.side_mat[1]);
-		mat4.translate(this.side_mat[1], this.side_mat[1], [0.0, params.puente_ph1, params.puente_ancho/2 - 0.5]);
+		mat4.translate(this.side_mat[1], this.side_mat[1], [0.0, puente_ph1, params.puente_ancho/2 - 0.5]);
 			
 	}
 		

@@ -30,6 +30,31 @@ function Terrain() {
 		return tmp;
 	}
 	
+	
+	//	Misma función que en bridge.js, mover a una librería auxiliar?
+	this.curva_at_y = function(y) {
+		curva = this.curva_costa;
+		var high = this.curva_costa.length();
+		var low = 0;
+		var u_act = low + (high-low)/2;
+		var x_act = curva.at(u_act);
+		var count = 0;
+		while ( (Math.abs(x_act[1] - y) >= 0.1) && (count < 200) ) {
+			if ( x_act[1] > y )
+				high = u_act;
+			else
+				low = u_act;
+			u_act = low+(high-low)/2;
+			count++;
+			x_act = curva.at(u_act);
+		}
+		if (count >= 200) {
+			console.log("Bisección falló al encontrar el parámetro u pedido");
+			return x_act;
+		}
+		return x_act;
+	}
+	
 	// Crear las curvas
 	this.crear_curva_cauce = function(ancho, alto) {
 		var points = [];
@@ -126,9 +151,9 @@ function Terrain() {
 		this.crear_curva_cauce(params.rio_ancho, params.ter_alto);
 		
 		var points = [];
-		//points.push([-0.4, -0.8, 0.0]);
-		//points.push([0.6, 0.0, 0.0]);
-		//points.push([-0.2, 0.6, 0.0]);
+		points.push([-0.4, -0.8, 0.0]);
+		points.push([0.6, 0.0, 0.0]);
+		points.push([-0.2, 0.6, 0.0]);
 		
 		this.curva_cauce.rotate(Math.PI/2, [1.0, 0.0, 0.0]);
 		this.curva_cauce.set_up_binormal([0.0, -1.0, 0.0]);
