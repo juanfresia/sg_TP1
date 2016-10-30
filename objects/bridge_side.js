@@ -51,7 +51,7 @@ function BridgeSide() {
 		this.cable.set_color([0.5, 0.5, 0.5]);
 		var circulo = new Circumference();
 		circulo.create(0.1);		
-		this.cable.create(curva_cables, 100, circulo, 20);		
+		this.cable.create(curva_cables, 500, circulo, 20);		
 		
 		
 		// Los tirantes

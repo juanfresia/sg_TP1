@@ -136,7 +136,6 @@ function CubicBSpline() {
 		for (i = 0; i < this.num_control_points; i++) {
 			vec3.transformMat4(this.control_points[i], this.control_points[i], rotate_mat);
 		}
-		vec3.transformMat4(this.normal_vector, this.normal_vector, rotate_mat);
 	}
 		
 	this.setupWebGLBuffers = function(step) {

@@ -60,12 +60,10 @@ function VertexGrid() {
 	}
 
 	this.draw = function(view_matrix, model_matrix){
-		var tmp = mat4.create();
-		mat4.identity(tmp);
 		var norm_matrix = mat3.create();
 		
-		mat4.mul(tmp, model_matrix, view_matrix);
-		mat3.fromMat4(norm_matrix, tmp);
+		//mat4.mul(tmp, model_matrix, view_matrix);
+		mat3.fromMat4(norm_matrix, model_matrix);
 		mat3.invert(norm_matrix, norm_matrix);
 		mat3.transpose(norm_matrix, norm_matrix);	
 		

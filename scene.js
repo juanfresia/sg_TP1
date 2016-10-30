@@ -9,15 +9,23 @@ function Scene() {
 	var norm_matrix = mat3.create();
 
 	var prueba = null;
+	var puente = null;
 	var terna = null;
+	var agua = null;
 	
 	// Crea todas las estructuras de la scena
 	this.init = function() {
 		terna = new Terna();
 		terna.create();
 				
-		prueba = new Bridge();
+		puente = new Bridge();
+		puente.create();
+		
+		prueba = new Terrain();
 		prueba.create();
+		
+		agua = new Water();
+		agua.create();
 		
 	}
 	
@@ -42,6 +50,9 @@ function Scene() {
 		
 		mat4.identity(model_matrix);
 		terna.draw(view_matrix, model_matrix);
+		puente.draw(view_matrix, model_matrix);
+		mat4.rotate(model_matrix, model_matrix, Math.PI/2, [-1.0, 0.0, 0.0]);
+		agua.draw(view_matrix, model_matrix);
 		prueba.draw(view_matrix, model_matrix);
 		
 	}

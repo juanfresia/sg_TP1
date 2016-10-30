@@ -5,6 +5,7 @@ function Surface() {
 	this.follow_normal = true;
 	this.grid = new VertexGrid();
 	this.color = null;
+	this.color_function = null;
 
 	this.set_follow_normal = function(bool) {
 		this.follow_normal = bool;
@@ -16,6 +17,9 @@ function Surface() {
 	
 	this.set_color = function(color) {
 		this.color = color;
+	}
+	this.set_color_function = function(color_f) {
+		this.color_function = color_f;
 	}
 	
 	this.push_point = function(buffer, point) {
@@ -85,9 +89,13 @@ function Surface() {
 				this.push_point(this.grid.position_buffer, base_point);
 							
 				if (this.color == null) {
-					this.grid.color_buffer.push(0.8/this.rows * i);
-					this.grid.color_buffer.push(0.2);
-					this.grid.color_buffer.push(0.8/this.cols * j);
+					if (this.color_function == null) {
+						this.grid.color_buffer.push(0.8/this.rows * i);
+						this.grid.color_buffer.push(0.2);
+						this.grid.color_buffer.push(0.8/this.cols * j);
+					} else {
+						this.push_point(this.grid.color_buffer, this.color_function(base_point));
+					}
 				} else {
 					this.push_point(this.grid.color_buffer, this.color);
 				}
