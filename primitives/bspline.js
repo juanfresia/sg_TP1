@@ -33,7 +33,7 @@ function CubicBSpline() {
 	this.num_control_points = null;
 	this.binormal_vector = vec3.fromValues(0.0, 0.0, 1.0);
 	this.grid = null;
-	
+		
 	
 	this.set_up_binormal = function(vector) {
 		this.binormal_vector = vector;
@@ -45,6 +45,7 @@ function CubicBSpline() {
 		return this.num_control_points-3;
 	}
 
+		
 	// Inicializa los parámetros (interpola por defecto, curva abierta)
 	this.create = function(points) {
 		this.control_points = points;

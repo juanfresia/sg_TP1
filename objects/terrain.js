@@ -55,6 +55,29 @@ function Terrain() {
 		return x_act;
 	}
 	
+	this.curva_tan_at_y = function(y) {
+		curva = this.curva_costa;
+		var high = this.curva_costa.length();
+		var low = 0;
+		var u_act = low + (high-low)/2;
+		var x_act = curva.at(u_act);
+		var count = 0;
+		while ( (Math.abs(x_act[1] - y) >= 0.1) && (count < 200) ) {
+			if ( x_act[1] > y )
+				high = u_act;
+			else
+				low = u_act;
+			u_act = low+(high-low)/2;
+			count++;
+			x_act = curva.at(u_act);
+		}
+		if (count >= 200) {
+			console.log("Bisección falló al encontrar el parámetro u pedido");
+			return curva.tan_at(u_act);
+		}
+		return curva.tan_at(u_act);
+	}
+	
 	// Crear las curvas
 	this.crear_curva_cauce = function(ancho, alto) {
 		var points = [];

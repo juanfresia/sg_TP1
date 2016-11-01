@@ -14,6 +14,8 @@ function Scene() {
 	var agua = null;
 	var carreteras = null;
 	
+	var barco = null;
+	
 	var desplazamiento_puente = null;
 	
 	// Crea todas las estructuras de la scena
@@ -62,6 +64,10 @@ function Scene() {
 		carreteras[1] = new BridgeBase();
 		carreteras[1].create(curva_tmp);
 		
+		// Creo el barco
+		barco = new Ship();
+		barco.create();
+		
 	}
 	
 	// Dibuja las estructuras una por una, teniendo en cuenta parámetros externos como el tiempo o la matriz de vista (o lo que sea que se necesite, puede que tengamos que pasar directamente los shaders para agregar las deformaciones al agua por ejemplo.
@@ -75,10 +81,6 @@ function Scene() {
 		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(1000.0, 1000.0, 1000.0));
 		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
 		
-		//mat4.identity(view_matrix);
-		//mat4.translate(view_matrix, view_matrix, [params.view_x, params.view_y, params.view_z]);	
-		//mat4.rotate(view_matrix, view_matrix, Math.PI/4, [-1.0, 0.0, 0.0]);	
-		//mat4.rotate(view_matrix, view_matrix, params.angle, [0.0, 1.0, 0.0]);	
 		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
 				
 		// Preparamos una matriz de modelo y de vista.
@@ -87,7 +89,7 @@ function Scene() {
 		terna.draw(view_matrix, model_matrix);
 		carreteras[0].draw(view_matrix, model_matrix);
 		carreteras[1].draw(view_matrix, model_matrix);
-		
+				
 		mat4.translate(model_matrix, model_matrix, desplazamiento_puente);
 		puente.draw(view_matrix, model_matrix);
 		
@@ -96,6 +98,27 @@ function Scene() {
 		agua.draw(view_matrix, model_matrix);
 		terreno.draw(view_matrix, model_matrix);
 		
+		// Dibujo el barco
+		mat4.identity(model_matrix);
+		var foward = vec3.fromValues(1.0, 0.0, 0.0);
+		var barco_pos = vec3.fromValues(0.0, params.ter_alto, 0.0);
+		
+		var u = time/20 % 1;
+		var costa_pos = terreno.curva_at_y(-u * params.ter_ancho + params.ter_ancho/2);
+		var costa_tan = terreno.curva_tan_at_y(-u * params.ter_ancho + params.ter_ancho/2);
+		vec3.normalize(costa_tan, costa_tan);
+		barco_pos[2] = -costa_pos[1];
+		barco_pos[0] = costa_pos[0];
+		if (params.puente_num_torres % 2 == 1) 
+			barco_pos[0] += params.rio_ancho/8;
+			
+		mat4.translate(model_matrix, model_matrix, barco_pos);
+		var angle = Math.acos(vec3.dot(foward, costa_tan));
+		if (angle != 0) {			
+			mat4.rotate(model_matrix, model_matrix, angle, [0.0, 1.0, 0.0]);
+		}
+			
+		barco.draw(view_matrix, model_matrix);
 	}
 }
 	
