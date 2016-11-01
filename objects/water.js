@@ -1,5 +1,5 @@
 
-Water.prototype.color = [0.6, 0.6, 1.0];
+Water.prototype.color = [85/255, 223/255, 245/255];
 
 function Water() {	
 	this.terna = null;
@@ -28,14 +28,16 @@ function Water() {
 		this.terna = new Terna();
 		this.terna.create();
 		
+		this.color = Water.prototype.color;
+		
 		var granularidad = 100;
 		var ter_semi_ancho = params.ter_ancho/2;
 		this.grid = new VertexGrid();
-		this.grid.createIndexBuffer(granularidad, granularidad);
+		this.grid.createIndexBuffer(granularidad+1, granularidad+1);
 		
-		for (var i = 0; i < granularidad; i++) {
+		for (var i = 0; i <= granularidad; i++) {
 			var x = - ter_semi_ancho + params.ter_ancho * i/granularidad;
-			for (var j = 0; j < granularidad; j++) {
+			for (var j = 0; j <= granularidad; j++) {
 				var y = - ter_semi_ancho + params.ter_ancho * j/granularidad;
 				this.push_point(this.grid.position_buffer, [x, y, params.agua_alto]);
 				this.push_point(this.grid.color_buffer, this.color);
@@ -45,9 +47,8 @@ function Water() {
 		this.grid.setupWebGLBuffers();
 	}
 		
-	
 	this.draw = function(view_matrix, model_matrix) {
-		this.grid.draw(view_matrix, model_matrix);
+		this.grid.draw_water(view_matrix, model_matrix);
 		if (this.debug) {
 			this.terna.draw(view_matrix, model_matrix);
 		}

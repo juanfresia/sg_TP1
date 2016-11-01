@@ -119,5 +119,41 @@ function VertexGrid() {
 		gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 				
 	}
+	
+	
+	this.draw_water = function(view_matrix, model_matrix){
+	
+		gl.useProgram(glShaderWater);
+		gl.uniformMatrix4fv(glShaderWater.uVMatrix, false, view_matrix);
+		var norm_matrix = mat3.create();
+		
+		//mat4.mul(tmp, model_matrix, view_matrix);
+		mat3.fromMat4(norm_matrix, model_matrix);
+		mat3.invert(norm_matrix, norm_matrix);
+		mat3.transpose(norm_matrix, norm_matrix);	
+		
+		gl.uniformMatrix3fv(glShaderWater.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glShaderWater.uMMatrix, false, model_matrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+		gl.vertexAttribPointer(glShaderWater.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+		gl.vertexAttribPointer(glShaderWater.aVertexColor, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+		gl.vertexAttribPointer(glShaderWater.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
+
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+
+		// Dibujamos.
+		if (params.line_strip) {
+			gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		} else {
+			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		}
+		gl.useProgram(glShaderColor);
+	}
+
 }
 //

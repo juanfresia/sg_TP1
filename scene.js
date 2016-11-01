@@ -62,23 +62,32 @@ function Scene() {
 		carreteras[1] = new BridgeBase();
 		carreteras[1].create(curva_tmp);
 		
+		this.init_shader();
+		
+	}
+	
+	this.init_shader = function() {
+		// Configurar iluminación
+		
+		gl.useProgram(glShaderColor);
+		gl.uniform1i(glShaderColor.uUseLighting, true);
+		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(0.1, 0.1, 0.1));
+		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(1000.0, 1000.0, 1000.0));
+		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+		
+		gl.useProgram(glShaderWater);
+		gl.uniform1i(glShaderWater.uUseLighting, true);
+		gl.uniform3fv(glShaderWater.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
+		gl.uniform3fv(glShaderWater.uLightPosition, vec3.fromValues(1000.0, 1000.0, 1000.0));
+		gl.uniform3fv(glShaderWater.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+		
+		gl.useProgram(glShaderColor);
 	}
 	
 	// Dibuja las estructuras una por una, teniendo en cuenta parámetros externos como el tiempo o la matriz de vista (o lo que sea que se necesite, puede que tengamos que pasar directamente los shaders para agregar las deformaciones al agua por ejemplo.
 	this.draw = function(time, view_matrix) {
 		var tmp = mat4.create();
 		mat4.identity(tmp);
-			
-		// Configurar iluminación
-		gl.uniform1i(glShaderColor.uUseLighting, true);
-		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(0.1, 0.1, 0.1));
-		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(1000.0, 1000.0, 1000.0));
-		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
-		
-		//mat4.identity(view_matrix);
-		//mat4.translate(view_matrix, view_matrix, [params.view_x, params.view_y, params.view_z]);	
-		//mat4.rotate(view_matrix, view_matrix, Math.PI/4, [-1.0, 0.0, 0.0]);	
-		//mat4.rotate(view_matrix, view_matrix, params.angle, [0.0, 1.0, 0.0]);	
 		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
 				
 		// Preparamos una matriz de modelo y de vista.
