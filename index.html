@@ -22,6 +22,7 @@
 	<script type="text/javascript" src="primitives\terna.js"></script>
 	<script type="text/javascript" src="primitives\circumference.js"></script>
 	<script type="text/javascript" src="objects\tower_base.js"></script>
+	<script type="text/javascript" src="objects\ship.js"></script>
 	<script type="text/javascript" src="objects\water.js"></script>
 	<script type="text/javascript" src="objects\tensor.js"></script>
 	<script type="text/javascript" src="objects\terrain.js"></script>
@@ -353,7 +354,7 @@
 		gl.useProgram(glShaderColor);
 		
 		my_scene.draw(time, handler.get_view_matrix());
-		time += 0.01;
+		time += 0.02;
 	}
 		
 	function loadHandler() {
