@@ -16,6 +16,9 @@ function Scene() {
 	
 	var barco = null;
 	
+	var ship_angle = null;
+	var ship_pos = null;
+	
 	var desplazamiento_puente = null;
 	
 	// Crea todas las estructuras de la scena
@@ -88,6 +91,31 @@ function Scene() {
 		gl.useProgram(glShaderColor);
 	}
 	
+	
+	// Funcion auxiliar para obtener la posición del barco en un dado tiempo
+	this.get_ship_pos = function(t) {
+		var u = (t * params.ship_speed/1000) % 1;
+		var costa_pos = terreno.curva_at_y(-u * params.ter_ancho + params.ter_ancho/2);
+		var pos = [0.0, params.ter_alto, 0.0];
+		pos[2] = -costa_pos[1];
+		pos[0] = costa_pos[0];
+		if (params.puente_num_torres % 2 == 1) 
+			pos[0] += params.rio_ancho/8;
+		
+		this.ship_pos = pos;
+		return pos;
+	}
+	
+	this.get_ship_angle = function(t) {
+		var u = (t * params.ship_speed/1000) % 1;
+		var costa_tan = terreno.curva_tan_at_y(-u * params.ter_ancho + params.ter_ancho/2);
+		vec3.normalize(costa_tan, costa_tan);
+		var foward = vec3.fromValues(1.0, 0.0, 0.0);
+		var angle = Math.acos(vec3.dot(foward, costa_tan));
+		this.ship_angle = angle;
+		return angle;
+	}
+	
 	// Dibuja las estructuras una por una, teniendo en cuenta parámetros externos como el tiempo o la matriz de vista (o lo que sea que se necesite, puede que tengamos que pasar directamente los shaders para agregar las deformaciones al agua por ejemplo.
 	this.draw = function(time, view_matrix) {
 		var tmp = mat4.create();
@@ -112,22 +140,9 @@ function Scene() {
 		
 		// Dibujo el barco
 		mat4.identity(model_matrix);
-		var foward = vec3.fromValues(1.0, 0.0, 0.0);
-		var barco_pos = vec3.fromValues(0.0, params.ter_alto, 0.0);
-		
-		var u = time/20 % 1;
-		var costa_pos = terreno.curva_at_y(-u * params.ter_ancho + params.ter_ancho/2);
-		var costa_tan = terreno.curva_tan_at_y(-u * params.ter_ancho + params.ter_ancho/2);
-		vec3.normalize(costa_tan, costa_tan);
-		barco_pos[2] = -costa_pos[1];
-		barco_pos[0] = costa_pos[0];
-		if (params.puente_num_torres % 2 == 1) 
-			barco_pos[0] += params.rio_ancho/8;
-			
-		mat4.translate(model_matrix, model_matrix, barco_pos);
-		var angle = Math.acos(vec3.dot(foward, costa_tan));
-		if (angle != 0) {			
-			mat4.rotate(model_matrix, model_matrix, angle, [0.0, 1.0, 0.0]);
+		mat4.translate(model_matrix, model_matrix, this.ship_pos);
+		if (this.ship_angle != 0) {			
+			mat4.rotate(model_matrix, model_matrix, this.ship_angle, [0.0, 1.0, 0.0]);
 		}
 			
 		barco.draw(view_matrix, model_matrix);

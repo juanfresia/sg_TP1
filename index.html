@@ -369,6 +369,8 @@
 		gl.uniformMatrix4fv(glShaderWater.uPMatrix, false, pMatrix);
 		gl.useProgram(glShaderColor);
 		
+		handler.set_ship_pos(my_scene.get_ship_pos(time));
+		handler.set_ship_angle(my_scene.get_ship_angle(time));
 		my_scene.draw(time, handler.get_view_matrix());
 		time += 0.02;
 	}
@@ -379,6 +381,7 @@
 	}	
 	
 	function loadScene() {
+		time = 0.0;
 		curve_update();
 		
 		my_scene = new Scene();
@@ -392,6 +395,7 @@
 		rio_ancho:120,
 		agua_alto:8,
 		puente_pos:0.5,
+		ship_speed:50,
 	
 		// Torres
 		ancho_corte:0.2,
@@ -425,6 +429,7 @@
 		group_terrain.add(params, 'rio_ancho', 10.0, 200.0).name('Ancho del rio').step(1);
 		group_terrain.add(params, 'agua_alto', 1.0, 8.0).name('Altura del agua').step(1);
 		group_terrain.add(params, 'puente_pos', 0.1, 0.9).name('Posicion del puente').step(0.1);
+		group_terrain.add(params, 'ship_speed', 1, 100).name('Veloc. barco').step(1);
 
 		var group_puente = gui.addFolder('Puente');
 		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elevación de la carretera').step(0.1);
