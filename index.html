@@ -14,6 +14,7 @@
 	<script type="text/javascript" src="dat.gui.js"></script>
 	<script type="text/javascript" src="scene.js"></script>
 	<script type="text/javascript" src="input_handler.js"></script>
+	<script type="text/javascript" src="curve_input.js"></script>
 	
 	<script type="text/javascript" src="primitives\grid.js"></script>
 	<script type="text/javascript" src="primitives\surfaces.js"></script>
@@ -102,14 +103,11 @@
 			gl_FragColor = vec4(vVertexColor.rgb * vLightWeighting, 1.0);
 		}
 	</script>
-	
-	
-	
+		
 	<!-- Shader de vértices para el agua -->
 	<script id="water-vs" type="x-shader/x-vertex">
 		// Atributos del vértice
 		attribute vec3 aVertexPosition;
-		attribute vec3 aVertexNormal;
 		attribute vec3 aVertexColor;
 		
 		// Matrices de Vista, Modelo, Proyección y Normales
@@ -178,6 +176,28 @@
 		}
 	
 	</script>	
+				
+	<!-- Shader de vértices para las curvas 2D -->
+	<script id="curve-shader-vs" type="x-shader/x-vertex">
+		attribute vec3 aVertexPosition;
+		//uniform mat4 uMMatrix;
+		uniform mat4 uVMatrix;
+		uniform mat4 uPMatrix;
+		void main(void) {
+			gl_Position = uPMatrix * uVMatrix * vec4(aVertexPosition, 1.0);
+			gl_PointSize = 5.0;
+			//gl_Position = vec4(aVertexPosition, 1.0);
+		}
+	</script>
+	
+	<!-- Shader de fragmentos para las curvas 2D -->
+	<script id="curve-shader-fs" type="x-shader/x-fragment">
+		void main(void) {
+			gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+		}
+	</script>
+	
+	
 		
 	<!-- El script posta -->
 	<script>
@@ -187,7 +207,6 @@
 	var glShaderColor;
 	var glShaderWater;
 	
-
 	
 	 // SHADERS FUNCTION
 	function getShader(gl, id) {
@@ -310,10 +329,7 @@
 		// Punteros a los atributos del shader
 		glShaderWater.aVertexPosition = gl.getAttribLocation(glShaderWater, "aVertexPosition");
 		gl.enableVertexAttribArray(glShaderWater.aVertexPosition);
-		
-		glShaderWater.aVertexNormal = gl.getAttribLocation(glShaderWater, "aVertexNormal");
-		gl.enableVertexAttribArray(glShaderWater.aVertexNormal);
-		
+				
 		glShaderWater.aVertexColor = gl.getAttribLocation(glShaderWater, "aVertexColor");
 		gl.enableVertexAttribArray(glShaderWater.aVertexColor);
 		
@@ -363,8 +379,10 @@
 	}	
 	
 	function loadScene() {
+		curve_update();
+		
 		my_scene = new Scene();
-		my_scene.init();
+		my_scene.init();		
 	}	
 	
 	var params = {
@@ -393,7 +411,8 @@
 	
 		line_strip:false,
 		debug_mode:true,
-		reiniciar:loadScene
+		reiniciar:loadScene,
+		reset_curve:clear_points
 	};
 	
 	function setupGUI() {
@@ -426,12 +445,14 @@
 		group2.add(params, 'debug_mode').name('Debug');
 		group2.add(params, 'line_strip').name('LINE_STRIP?');
 		group2.add(params, 'reiniciar').name("Reiniciar");
+		group2.add(params, 'reset_curve').name("Limpiar curva");
 
 	}
 		
 	function main() {
 		initWebGL();
-		if (gl) {
+		init_curve_canvas();
+		if (gl && curve_gl) {
 			setupWebGL();
 			initShaders();
 			setupGUI();
@@ -453,7 +474,12 @@
 <body onload="main()" id="my_body">
 	<center>
 		<!--<h1> Esto es una prueba </h1>-->
-		<canvas id="my_canvas" width="1280" height="768"></canvas>
+		<canvas id="my_canvas" width="1280" height="720"></canvas>
+		
+		<div align="right">
+			<canvas id="curve_canvas" width="400" height="400"></canvas>
+		</div>
+		
 	</center>
 	
 </body>

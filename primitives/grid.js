@@ -10,6 +10,10 @@ function VertexGrid() {
 	this.webgl_color_buffer = null;
 	this.webgl_index_buffer = null;
 	this.webgl_normal_buffer = null;
+	
+	// Plot en 2D
+	this.position_buffer_2D = null;
+	this.index_buffer_2D = null;
 
 	this.createIndexBuffer = function(rows, cols){
 		this.index_buffer = [];
@@ -54,9 +58,6 @@ function VertexGrid() {
 		this.webgl_normal_buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
-		
-		//console.log(this.position_buffer);
-		//console.log(this.color_buffer);
 	}
 
 	this.draw = function(view_matrix, model_matrix){
@@ -120,9 +121,7 @@ function VertexGrid() {
 				
 	}
 	
-	
 	this.draw_water = function(view_matrix, model_matrix){
-	
 		gl.useProgram(glShaderWater);
 		gl.uniformMatrix4fv(glShaderWater.uVMatrix, false, view_matrix);
 		var norm_matrix = mat3.create();
@@ -140,9 +139,6 @@ function VertexGrid() {
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
 		gl.vertexAttribPointer(glShaderWater.aVertexColor, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-		gl.vertexAttribPointer(glShaderWater.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
@@ -155,5 +151,39 @@ function VertexGrid() {
 		gl.useProgram(glShaderColor);
 	}
 
+	
+	
+	
+// -------------------------------------------
+//	Especial para canvas en 2D
+// -------------------------------------------
+
+
+	this.setup2Dbuffers = function() {
+	
+		this.position_buffer_2D = curve_gl.createBuffer();
+		curve_gl.bindBuffer(curve_gl.ARRAY_BUFFER, this.position_buffer_2D);
+		curve_gl.bufferData(curve_gl.ARRAY_BUFFER, new Float32Array(this.position_buffer), curve_gl.STATIC_DRAW);
+		this.position_buffer_2D.itemSize = 3;
+		this.position_buffer_2D.numItems = this.position_buffer.length/3;
+
+		
+		this.index_buffer_2D = curve_gl.createBuffer();
+		curve_gl.bindBuffer(curve_gl.ELEMENT_ARRAY_BUFFER, this.index_buffer_2D);
+		curve_gl.bufferData(curve_gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), curve_gl.STATIC_DRAW);
+		
+	}
+	this.draw_2D = function() {
+		if (this.position_buffer_2D == null) {
+			this.setup2Dbuffers();
+		}
+		curve_gl.bindBuffer(curve_gl.ARRAY_BUFFER, this.position_buffer_2D);
+		curve_gl.vertexAttribPointer(curve_shader.aVertexPosition, 3, curve_gl.FLOAT, false, 0, 0);
+		
+		curve_gl.bindBuffer(curve_gl.ELEMENT_ARRAY_BUFFER, this.index_buffer_2D);
+
+		// Dibujamos.
+		curve_gl.drawElements(curve_gl.LINE_STRIP, this.index_buffer.length, curve_gl.UNSIGNED_SHORT, 0);
+	}
 }
 //

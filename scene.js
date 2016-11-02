@@ -27,7 +27,7 @@ function Scene() {
 		puente.create();
 		
 		terreno = new Terrain();
-		terreno.create();
+		terreno.create(get_curve_input_points());
 		
 		agua = new Water();
 		agua.create();
@@ -41,8 +41,7 @@ function Scene() {
 		var fin_puente_der = params.puente_largo/2 + desplazamiento_puente[0];
 		var path_carretera_izq = [];
 		var path_carretera_der = [];	
-		
-		
+				
 		// Creo las calles para completar el puente
 		for (var i = 0; i < 3; i++) {
 			path_carretera_izq.push([-borde, params.ter_alto, desplazamiento_puente[2]]);
@@ -132,6 +131,7 @@ function Scene() {
 		}
 			
 		barco.draw(view_matrix, model_matrix);
+		
 	}
 }
 	

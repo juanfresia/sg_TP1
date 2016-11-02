@@ -161,7 +161,7 @@ function Terrain() {
 		this.lados[1].setupWebGLBuffers();		
 	}
 	
-	this.create = function() {
+	this.create = function(points) {
 		// Terna para debug
 		this.debug = false;
 		this.terna = new Terna();
@@ -172,11 +172,6 @@ function Terrain() {
 		this.superficie.set_follow_normal(false);
 		
 		this.crear_curva_cauce(params.rio_ancho, params.ter_alto);
-		
-		var points = [];
-		points.push([-0.4, -0.8, 0.0]);
-		points.push([0.6, 0.0, 0.0]);
-		points.push([-0.2, 0.6, 0.0]);
 		
 		this.curva_cauce.rotate(Math.PI/2, [1.0, 0.0, 0.0]);
 		this.curva_cauce.set_up_binormal([0.0, -1.0, 0.0]);

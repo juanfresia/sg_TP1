@@ -160,5 +160,5 @@ function CubicBSpline() {
 		
 	this.draw = function(view_matrix, model_matrix){
 		this.grid.draw_line(view_matrix, model_matrix);
-	}
+	}	
 }
