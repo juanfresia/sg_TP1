@@ -140,7 +140,7 @@
 			float kz = 0.1;
 			float wx = 0.5;
 			float wz = 2.0;
-			float amp = 1.0;
+			float amp = 0.5;
 			
 			// Consigo la posición proyectada del punto multiplicando por todas las matrices.
 			vec4 model_world_pos = uMMatrix * vec4(aVertexPosition, 1.0);
@@ -377,7 +377,7 @@
 		handler.set_ship_pos(my_scene.get_ship_pos(time));
 		handler.set_ship_angle(my_scene.get_ship_angle(time));
 		my_scene.draw(time, handler.get_view_matrix());
-		time += 0.0004;
+		time += 0.02;
 	}
 		
 	function loadHandler() {

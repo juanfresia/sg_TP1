@@ -16,6 +16,8 @@ function Scene() {
 	
 	var barco = null;
 	
+	var arboles = null;
+	
 	var ship_angle = null;
 	var ship_pos = null;
 	
@@ -70,6 +72,23 @@ function Scene() {
 		barco = new Ship();
 		barco.create();
 		
+		arboles = [];
+		arboles_pos = [];
+		for (var i = 0; i < 3; i++) {
+			arboles.push(new Tree());
+			arboles[i].create();
+		}
+		
+		for (var i = 0; i < 100; i++) {
+			var estilo = Math.floor((Math.random() * 3));
+			var x = Math.random() * params.ter_ancho - params.ter_ancho/2;
+			var y = Math.random() * params.ter_ancho - params.ter_ancho/2;
+			if (this.check_position(x, y)) {
+				arboles_pos.push([x, y, 0.0, estilo]);
+			}
+		}
+		
+		
 		this.init_shader();
 	}
 	
@@ -91,6 +110,20 @@ function Scene() {
 		gl.useProgram(glShaderColor);
 	}
 	
+	
+	// 
+	this.check_position = function(x, y) {
+		var puente_y = params.puente_pos * params.ter_ancho;
+		if ((puente_y + params.puente_ancho/2 > y) && (puente_y - params.puente_ancho/2 < y)) {
+			return false;
+		}
+		
+		var rio_x = terreno.curva_at_y(y)[0];
+		if ((rio_x + params.rio_ancho/2 > x) && (rio_x - params.rio_ancho/2 < x)) {
+			return false;
+		}
+		return true;
+	}
 	
 	// Funcion auxiliar para obtener la posición del barco en un dado tiempo
 	this.get_ship_pos = function(t) {
@@ -146,6 +179,13 @@ function Scene() {
 		}
 			
 		barco.draw(view_matrix, model_matrix);
+		
+		for (var i = 0; i < arboles_pos.length; i++) {
+			mat4.identity(model_matrix);
+			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], params.ter_alto+5, arboles_pos[i][1]]);
+			arboles[arboles_pos[i][3]].draw(view_matrix, model_matrix);
+		}
+		
 		
 	}
 }
