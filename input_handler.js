@@ -48,7 +48,7 @@ function InputHandler() {
 		this.view_mat = mat4.create();
 		mat4.identity(this.view_mat);
 		
-		this.set_orbit();
+		this.set_free();
 	};
 	
 	// Configura los handlers para el modo órbita de la cámara

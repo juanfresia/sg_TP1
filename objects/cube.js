@@ -64,7 +64,7 @@ function Cube() {
 		base_cube.set_color(this.color);
 		base_cube.create(xa, ya, xb, yb);
 		
-		this.cube.create(path_cube, 40, base_cube, 55);
+		this.cube.create(path_cube, 30, base_cube, 50);
 		
 		// Una tapa
 		var path_tapa1 = new CubicBSpline();

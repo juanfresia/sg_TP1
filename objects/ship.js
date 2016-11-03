@@ -113,6 +113,8 @@ function Ship() {
 		this.push_point(this.cubierta.color_buffer, this.color);
 		this.cubierta.setupWebGLBuffers();
 		
+		this.treeeeee = new Tree();
+		this.treeeeee.create();
 	}
 		
 	
@@ -131,6 +133,8 @@ function Ship() {
 		mat4.rotate(tmp, tmp, -Math.PI/2, [0.0, 1.0, 0.0]);
 		mat4.scale(tmp, tmp, [1.6, 1.8, 1.6])
 		this.cargamento.draw(view_matrix, tmp);
+		// MATAR LUEGO:
+		this.treeeeee.draw(view_matrix, model_matrix);
 		if (this.debug) {
 			this.terna.draw(view_matrix, tmp);
 		}

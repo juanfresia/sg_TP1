@@ -30,6 +30,8 @@
 	<script type="text/javascript" src="objects/tower.js"></script>
 	<script type="text/javascript" src="primitives/rectangulo.js"></script>
 	<script type="text/javascript" src="objects/bridge_base.js"></script>
+	<script type="text/javascript" src="objects/arbol.js"></script>
+	<script type="text/javascript" src="primitives/copa.js"></script>
 	<script type="text/javascript" src="objects/cube.js"></script>
 	<script type="text/javascript" src="objects/cargamento.js"></script>
 	<script type="text/javascript" src="objects/bridge_side.js"></script>
@@ -268,7 +270,7 @@
 	
 	// Configuración del canvas
 	function setupWebGL() {
-		gl.clearColor(0.77, 0.07, 0.243, 1.0);
+		gl.clearColor(0.44, 0.83, 1.0, 1.0);
 		
 		// Habilitando y configurando cómo tratar el buffer de profundidad
 		gl.enable(gl.DEPTH_TEST);
@@ -375,7 +377,7 @@
 		handler.set_ship_pos(my_scene.get_ship_pos(time));
 		handler.set_ship_angle(my_scene.get_ship_angle(time));
 		my_scene.draw(time, handler.get_view_matrix());
-		time += 0.02;
+		time += 0.0004;
 	}
 		
 	function loadHandler() {
