@@ -28,7 +28,7 @@ function Tree() {
 	}
 	
 	var log_width = 0.2;
-	var leave_min_width = log_width+0.1;
+	var leave_min_width = log_width+0.2;
 	var tree_heigth = 1.0;
 	
 	this.log_shape = null;

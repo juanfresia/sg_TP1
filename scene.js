@@ -115,8 +115,8 @@ function Scene() {
 	
 	// 
 	this.check_position = function(x, y) {
-		var puente_y = params.puente_pos * params.ter_ancho;
-		if ((puente_y + params.puente_ancho/2 > y) && (puente_y - params.puente_ancho/2 < y)) {
+		var puente_y = params.puente_pos * params.ter_ancho - params.ter_ancho * 0.5;
+		if (((puente_y + params.puente_ancho) > y) && ((puente_y - params.puente_ancho) < y)) {
 			return false;
 		}
 		
