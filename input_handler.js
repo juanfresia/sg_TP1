@@ -234,7 +234,7 @@ function InputHandler() {
 		this.handler.mouse_down = true;
 	};	
 	this.on_mouse_wheel_orbit = function(e) {
-		this.handler.orbit_cam.radius += 1/3 * e.deltaY * this.handler.mouse_coord.zoom_speed;
+		this.handler.orbit_cam.radius += e.deltaY * Math.sign(this.handler.mouse_coord.zoom_speed);
 		if (this.handler.orbit_cam.radius < 0)
 			this.handler.orbit_cam.radius = 0;
 		

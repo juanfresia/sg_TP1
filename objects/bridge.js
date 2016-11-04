@@ -68,7 +68,7 @@ function Bridge() {
 		var semi_largo = largo/2;
 		var tower_span = semi_largo * TOWER_SPAN_RATIO;	// Proporción del puente que ocuparán las torres, ubicación de las torres de los extremos
 		var decay_inicial = (semi_largo - tower_span)/3;
-		var altura_cables = elev_torres * 0.3;		// Que tan cerca se acercarán los cables colgando a la carretera
+		var altura_cables = (elev_torres+params.puente_ph2) * 0.3;		// Que tan cerca se acercarán los cables colgando a la carretera
 		
 		// Interpolo el punto de inicio
 		points.push([-semi_largo, 0.0, 0.0]);

@@ -11,8 +11,6 @@ function Circumference() {
 		return 1;
 	}
 	
-	
-	
 	this.create = function(radio) {
 		this.radio = radio;
 	}

@@ -83,8 +83,10 @@ function Scene() {
 			var estilo = Math.floor((Math.random() * 3));
 			var x = Math.random() * params.ter_ancho - params.ter_ancho/2;
 			var y = Math.random() * params.ter_ancho - params.ter_ancho/2;
+			var ancho = Math.random() * 5.0 + 2.0;
+			var alto = Math.random() * 10.0 + 10.0;
 			if (this.check_position(x, y)) {
-				arboles_pos.push([x, y, 0.0, estilo]);
+				arboles_pos.push([x, y, ancho, alto, estilo]);
 			}
 		}
 		
@@ -182,11 +184,13 @@ function Scene() {
 		
 		for (var i = 0; i < arboles_pos.length; i++) {
 			mat4.identity(model_matrix);
-			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], params.ter_alto+5, arboles_pos[i][1]]);
-			arboles[arboles_pos[i][3]].draw(view_matrix, model_matrix);
+			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], params.ter_alto, arboles_pos[i][1]]);
+			mat4.scale(model_matrix, model_matrix, [arboles_pos[i][2], arboles_pos[i][3], arboles_pos[i][2]]);
+			arboles[arboles_pos[i][4]].draw(view_matrix, model_matrix);
 		}
 		
-		
+		mat4.identity(model_matrix);
+		//arboles[arboles_pos[0][4]].draw(view_matrix, model_matrix);
 	}
 }
 	
