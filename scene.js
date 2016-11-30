@@ -5,7 +5,7 @@
 
 function Scene() {
 	
-	const LIGHT_POS = [1000.0, 1000.0, 1000.0];
+	const LIGHT_POS = [100.0, 100.0, 100.0];
 	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();

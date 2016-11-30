@@ -214,7 +214,7 @@ function TowerBase() {
 			this.push_point(this.grid.color_buffer, this.color);
 		}
 		
-		this.texture = loadTexture("textures/texture.jpg");
+		this.texture = loadTexture("textures/orange.jpg");
 		this.texture2 = loadTexture("textures/normal.jpg");
 		
 		this.webgl_tangent_buffer = gl.createBuffer();
@@ -257,7 +257,7 @@ function TowerBase() {
 		
 		mat3.fromMat4(norm_matrix, model_matrix);
 		mat3.invert(norm_matrix, norm_matrix);
-		mat3.transpose(norm_matrix, norm_matrix);	
+		mat3.transpose(norm_matrix, norm_matrix);
 		
 		gl.uniformMatrix4fv(glShaderGeneric.uVMatrix, false, view_matrix);
 		gl.uniformMatrix3fv(glShaderGeneric.uNMatrix, false, norm_matrix);
