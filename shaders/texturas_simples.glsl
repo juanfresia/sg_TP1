@@ -12,8 +12,8 @@ attribute vec2 aVertexUV;
 attribute vec3 aVertexTangent;
 
 #ifdef MULTIPLE_TEXTURA
-	varying int vtextureNumber;
-	attribute int aTextureNumber;
+	attribute float aTextureIndex;
+	varying float vtextureIndex;
 #endif
 
 uniform mat4 uVMatrix;
@@ -26,6 +26,7 @@ uniform vec3 uLightPosition;
 varying highp vec4 vColor;
 varying highp vec3 vNormal;
 varying highp vec3 vTangent; 
+
 
 varying highp vec3 vLightDir;
 varying vec2 vUV;
@@ -49,7 +50,7 @@ void main(void) {
 	vUV = aVertexUV;
 	
 	#ifdef MULTIPLE_TEXTURA
-		vtextureNumber = aTextureNumber;
+		vtextureIndex = aTextureIndex;
 	#endif
 }
 
@@ -75,7 +76,7 @@ void main(void) {
 	uniform sampler2D uSampler2;	// Mapa de normales 1
 
 	#ifdef MULTIPLE_TEXTURA
-		varying int vtextureNumber;
+		varying float vtextureIndex;
 		uniform sampler2D uSampler3;	// Textura 2
 		uniform sampler2D uSampler4;	// Mapa de normales 2
 	#endif
@@ -103,16 +104,16 @@ void main(void) {
 		vec4 normalMap = texture2D(uSampler2, vec2(vUV.s, vUV.t));
 		
 		#ifdef MULTIPLE_TEXTURA
-			if (vtextureNumber == 2) {
-				vec4 textureColor = texture2D(uSampler3, vec2(vUV.s, vUV.t));
-				vec4 normalMap = texture2D(uSampler4, vec2(vUV.s, vUV.t));
+			if (vtextureIndex >= 1.5) {
+				textureColor = texture2D(uSampler3, vec2(vUV.s, vUV.t));
+				normalMap = texture2D(uSampler4, vec2(vUV.s, vUV.t));
 			}
 		#endif
 		
 		normalMap = normalMap * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
 		
 		// Calculo la binormal y la matriz de cambio de base. NxB=T
-		vec3 binormal = -normalize(cross(vNormal, vTangent));
+		vec3 binormal = normalize(cross(vTangent, vNormal));
 		mat3 tangent_space = transpose(mat3(vTangent, binormal, vNormal));
 		
 		// Convierto el vector dirección al espacio de la tangente
@@ -122,6 +123,10 @@ void main(void) {
 		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 		gl_FragColor = vec4(textureColor.rgb * lightColor, textureColor.a);
+				
+		//gl_FragColor = vec4(lightDir_ts/2.0+0.5, textureColor.a);
+		//gl_FragColor = vec4(directionalLightWeighting,directionalLightWeighting,directionalLightWeighting, textureColor.a);
+		
 }
 #endif
 

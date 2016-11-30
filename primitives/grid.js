@@ -88,6 +88,12 @@ function VertexGrid() {
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
 		}
 		
+		// Si hay algun array de indice de texturas, creo un bufer
+		if (this.texture_index_buffer) {
+			this.webgl_texture_index_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_index_buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_index_buffer), gl.STATIC_DRAW);
+		}
 	}
 
 	this.draw = function(view_matrix, model_matrix){
@@ -124,15 +130,27 @@ function VertexGrid() {
 	
 	
 	this.draw_textured = function(view_matrix, model_matrix) {
+		if (this.texture_index_buffer)
+			glShaderGeneric = glShaders["multi_texture"];
+		else
+			glShaderGeneric = glShaders["single_texture"];
+		
 		gl.useProgram(glShaderGeneric);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexTangent);
-		
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
 		gl.vertexAttribPointer(glShaderGeneric.aVertexUV, 2, gl.FLOAT, false, 0, 0);
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
 		gl.vertexAttribPointer(glShaderGeneric.aVertexTangent, 3, gl.FLOAT, false, 0, 0);
+		
+		if (this.texture_index_buffer) {
+			gl.enableVertexAttribArray(glShaderGeneric.aTextureIndex);
+			
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_index_buffer);
+			gl.vertexAttribPointer(glShaderGeneric.aTextureIndex, 1, gl.FLOAT, false, 0, 0);
+		}
 		
 		var norm_matrix = mat3.create();
 		
@@ -161,6 +179,17 @@ function VertexGrid() {
 		gl.bindTexture(gl.TEXTURE_2D, this.textures[1]);
 		gl.uniform1i(glShaderGeneric.uSampler2, 1);
 		
+		if (this.texture_index_buffer) {
+			gl.activeTexture(gl.TEXTURE2);
+			gl.bindTexture(gl.TEXTURE_2D, this.textures[2]);
+			gl.uniform1i(glShaderGeneric.uSampler3, 2);
+			
+			gl.activeTexture(gl.TEXTURE3);
+			gl.bindTexture(gl.TEXTURE_2D, this.textures[3]);
+			gl.uniform1i(glShaderGeneric.uSampler4, 3);
+		}
+		
+		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 				
 		if (params.line_strip) {
@@ -171,6 +200,10 @@ function VertexGrid() {
 
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexTangent);
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexUV);
+		
+		if (this.texture_index_buffer) {
+			gl.disableVertexAttribArray(glShaderGeneric.aTextureIndex);
+		}
 				
 		gl.useProgram(glShaderColor);
 	}

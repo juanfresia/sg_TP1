@@ -26,6 +26,8 @@ function Scene() {
 	
 	var desplazamiento_puente = null;
 	
+	var altura_terreno = null;
+	
 	// Crea todas las estructuras de la scena
 	this.init = function() {
 		terna = new Terna();
@@ -53,11 +55,11 @@ function Scene() {
 		// Creo las calles para completar el puente
 		for (var i = 0; i < 3; i++) {
 			path_carretera_izq.push([-borde, params.ter_alto, desplazamiento_puente[2]]);
-			path_carretera_der.push([borde, params.ter_alto, desplazamiento_puente[2]]);
+			path_carretera_der.push([fin_puente_der, params.ter_alto, desplazamiento_puente[2]]);
 		}
 		for (var i = 0; i < 3; i++) {
 			path_carretera_izq.push([fin_puente_izq, params.ter_alto, desplazamiento_puente[2]]);
-			path_carretera_der.push([fin_puente_der, params.ter_alto, desplazamiento_puente[2]]);
+			path_carretera_der.push([borde, params.ter_alto, desplazamiento_puente[2]]);
 		}
 		
 		carreteras = [];
@@ -93,6 +95,7 @@ function Scene() {
 			}
 		}
 		
+		altura_terreno = params.ter_alto;
 		
 		this.init_shader();
 	}
@@ -112,10 +115,14 @@ function Scene() {
 		gl.uniform3fv(glShaderWater.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
 		gl.uniform3fv(glShaderWater.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
 		
-		gl.useProgram(glShaderGeneric);
-		gl.uniform3fv(glShaderGeneric.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
-		gl.uniform3fv(glShaderGeneric.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
-		gl.uniform3fv(glShaderGeneric.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+		
+		for (var elem in glShaders) {
+			var shader = glShaders[elem];
+			gl.useProgram(shader);
+			gl.uniform3fv(shader.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
+			gl.uniform3fv(shader.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
+			gl.uniform3fv(shader.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+		}
 		
 		gl.useProgram(glShaderColor);
 	}
@@ -192,7 +199,7 @@ function Scene() {
 		
 		for (var i = 0; i < arboles_pos.length; i++) {
 			mat4.identity(model_matrix);
-			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], params.ter_alto, arboles_pos[i][1]]);
+			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], altura_terreno, arboles_pos[i][1]]);
 			mat4.scale(model_matrix, model_matrix, [arboles_pos[i][2], arboles_pos[i][3], arboles_pos[i][2]]);
 			arboles[arboles_pos[i][4]].draw(view_matrix, model_matrix);
 		}

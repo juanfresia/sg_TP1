@@ -8,6 +8,7 @@ function Surface() {
 	this.color_function = null;
 	
 	this.texture_function = null;
+	this.texture_index_function = null;
 
 	this.set_follow_normal = function(bool) {
 		this.follow_normal = bool;
@@ -31,6 +32,9 @@ function Surface() {
 	// ubicación relativa en la red.
 	this.set_texture_function = function(texture_f) {
 		this.texture_function = texture_f;
+	}
+	this.set_texture_index_function = function(texture_index_f) {
+		this.texture_index_function = texture_index_f;
 	}
 	
 	this.push_point = function(buffer, point, n) {
@@ -60,6 +64,9 @@ function Surface() {
 	
 		if (this.texture_function) {
 			this.grid.texture_coord_buffer = [];
+		}	
+		if (this.texture_index_function) {
+			this.grid.texture_index_buffer = [];
 		}
 	
 		this.grid.createIndexBuffer(rows, cols);
@@ -146,6 +153,9 @@ function Surface() {
 				if (this.texture_function) {
 					this.push_point(this.grid.texture_coord_buffer, this.texture_function(base_point, i ,j), 2);
 				}
+				if (this.texture_index_function) {
+					this.grid.texture_index_buffer.push(this.texture_index_function(base_point, i ,j));
+				}
 				
 			}
 		}
@@ -173,6 +183,10 @@ function Surface() {
 		if (this.texture_function) {
 			this.grid.texture_coord_buffer = [];
 		}
+		if (this.texture_index_function) {
+			this.grid.texture_index_buffer = [];
+		}
+	
 		this.grid.createIndexBuffer(rows, this.cols);
 		
 		var len_c1 = c1.length();
@@ -180,64 +194,52 @@ function Surface() {
 		for (i = 0; i < this.rows; i++) {
 			var u1 = i*len_c1/(this.rows-1);
 			var path_point = this.pathCurve.at(u1);
+			
+			// Estos vectores definen el espacio de la curva path
 			var path_tan = this.pathCurve.tan_at(u1);
 			var path_norm = this.pathCurve.norm_at(u1);
-				
-			var base_tan = vec3.fromValues(0, 0, 1);
-			var base_up = vec3.fromValues(0, 1, 0);
-		
-			var translate_mat = mat4.create();
-			var rotate_mat = mat4.create();
-			mat4.identity(translate_mat);
-			mat4.identity(rotate_mat);
-						
-			// Normalizo la tangente del camino normalizada
-			vec3.normalize(path_tan, path_tan);
+			var path_binorm = vec3.create();
+			vec3.cross(path_binorm, path_tan, path_norm);
 			
-			// El ángulo y la dirección.
-			var axis = vec3.create();
-			vec3.cross(axis, path_tan, base_tan);
-			var angle = Math.acos(vec3.dot(base_tan, path_tan));
-									
+			vec3.normalize(path_binorm, path_binorm);
+			vec3.normalize(path_tan, path_tan);
+			vec3.normalize(path_norm, path_norm);
+			
+			var translate_mat = mat4.create();
+			mat4.identity(translate_mat);
 			mat4.translate(translate_mat, translate_mat, path_point);
-			if (this.follow_normal && angle != 0) {			
-				mat4.rotate(rotate_mat, rotate_mat, angle, axis);
-				
-				var tmp = vec3.create();
-				vec3.transformMat4(tmp, base_up, rotate_mat);
-				vec3.normalize(tmp, tmp);
-				
-				vec3.cross(axis, path_norm, tmp);
-				var cos = vec3.dot(tmp, path_norm);
-				if (cos > 1)
-					cos = 1;
-				angle = Math.acos(cos);
-				if (angle != 0) {
-					var segunda_rotacion = mat4.create();
-					mat4.identity(segunda_rotacion);
-					mat4.rotate(segunda_rotacion, segunda_rotacion, -angle, axis);
-					
-					mat4.mul(rotate_mat, segunda_rotacion, rotate_mat);
+			
+			if (this.follow_normal) {
+				var rotate_mat = mat3.create();
+				for (var k = 0; k < 3; k++) {
+					rotate_mat[k + 0] = path_binorm[k];
+					rotate_mat[k + 3] = path_norm[k];
+					rotate_mat[k + 6] = path_tan[k];
 				}
+			} else {
+				var rotate_mat = mat3.create();
+				mat3.identity(rotate_mat);
 			}
 			
 			for (j = 0; j < this.cols; j++) {
 				var base_point = vec3.create();
 				vec3.copy(base_point, shape[j]);
+				
 				var base_norm = vec3.create();
 				vec3.copy(base_norm, shape_normals[j]);
 				
 				vec3.normalize(base_norm, base_norm);
 				
-				vec3.transformMat4(base_point, base_point, rotate_mat);
+				var tmp = vec3.create();
+				vec3.cross(tmp, vec3.fromValues(0.0, 0.0, 1.0), base_norm);
+				
+				vec3.transformMat3(base_point, base_point, rotate_mat);
 				vec3.transformMat4(base_point, base_point, translate_mat);
-				vec3.transformMat4(base_norm, base_norm, rotate_mat);
 				
-				
-				var base_tan = vec3.create();
-				vec3.cross(base_tan, base_norm, path_tan);
-				
-				this.push_point(this.grid.tangent_buffer, base_tan);												
+				vec3.transformMat3(base_norm, base_norm, rotate_mat);
+				vec3.transformMat3(tmp, tmp, rotate_mat);
+								
+				this.push_point(this.grid.tangent_buffer, tmp);
 				this.push_point(this.grid.normal_buffer, base_norm);
 				this.push_point(this.grid.position_buffer, base_point);
 				
@@ -251,6 +253,9 @@ function Surface() {
 				
 				if (this.texture_function) {
 					this.push_point(this.grid.texture_coord_buffer, this.texture_function(base_point, i ,j), 2);
+				}
+				if (this.texture_index_function) {
+					this.grid.texture_index_buffer.push(this.texture_index_function(base_point, i ,j));
 				}
 			}
 		}

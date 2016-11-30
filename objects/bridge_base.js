@@ -32,8 +32,12 @@ function BridgeBase() {
 		buffer.push(point[1]);
 		buffer.push(point[2]);
 	}
-		
 	
+	var ancho = params.puente_ancho;// Ancho del puente (de -ancho/2 a ancho/2)
+	var semi_ancho = ancho/2;
+	var ancho_cordon = 1; 			// Ancho de la sección elevada en los extremos
+	var alto_calzada = 0.5; 		// Altura de la calzada (la altura del cordón es 2*alto_calzada)
+
 	// Crea el perfil de la calle (en principio no sería parametrizable).
 	// La escala es de 1 = 1metro. El centro de coordenadas está en la parte inferior central de la pieza.
 	// La figura se define sobre el plano xy
@@ -41,9 +45,6 @@ function BridgeBase() {
 		this.profile.shape = [];
 		this.profile.shape_norm = [];
 		
-		var ancho = params.puente_ancho;// Ancho del puente (de -ancho/2 a ancho/2)
-		var ancho_cordon = 1; 			// Ancho de la sección elevada en los extremos
-		var alto_calzada = 0.5; 		// Altura de la calzada (la altura del cordón es 2*alto_calzada)
 		
 		// Genero las normales que son oblicuas, normalizadas
 		var normal_incl_der = vec3.fromValues(-alto_calzada, ancho_cordon, 0.0);
@@ -103,11 +104,23 @@ function BridgeBase() {
 	this.textura_carretera = function(pos, col, row) {
 		var coords = vec2.create();
 		
-		coords[0] = (pos[2] + 4.5)/9.0;
-		coords[1] = pos[0]/20.0;
+		
+		if (row == 6 || row == 7) {
+			coords[0] = 0.5 * (pos[2] + (semi_ancho - ancho_cordon))/(semi_ancho - ancho_cordon);
+			coords[1] = pos[0]/20.0;
+		} else {
+			coords[0] = 0.5 * (pos[2] + semi_ancho) + 0.5 * pos[1]; 
+			coords[1] = pos[0]/5.0;
+		}
 		return coords;
 	}
-	
+	// Dado un punto en la superficie de la carretera debe devolver
+	// sus coordenadas UV en la textura
+	this.textura_indice_carretera = function(pos, col, row) {
+		if (row == 6 || row == 7)
+			return 1.0;
+		return 2.0;
+	}
 	
 	// Creador
 	this.create = function(path) {
@@ -120,13 +133,16 @@ function BridgeBase() {
 		this.surface.set_color(BridgeBase.prototype.color);
 		this.surface.set_follow_normal(true);
 		this.surface.set_texture_function(this.textura_carretera);
+		this.surface.set_texture_index_function(this.textura_indice_carretera);
 		this.surface.grid.textures = [];
 		this.surface.grid.textures[0] = loadTexture("textures/camino.jpg");
 		this.surface.grid.textures[1] = loadTexture("textures/uniform.jpg");
+		this.surface.grid.textures[2] = loadTexture("textures/vereda.jpg");
+		this.surface.grid.textures[3] = loadTexture("textures/vereda_norm.jpg");
 		
 		this.path = path;
 		
-		this.surface.create_from_shape(this.path, 50, this.profile.shape, this.profile.shape_norm);		
+		this.surface.create_from_shape(this.path, 50, this.profile.shape, this.profile.shape_norm);
 	}
 		
 	

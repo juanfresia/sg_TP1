@@ -225,6 +225,8 @@
 	
 	var canvas = null;
 	var gl = null;
+	
+	var glShaders = {};
 	var glShaderColor;
 	var glShaderWater;
 	var glShaderGeneric;
@@ -394,43 +396,6 @@
 
 	}
 	
-	function initGenericShaders() {
-		
-		var asd = new ShaderHandler();
-		
-		glShaderGeneric = asd.obtenerShader();
-
-		gl.linkProgram(glShaderGeneric);
-
-		glShaderGeneric.aVertexPosition = gl.getAttribLocation(glShaderGeneric, "aVertexPosition");
-		gl.enableVertexAttribArray(glShaderGeneric.aVertexPosition);
-		
-		glShaderGeneric.aVertexNormal = gl.getAttribLocation(glShaderGeneric, "aVertexNormal");
-		gl.enableVertexAttribArray(glShaderGeneric.aVertexNormal);
-		
-		glShaderGeneric.aVertexColor = gl.getAttribLocation(glShaderGeneric, "aVertexColor");
-		gl.enableVertexAttribArray(glShaderGeneric.aVertexColor);
-		
-		glShaderGeneric.aVertexUV = gl.getAttribLocation(glShaderGeneric, "aVertexUV");
-		
-		glShaderGeneric.aVertexTangent = gl.getAttribLocation(glShaderGeneric, "aVertexTangent");
-		
-		glShaderGeneric.uVMatrix = gl.getUniformLocation(glShaderGeneric, "uVMatrix");
-		glShaderGeneric.uMMatrix = gl.getUniformLocation(glShaderGeneric, "uMMatrix");
-		glShaderGeneric.uPMatrix = gl.getUniformLocation(glShaderGeneric, "uPMatrix");
-		glShaderGeneric.uNMatrix = gl.getUniformLocation(glShaderGeneric, "uNMatrix");
-		
-		glShaderGeneric.uAmbientColor = gl.getUniformLocation(glShaderGeneric, "uAmbientColor");
-		glShaderGeneric.uDirectionalColor = gl.getUniformLocation(glShaderGeneric, "uDirectionalColor");
-		glShaderGeneric.uLightPosition = gl.getUniformLocation(glShaderGeneric, "uLightPosition");
-		
-		glShaderGeneric.uSampler1 = gl.getUniformLocation(glShaderGeneric, "uSampler1");
-		glShaderGeneric.uSampler2 = gl.getUniformLocation(glShaderGeneric, "uSampler2");
-		//glShaderGeneric.uSampler3 = gl.getUniformLocation(glShaderGeneric, "uSampler3");
-		
-		
-	}
-	
 	
 	////////
 	var time = 0;
@@ -452,8 +417,12 @@
 		gl.uniform1f(glShaderWater.uTime, time);
 		gl.uniformMatrix4fv(glShaderWater.uPMatrix, false, pMatrix);
 		
-		gl.useProgram(glShaderGeneric);
-		gl.uniformMatrix4fv(glShaderGeneric.uPMatrix, false, pMatrix);
+		
+		for (var elem in glShaders) {
+			glShaderGeneric = glShaders[elem];
+			gl.useProgram(glShaderGeneric);
+			gl.uniformMatrix4fv(glShaderGeneric.uPMatrix, false, pMatrix);
+		}
 		
 		gl.useProgram(glShaderColor);
 		
@@ -475,6 +444,11 @@
 		my_scene = new Scene();
 		my_scene.init();		
 	}	
+	
+	function loadShaders() {
+		var handler = new ShaderHandler();
+		handler.load();
+	}
 	
 	var params = {
 		// Terreno
@@ -542,14 +516,13 @@
 
 	}
 	
-	
 	function main() {
 		initWebGL();
 		init_curve_canvas();
 		if (gl && curve_gl) {
 			setupWebGL();
 			initShaders();
-			initGenericShaders();
+			loadShaders();
 			gl.useProgram(glShaderColor);
 			setupGUI();
 			loadHandler();

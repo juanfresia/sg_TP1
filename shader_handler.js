@@ -46,8 +46,7 @@ function ShaderHandler() {
 		
 		return shader;
 	}
-	
-	
+		
 	// Crea un shader a partir de un archivo en path, aplicando
 	// los parámetros especificados.
 	this.crearPrograma = function(path, params) {
@@ -74,8 +73,65 @@ function ShaderHandler() {
 		return program;
 	}
 	
-	this.obtenerShader = function() {
-		return this.crearPrograma("shaders/texturas_simples.glsl", "");
+	
+	this.setupCommons = function(shader) {
+		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
+		gl.enableVertexAttribArray(shader.aVertexPosition);
+		
+		shader.aVertexNormal = gl.getAttribLocation(shader, "aVertexNormal");
+		gl.enableVertexAttribArray(shader.aVertexNormal);
+		
+		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
+		gl.enableVertexAttribArray(shader.aVertexColor);
+		
+		
+		shader.aVertexTangent = gl.getAttribLocation(shader, "aVertexTangent");
+		
+		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
+		shader.uMMatrix = gl.getUniformLocation(shader, "uMMatrix");
+		shader.uPMatrix = gl.getUniformLocation(shader, "uPMatrix");
+		shader.uNMatrix = gl.getUniformLocation(shader, "uNMatrix");
+		
+		shader.uAmbientColor = gl.getUniformLocation(shader, "uAmbientColor");
+		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
+		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
+	}
+	
+	
+	
+	
+	
+	this.loadTextureShader = function() {
+		var shader = this.crearPrograma("shaders/texturas_simples.glsl", "");
+
+		gl.linkProgram(shader);
+		this.setupCommons(shader);
+		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
+		shader.uSampler1 = gl.getUniformLocation(shader, "uSampler1");
+		shader.uSampler2 = gl.getUniformLocation(shader, "uSampler2");
+		
+		glShaders["single_texture"] = shader;
+		
+		var shader = this.crearPrograma("shaders/texturas_simples.glsl", "#define MULTIPLE_TEXTURA\n");
+		gl.linkProgram(shader);
+		this.setupCommons(shader);
+		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
+		shader.aTextureIndex = gl.getAttribLocation(shader, "aTextureIndex");
+		shader.uSampler1 = gl.getUniformLocation(shader, "uSampler1");
+		shader.uSampler2 = gl.getUniformLocation(shader, "uSampler2");
+		shader.uSampler3 = gl.getUniformLocation(shader, "uSampler3");
+		shader.uSampler4 = gl.getUniformLocation(shader, "uSampler4");
+		
+		glShaders["multi_texture"] = shader;
+		
+	}
+	
+	
+	
+	
+	
+	this.load = function() {
+		this.loadTextureShader();
 	}
 	
 }

@@ -227,7 +227,6 @@ function TowerBase() {
 		return seccion;
 	}
 	
-	
 	this.draw = function(view_matrix, model_matrix) {
 		
 		this.grid.draw_textured(view_matrix, model_matrix);
