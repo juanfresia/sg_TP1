@@ -80,6 +80,7 @@ function VertexGrid() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
 		gl.vertexAttribPointer(glShaderColor.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
 
+
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
 		// Dibujamos.
@@ -90,6 +91,8 @@ function VertexGrid() {
 		}
 		
 	}
+	
+	
 	
 	// Exactamente que la funcion draw, pero fuerza a graficar una línea (usar para ver las curvas de las superficies de barrido)
 	this.draw_line = function(view_matrix, model_matrix){
@@ -151,6 +154,8 @@ function VertexGrid() {
 		gl.useProgram(glShaderColor);
 	}
 
+	
+	
 	
 	
 	

@@ -24,7 +24,7 @@ function InputHandler() {
 	};	
 	
 	this.free_cam = {
-		pos:[0.0, 0.0, 0.0],		// Posicion del observador
+		pos:[10.0, -20.0, 0.0],		// Posicion del observador
 		theta:0,					// Angulo en el plano xz que indica hacia donde se está mirando
 		phi:0.0						// Angulo en el plano xy que indica si se esta mirando hacia arriba o hacia abajo
 	};
@@ -48,7 +48,7 @@ function InputHandler() {
 		this.view_mat = mat4.create();
 		mat4.identity(this.view_mat);
 		
-		this.set_orbit();
+		this.set_free();
 	};
 	
 	// Configura los handlers para el modo órbita de la cámara

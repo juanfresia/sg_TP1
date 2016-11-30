@@ -4,6 +4,9 @@
 // ***********************************
 
 function Scene() {
+	
+	const LIGHT_POS = [1000.0, 1000.0, 1000.0];
+	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();
 	var norm_matrix = mat3.create();
@@ -99,15 +102,20 @@ function Scene() {
 		
 		gl.useProgram(glShaderColor);
 		gl.uniform1i(glShaderColor.uUseLighting, true);
-		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(0.1, 0.1, 0.1));
-		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(1000.0, 1000.0, 1000.0));
+		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
+		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
 		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
 
 		gl.useProgram(glShaderWater);
 		gl.uniform1i(glShaderWater.uUseLighting, true);
 		gl.uniform3fv(glShaderWater.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
-		gl.uniform3fv(glShaderWater.uLightPosition, vec3.fromValues(1000.0, 1000.0, 1000.0));
+		gl.uniform3fv(glShaderWater.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
 		gl.uniform3fv(glShaderWater.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+		
+		gl.useProgram(glShaderGeneric);
+		gl.uniform3fv(glShaderGeneric.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
+		gl.uniform3fv(glShaderGeneric.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
+		gl.uniform3fv(glShaderGeneric.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
 		
 		gl.useProgram(glShaderColor);
 	}
@@ -176,7 +184,7 @@ function Scene() {
 		// Dibujo el barco
 		mat4.identity(model_matrix);
 		mat4.translate(model_matrix, model_matrix, this.ship_pos);
-		if (this.ship_angle != 0) {			
+		if (this.ship_angle != 0) {
 			mat4.rotate(model_matrix, model_matrix, this.ship_angle, [0.0, 1.0, 0.0]);
 		}
 			
@@ -190,7 +198,8 @@ function Scene() {
 		}
 		
 		mat4.identity(model_matrix);
-		//arboles[arboles_pos[0][4]].draw(view_matrix, model_matrix);
+		mat4.translate(model_matrix, model_matrix, LIGHT_POS);
+		terna.draw(view_matrix, model_matrix);
 	}
 }
 	
