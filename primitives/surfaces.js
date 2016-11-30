@@ -6,6 +6,8 @@ function Surface() {
 	this.grid = new VertexGrid();
 	this.color = null;
 	this.color_function = null;
+	
+	this.texture_function = null;
 
 	this.set_follow_normal = function(bool) {
 		this.follow_normal = bool;
@@ -18,13 +20,24 @@ function Surface() {
 	this.set_color = function(color) {
 		this.color = color;
 	}
+	
 	this.set_color_function = function(color_f) {
 		this.color_function = color_f;
 	}
 	
-	this.push_point = function(buffer, point) {
+	
+	// La firma de la función es texture_f(point, col, row)
+	// Permite decidir en base a la posición real del punto, o a su
+	// ubicación relativa en la red.
+	this.set_texture_function = function(texture_f) {
+		this.texture_function = texture_f;
+	}
+	
+	this.push_point = function(buffer, point, n) {
 		buffer.push(point[0]);
 		buffer.push(point[1]);
+		if (n==2)
+			return;
 		buffer.push(point[2]);
 	}
 	
@@ -43,6 +56,11 @@ function Surface() {
 		this.grid.position_buffer = [];
 		this.grid.color_buffer = [];
 		this.grid.normal_buffer = [];
+		this.grid.tangent_buffer = [];
+	
+		if (this.texture_function) {
+			this.grid.texture_coord_buffer = [];
+		}
 	
 		this.grid.createIndexBuffer(rows, cols);
 		
@@ -105,8 +123,12 @@ function Surface() {
 				vec3.transformMat4(base_point, base_point, translate_mat);
 				vec3.transformMat4(base_norm, base_norm, rotate_mat);
 												
+				var base_tan = vec3.create();
+				vec3.cross(base_tan, base_norm, path_tan);
+				
 				this.push_point(this.grid.normal_buffer, base_norm);
 				this.push_point(this.grid.position_buffer, base_point);
+				this.push_point(this.grid.tangent_buffer, base_tan);
 							
 				if (this.color == null) {
 					if (this.color_function == null) {
@@ -119,6 +141,12 @@ function Surface() {
 				} else {
 					this.push_point(this.grid.color_buffer, this.color);
 				}
+				
+				
+				if (this.texture_function) {
+					this.push_point(this.grid.texture_coord_buffer, this.texture_function(base_point, i ,j), 2);
+				}
+				
 			}
 		}
 		
@@ -140,7 +168,11 @@ function Surface() {
 		this.grid.position_buffer = [];
 		this.grid.color_buffer = [];
 		this.grid.normal_buffer = [];
-	
+		this.grid.tangent_buffer = [];
+		
+		if (this.texture_function) {
+			this.grid.texture_coord_buffer = [];
+		}
 		this.grid.createIndexBuffer(rows, this.cols);
 		
 		var len_c1 = c1.length();
@@ -196,11 +228,16 @@ function Surface() {
 				vec3.copy(base_norm, shape_normals[j]);
 				
 				vec3.normalize(base_norm, base_norm);
-
+				
 				vec3.transformMat4(base_point, base_point, rotate_mat);
 				vec3.transformMat4(base_point, base_point, translate_mat);
 				vec3.transformMat4(base_norm, base_norm, rotate_mat);
-												
+				
+				
+				var base_tan = vec3.create();
+				vec3.cross(base_tan, base_norm, path_tan);
+				
+				this.push_point(this.grid.tangent_buffer, base_tan);												
 				this.push_point(this.grid.normal_buffer, base_norm);
 				this.push_point(this.grid.position_buffer, base_point);
 				
@@ -211,6 +248,10 @@ function Surface() {
 				} else {
 					this.push_point(this.grid.color_buffer, this.color);
 				}
+				
+				if (this.texture_function) {
+					this.push_point(this.grid.texture_coord_buffer, this.texture_function(base_point, i ,j), 2);
+				}
 			}
 		}
 		
@@ -220,7 +261,11 @@ function Surface() {
 	
 	
 	this.draw = function(view_matrix, model_matrix) {
-		this.grid.draw(view_matrix, model_matrix);
+		if (this.grid.textures) {
+			this.grid.draw_textured(view_matrix, model_matrix);
+		} else {
+			this.grid.draw(view_matrix, model_matrix);
+		}
 		if (this.debug) {
 			this.terna.draw(view_matrix, model_matrix);
 		}

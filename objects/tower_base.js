@@ -86,7 +86,7 @@ function TowerBase() {
 		var tangent3 = vec3.fromValues(-normal3[1], normal3[0], 0.0);
 		var tangent4 = vec3.fromValues(-normal4[1], normal4[0], 0.0);
 				
-		var REPEATS = 4;
+		var REPEATS = 1;
 				
 		// Voy a insertar los puntos dos veces, para poder definirle dos normales a cada uno de manera de crear un facetado.
 		for (i = 0; i <= 1; i++) {
@@ -94,7 +94,7 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
 			this.push_point(this.grid.tangent_buffer, tangent1);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
@@ -102,8 +102,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
 			this.push_point(this.grid.tangent_buffer, tangent2);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
@@ -111,8 +111,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
 			this.push_point(this.grid.tangent_buffer, tangent1);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			// Segundo cuadrante			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_in[i], this.z[i]]);
@@ -121,8 +121,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
 			this.push_point(this.grid.tangent_buffer, tangent3);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
@@ -130,8 +130,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
 			this.push_point(this.grid.tangent_buffer, tangent1);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
@@ -139,8 +139,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
 			this.push_point(this.grid.tangent_buffer, tangent2);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			// Tercer cuadrante
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], -this.y_out[i], this.z[i]]);
@@ -149,8 +149,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
 			this.push_point(this.grid.tangent_buffer, tangent4);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
@@ -158,8 +158,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
 			this.push_point(this.grid.tangent_buffer, tangent3);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
@@ -167,8 +167,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
 			this.push_point(this.grid.tangent_buffer, tangent4);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			// Cuarto cuadrante
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_in[i], this.z[i]]);
@@ -177,8 +177,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
 			this.push_point(this.grid.tangent_buffer, tangent2);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
@@ -186,8 +186,8 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
 			this.push_point(this.grid.tangent_buffer, tangent4);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
@@ -195,14 +195,14 @@ function TowerBase() {
 			this.push_point(this.grid.position_buffer, [this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
 			this.push_point(this.grid.tangent_buffer, tangent3);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
-			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, this.z[i]*REPEATS], 2);
 			
 			// Punto para cerrar
 			this.push_point(this.grid.position_buffer, [this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
 			this.push_point(this.grid.tangent_buffer, tangent3);
-			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, this.z[i]*REPEATS], 2);
 		}
 		
 		for (i = 0; i < 24*2; i++) {
@@ -210,8 +210,8 @@ function TowerBase() {
 		}
 		
 		this.grid.textures = [];
-		this.grid.textures[0] = loadTexture("textures/texture.jpg");
-		this.grid.textures[1] = loadTexture("textures/normal.jpg");
+		this.grid.textures[0] = loadTexture("textures/oxido.jpg");
+		this.grid.textures[1] = loadTexture("textures/oxido_norm.jpg");
 				
 		this.grid.setupWebGLBuffers();
 	}

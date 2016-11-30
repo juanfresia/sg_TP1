@@ -1,5 +1,3 @@
-// Define la pieza que compondrá las torres del puente. Resulta de una interpolación lineal de puntos en forma de hache.
-
 BridgeBase.prototype.color = [0.8,0.8,0.8];
 BridgeBase.prototype.steps = 50;
 
@@ -100,6 +98,16 @@ function BridgeBase() {
 	}
 	
 	
+	// Dado un punto en la superficie de la carretera debe devolver
+	// sus coordenadas UV en la textura
+	this.textura_carretera = function(pos, col, row) {
+		var coords = vec2.create();
+		
+		coords[0] = (pos[2] + 4.5)/9.0;
+		coords[1] = pos[0]/20.0;
+		return coords;
+	}
+	
 	
 	// Creador
 	this.create = function(path) {
@@ -111,6 +119,10 @@ function BridgeBase() {
 		this.create_profile();
 		this.surface.set_color(BridgeBase.prototype.color);
 		this.surface.set_follow_normal(true);
+		this.surface.set_texture_function(this.textura_carretera);
+		this.surface.grid.textures = [];
+		this.surface.grid.textures[0] = loadTexture("textures/camino.jpg");
+		this.surface.grid.textures[1] = loadTexture("textures/uniform.jpg");
 		
 		this.path = path;
 		
