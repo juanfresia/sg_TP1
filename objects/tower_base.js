@@ -11,11 +11,6 @@ function TowerBase() {
 	this.texture2 = null;
 	this.texture3 = null;
 	
-	this.tangent_buffer = null;
-	this.webgl_tangent_buffer = null;
-	
-	this.textureCoords = null;
-	this.webgl_texture_buffer = null;
 	
 	this.reduccion = null;
 	this.alto = null;
@@ -28,12 +23,11 @@ function TowerBase() {
 	this.debug = null;
 			
 	this.push_point = function(buffer, point, n) {
-		if (n==null)
-			n=3;
 		buffer.push(point[0]);
 		buffer.push(point[1]);
-		if (n==3)
-			buffer.push(point[2]);
+		if (n==2)
+			return;
+		buffer.push(point[2]);
 	}
 	
 	this.set_color = function(color) {
@@ -52,8 +46,9 @@ function TowerBase() {
 		this.terna.create();
 		this.debug = false;
 				
-		this.textureCoords = [];
-		this.tangent_buffer = [];
+		this.grid.texture_coord_buffer = [];
+		this.grid.tangent_buffer = [];
+		
 		// Setup de buffers y de la grid
 		this.grid.position_buffer = [];
 		this.grid.color_buffer = [];
@@ -98,133 +93,126 @@ function TowerBase() {
 			// Primer cuadrante
 			this.push_point(this.grid.position_buffer, [this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
-			this.push_point(this.tangent_buffer, tangent1);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent1);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
-			this.push_point(this.tangent_buffer, tangent1);
+			this.push_point(this.grid.tangent_buffer, tangent1);
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
-			this.push_point(this.tangent_buffer, tangent2);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
-			this.push_point(this.tangent_buffer, tangent2);
+			this.push_point(this.grid.tangent_buffer, tangent2);
 			this.push_point(this.grid.position_buffer, [this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
-			this.push_point(this.tangent_buffer, tangent1);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent1);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			// Segundo cuadrante			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
-			this.push_point(this.tangent_buffer, tangent1);
+			this.push_point(this.grid.tangent_buffer, tangent1);
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
-			this.push_point(this.tangent_buffer, tangent3);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent3);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
-			this.push_point(this.tangent_buffer, tangent3);
+			this.push_point(this.grid.tangent_buffer, tangent3);
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
-			this.push_point(this.tangent_buffer, tangent1);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent1);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal1);
-			this.push_point(this.tangent_buffer, tangent1);
+			this.push_point(this.grid.tangent_buffer, tangent1);
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
-			this.push_point(this.tangent_buffer, tangent2);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			// Tercer cuadrante
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
-			this.push_point(this.tangent_buffer, tangent2);
+			this.push_point(this.grid.tangent_buffer, tangent2);
 			this.push_point(this.grid.position_buffer, [-this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
-			this.push_point(this.tangent_buffer, tangent4);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent4);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
-			this.push_point(this.tangent_buffer, tangent4);
+			this.push_point(this.grid.tangent_buffer, tangent4);
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
-			this.push_point(this.tangent_buffer, tangent3);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent3);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
-			this.push_point(this.tangent_buffer, tangent3);
+			this.push_point(this.grid.tangent_buffer, tangent3);
 			this.push_point(this.grid.position_buffer, [-this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
-			this.push_point(this.tangent_buffer, tangent4);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent4);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			// Cuarto cuadrante
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
-			this.push_point(this.tangent_buffer, tangent4);
+			this.push_point(this.grid.tangent_buffer, tangent4);
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_in[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
-			this.push_point(this.tangent_buffer, tangent2);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent2);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal2);
-			this.push_point(this.tangent_buffer, tangent2);
+			this.push_point(this.grid.tangent_buffer, tangent2);
 			this.push_point(this.grid.position_buffer, [this.x_in[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
-			this.push_point(this.tangent_buffer, tangent4);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent4);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			this.push_point(this.grid.position_buffer, [this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal4);
-			this.push_point(this.tangent_buffer, tangent4);
+			this.push_point(this.grid.tangent_buffer, tangent4);
 			this.push_point(this.grid.position_buffer, [this.x_out[i], -this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
-			this.push_point(this.tangent_buffer, tangent3);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
-			this.push_point(this.textureCoords, [1.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent3);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.texture_coord_buffer, [1.0, i*REPEATS], 2);
 			
 			// Punto para cerrar
 			this.push_point(this.grid.position_buffer, [this.x_out[i], this.y_out[i], this.z[i]]);
 			this.push_point(this.grid.normal_buffer, normal3);
-			this.push_point(this.tangent_buffer, tangent3);
-			this.push_point(this.textureCoords, [0.0, i*REPEATS], 2);
+			this.push_point(this.grid.tangent_buffer, tangent3);
+			this.push_point(this.grid.texture_coord_buffer, [0.0, i*REPEATS], 2);
 		}
 		
 		for (i = 0; i < 24*2; i++) {
 			this.push_point(this.grid.color_buffer, this.color);
 		}
 		
-		this.texture = loadTexture("textures/orange.jpg");
-		this.texture2 = loadTexture("textures/normal.jpg");
-		
-		this.webgl_tangent_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.tangent_buffer), gl.STATIC_DRAW);
-		
-		this.webgl_texture_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.textureCoords), gl.STATIC_DRAW);
-		
+		this.grid.textures = [];
+		this.grid.textures[0] = loadTexture("textures/texture.jpg");
+		this.grid.textures[1] = loadTexture("textures/normal.jpg");
+				
 		this.grid.setupWebGLBuffers();
 	}
 	
@@ -240,60 +228,10 @@ function TowerBase() {
 	}
 	
 	
-	
 	this.draw = function(view_matrix, model_matrix) {
 		
-		gl.useProgram(glShaderGeneric);
-		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
+		this.grid.draw_textured(view_matrix, model_matrix);
 		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_buffer);
-		gl.vertexAttribPointer(glShaderGeneric.aVertexUV, 2, gl.FLOAT, false, 0, 0);
-		
-		gl.enableVertexAttribArray(glShaderGeneric.aVertexTangent);
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
-		gl.vertexAttribPointer(glShaderGeneric.aVertexTangent, 3, gl.FLOAT, false, 0, 0);
-		
-		var norm_matrix = mat3.create();
-		
-		mat3.fromMat4(norm_matrix, model_matrix);
-		mat3.invert(norm_matrix, norm_matrix);
-		mat3.transpose(norm_matrix, norm_matrix);
-		
-		gl.uniformMatrix4fv(glShaderGeneric.uVMatrix, false, view_matrix);
-		gl.uniformMatrix3fv(glShaderGeneric.uNMatrix, false, norm_matrix);
-		gl.uniformMatrix4fv(glShaderGeneric.uMMatrix, false, model_matrix);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.grid.webgl_position_buffer);
-		gl.vertexAttribPointer(glShaderGeneric.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.grid.webgl_color_buffer);
-		gl.vertexAttribPointer(glShaderGeneric.aVertexColor, 3, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.grid.webgl_normal_buffer);
-		gl.vertexAttribPointer(glShaderGeneric.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
-
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
-		gl.uniform1i(glShaderGeneric.uSampler1, 0);
-		
-		gl.activeTexture(gl.TEXTURE1);
-		gl.bindTexture(gl.TEXTURE_2D, this.texture2);
-		gl.uniform1i(glShaderGeneric.uSampler2, 1);
-		
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.grid.webgl_index_buffer);
-		
-		
-		if (params.line_strip) {
-			gl.drawElements(gl.LINE_STRIP, this.grid.index_buffer.length, gl.UNSIGNED_SHORT, 0);
-		} else {
-			gl.drawElements(gl.TRIANGLE_STRIP, this.grid.index_buffer.length, gl.UNSIGNED_SHORT, 0);
-		}//this.grid.draw(view_matrix, model_matrix);
-
-		gl.disableVertexAttribArray(glShaderGeneric.aVertexTangent);
-		gl.disableVertexAttribArray(glShaderGeneric.aVertexUV);
-		
-		
-		gl.useProgram(glShaderColor);
 		if (this.debug) {
 			this.terna.draw(view_matrix, model_matrix);
 		}
