@@ -6,6 +6,8 @@ function Rectangulo() {
 	this.color = Rectangulo.prototype.color;
 	this.debug = null;
 	
+	this.binormal_vector = vec3.fromValues(0.0, 0.0, 1.0);
+	
 	this.x_a = null;
 	this.y_a = null;
 	this.x_b = null;

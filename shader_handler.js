@@ -84,7 +84,6 @@ function ShaderHandler() {
 		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
 		gl.enableVertexAttribArray(shader.aVertexColor);
 		
-		
 		shader.aVertexTangent = gl.getAttribLocation(shader, "aVertexTangent");
 		
 		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
@@ -96,9 +95,6 @@ function ShaderHandler() {
 		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
 		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
 	}
-	
-	
-	
 	
 	
 	this.loadTextureShader = function() {
@@ -127,11 +123,32 @@ function ShaderHandler() {
 	}
 	
 	
+	this.loadTerrainShader = function() {
+		var shader = this.crearPrograma("shaders/terrain_shader.glsl", "");
+
+		gl.linkProgram(shader);
+		this.setupCommons(shader);
+		
+		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
+		shader.aVertexUVBig = gl.getAttribLocation(shader, "aVertexUVBig");
+		shader.uSamplerSand = gl.getUniformLocation(shader, "uSamplerSand");
+		shader.uSamplerSandNorm = gl.getUniformLocation(shader, "uSamplerSandNorm");
+		shader.uSamplerGrass = gl.getUniformLocation(shader, "uSamplerGrass");
+		shader.uSamplerGrassNorm = gl.getUniformLocation(shader, "uSamplerGrassNorm");
+		shader.uSamplerStone = gl.getUniformLocation(shader, "uSamplerStone");
+		shader.uSamplerStoneNorm = gl.getUniformLocation(shader, "uSamplerStoneNorm");
+		shader.uMaxHeight = gl.getUniformLocation(shader, "uMaxHeight");
+		
+		glShaders["terrain"] = shader;
+	}
+	
+	
 	
 	
 	
 	this.load = function() {
 		this.loadTextureShader();
+		this.loadTerrainShader();
 	}
 	
 }

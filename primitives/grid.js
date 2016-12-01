@@ -18,6 +18,10 @@ function VertexGrid() {
 	this.texture_coord_buffer = null;
 	this.webgl_texture_coord_buffer = null;
 	
+	// Segundo set de coordenadas, si es necesario
+	this.texture_coord_2_buffer = null;
+	this.webgl_texture_coord_2_buffer = null;
+	
 	this.texture_index_buffer = null;
 	this.webgl_texture_index_buffer = null;
 	
@@ -50,6 +54,7 @@ function VertexGrid() {
 		this.position_buffer = [];
 		this.color_buffer = [];
 		this.normal_buffer = [];
+		this.tangent_buffer = [];
 	}
 	
 	// Esta función crea e incializa los buffers dentro del pipeline para luego utlizarlos a la hora de renderizar.
@@ -88,6 +93,13 @@ function VertexGrid() {
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_buffer), gl.STATIC_DRAW);
 		}
 		
+		// Si hay algun array de coordenadas de texturas, creo un bufer
+		if (this.texture_coord_2_buffer) {
+			this.webgl_texture_coord_2_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_2_coord_buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_2_buffer), gl.STATIC_DRAW);
+		}
+		
 		// Si hay algun array de indice de texturas, creo un bufer
 		if (this.texture_index_buffer) {
 			this.webgl_texture_index_buffer = gl.createBuffer();
@@ -97,13 +109,16 @@ function VertexGrid() {
 	}
 
 	this.draw = function(view_matrix, model_matrix){
+		gl.useProgram(glShaderColor);
+		
 		var norm_matrix = mat3.create();
 		
 		//mat4.mul(tmp, model_matrix, view_matrix);
 		mat3.fromMat4(norm_matrix, model_matrix);
 		mat3.invert(norm_matrix, norm_matrix);
-		mat3.transpose(norm_matrix, norm_matrix);	
+		mat3.transpose(norm_matrix, norm_matrix);
 		
+		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
 		gl.uniformMatrix3fv(glShaderColor.uNMatrix, false, norm_matrix);
 		gl.uniformMatrix4fv(glShaderColor.uMMatrix, false, model_matrix);
 		
@@ -115,7 +130,6 @@ function VertexGrid() {
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
 		gl.vertexAttribPointer(glShaderColor.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
-
 
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
@@ -205,7 +219,6 @@ function VertexGrid() {
 			gl.disableVertexAttribArray(glShaderGeneric.aTextureIndex);
 		}
 				
-		gl.useProgram(glShaderColor);
 	}
 	
 	
@@ -214,6 +227,9 @@ function VertexGrid() {
 	
 	// Exactamente que la funcion draw, pero fuerza a graficar una línea (usar para ver las curvas de las superficies de barrido)
 	this.draw_line = function(view_matrix, model_matrix){
+		
+		gl.useProgram(glShaderColor);
+		
 		var tmp = mat4.create();
 		mat4.identity(tmp);
 		var norm_matrix = mat3.create();
@@ -243,6 +259,7 @@ function VertexGrid() {
 	}
 	
 	this.draw_water = function(view_matrix, model_matrix){
+		
 		gl.useProgram(glShaderWater);
 		gl.uniformMatrix4fv(glShaderWater.uVMatrix, false, view_matrix);
 		var norm_matrix = mat3.create();
@@ -269,7 +286,6 @@ function VertexGrid() {
 		} else {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
-		gl.useProgram(glShaderColor);
 	}
 
 	

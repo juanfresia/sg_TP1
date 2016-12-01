@@ -8,12 +8,13 @@ function Surface() {
 	this.color_function = null;
 	
 	this.texture_function = null;
+	this.texture_function_2 = null;
 	this.texture_index_function = null;
 
 	this.set_follow_normal = function(bool) {
 		this.follow_normal = bool;
 	}
-				
+
 	this.set_debug = function(debug) {
 		this.debug = debug;
 	}
@@ -32,6 +33,9 @@ function Surface() {
 	// ubicación relativa en la red.
 	this.set_texture_function = function(texture_f) {
 		this.texture_function = texture_f;
+	}
+	this.set_texture_function_2 = function(texture_f) {
+		this.texture_function_2 = texture_f;
 	}
 	this.set_texture_index_function = function(texture_index_f) {
 		this.texture_index_function = texture_index_f;
@@ -64,7 +68,10 @@ function Surface() {
 	
 		if (this.texture_function) {
 			this.grid.texture_coord_buffer = [];
-		}	
+		}
+		if (this.texture_function_2) {
+			this.grid.texture_coord_2_buffer = [];
+		}
 		if (this.texture_index_function) {
 			this.grid.texture_index_buffer = [];
 		}
@@ -114,13 +121,13 @@ function Surface() {
 				vec3.normalize(base_norm, base_norm);
 
 				var base_tan = vec3.create();
-				vec3.cross(base_tan, vec3.fromValues(0.0, 0.0, 1.0), base_norm);
+				vec3.cross(base_tan, this.baseCurve.binormal_vector, base_norm);
+				
 				
 				vec3.transformMat3(base_point, base_point, rotate_mat);
 				vec3.transformMat4(base_point, base_point, translate_mat);
 				vec3.transformMat3(base_norm, base_norm, rotate_mat);
 				vec3.transformMat3(base_tan, base_tan, rotate_mat);
-												
 				
 				this.push_point(this.grid.normal_buffer, base_norm);
 				this.push_point(this.grid.position_buffer, base_point);
@@ -141,6 +148,9 @@ function Surface() {
 				
 				if (this.texture_function) {
 					this.push_point(this.grid.texture_coord_buffer, this.texture_function(base_point, i ,j), 2);
+				}
+				if (this.texture_function_2) {
+					this.push_point(this.grid.texture_coord_2_buffer, this.texture_function_2(base_point, i ,j), 2);
 				}
 				if (this.texture_index_function) {
 					this.grid.texture_index_buffer.push(this.texture_index_function(base_point, i ,j));
@@ -171,6 +181,9 @@ function Surface() {
 		
 		if (this.texture_function) {
 			this.grid.texture_coord_buffer = [];
+		}
+		if (this.texture_function_2) {
+			this.grid.texture_coord_2_buffer = [];
 		}
 		if (this.texture_index_function) {
 			this.grid.texture_index_buffer = [];
@@ -240,8 +253,12 @@ function Surface() {
 					this.push_point(this.grid.color_buffer, this.color);
 				}
 				
+				
 				if (this.texture_function) {
 					this.push_point(this.grid.texture_coord_buffer, this.texture_function(base_point, i ,j), 2);
+				}
+				if (this.texture_function_2) {
+					this.push_point(this.grid.texture_coord_2_buffer, this.texture_function_2(base_point, i ,j), 2);
 				}
 				if (this.texture_index_function) {
 					this.grid.texture_index_buffer.push(this.texture_index_function(base_point, i ,j));

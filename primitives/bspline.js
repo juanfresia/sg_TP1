@@ -33,7 +33,6 @@ function CubicBSpline() {
 	this.num_control_points = null;
 	this.binormal_vector = vec3.fromValues(0.0, 0.0, 1.0);
 	this.grid = null;
-		
 	
 	this.set_up_binormal = function(vector) {
 		this.binormal_vector = vector;

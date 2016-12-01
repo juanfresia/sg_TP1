@@ -49,6 +49,9 @@ function Tree() {
 		this.log_shape.push([0.0, log_width, 0.0]);
 		this.log_shape_norm.push([1.0, 0.0, 0.0]);
 				
+		this.log_shape.push([tree_heigth/2, log_width, 0.0]);
+		this.log_shape_norm.push([1.0, 0.0, 0.0]);
+		
 		this.log_shape.push([tree_heigth, log_width, 0.0]);
 		this.log_shape_norm.push([1.0, 0.0, 0.0]);
 		this.log_shape.push([tree_heigth, log_width, 0.0]);

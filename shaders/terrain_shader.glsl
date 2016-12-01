@@ -1,5 +1,5 @@
-// Shader para objetos con hasta dos texturas, con sus respectivos
-// mapas de normales.
+// Shader para el terreno
+// Tiene dos coordenadas UV para poder hacer blending entre dos texturas
 
 
 // Shader de vértices
@@ -9,12 +9,8 @@ attribute vec3 aVertexNormal;
 attribute vec3 aVertexColor;
 
 attribute vec2 aVertexUV;
+attribute vec2 aVertexUVBig;
 attribute vec3 aVertexTangent;
-
-#ifdef MULTIPLE_TEXTURA
-	attribute float aTextureIndex;
-	varying float vtextureIndex;
-#endif
 
 uniform mat4 uVMatrix;
 uniform mat4 uMMatrix;
@@ -27,9 +23,11 @@ varying highp vec4 vColor;
 varying highp vec3 vNormal;
 varying highp vec3 vTangent; 
 
+varying highp vec3 vPos;
 
 varying highp vec3 vLightDir;
 varying vec2 vUV;
+varying vec2 vUVBig;
 
 void main(void) {
 
@@ -48,18 +46,30 @@ void main(void) {
 	vNormal = normalize(uNMatrix * aVertexNormal);
 	vTangent = normalize(uNMatrix * aVertexTangent);
 	vUV = aVertexUV;
+	vUVBig = aVertexUVBig;
 	
-	#ifdef MULTIPLE_TEXTURA
-		vtextureIndex = aTextureIndex;
-	#endif
+	// Posición en coordenadas del mundo
+	vPos = model_world_pos.xyz/model_world_pos.w;
+	
 }
 
 #endif
 
+
+
+
+
+
+
 // Shader de fragmentos
 #ifdef FRAGMENTOS
-	precision mediump float;	
+	precision mediump float;
 
+	// Altura máxima del terreno
+	uniform float uMaxHeight;
+	// Posición en coordenadas del mundo
+	varying highp vec3 vPos;
+	
 	varying highp vec4 vColor;
 	varying highp vec3 vLightDir;
 
@@ -69,17 +79,15 @@ void main(void) {
 	uniform vec3 uAmbientColor;
 	uniform vec3 uDirectionalColor;
 	
-	// Número de textura, coordenadas y samplers
 	varying vec2 vUV;
-	
-	uniform sampler2D uSampler1;	// Textura 1
-	uniform sampler2D uSampler2;	// Mapa de normales 1
+	varying vec2 vUVBig;
 
-	#ifdef MULTIPLE_TEXTURA
-		varying float vtextureIndex;
-		uniform sampler2D uSampler3;	// Textura 2
-		uniform sampler2D uSampler4;	// Mapa de normales 2
-	#endif
+	uniform sampler2D uSamplerSand;
+	uniform sampler2D uSamplerSandNorm;
+	uniform sampler2D uSamplerGrass;
+	uniform sampler2D uSamplerGrassNorm;
+	uniform sampler2D uSamplerStone;
+	uniform sampler2D uSamplerStoneNorm;	
 	
 	// Funcion transponer auxiliar
 	mat3 transpose(mat3 m) {
@@ -99,16 +107,19 @@ void main(void) {
 		return aux;
 	}
 
+
 	void main(void) {
-		vec4 textureColor = texture2D(uSampler1, vec2(vUV.s, vUV.t));
-		vec4 normalMap = texture2D(uSampler2, vec2(vUV.s, vUV.t));
+		vec4 textureColor = vec4(0.0);
+		vec4 normalMap = vec4(0.0);
 		
-		#ifdef MULTIPLE_TEXTURA
-			if (vtextureIndex >= 1.5) {
-				textureColor = texture2D(uSampler3, vec2(vUV.s, vUV.t));
-				normalMap = texture2D(uSampler4, vec2(vUV.s, vUV.t));
-			}
-		#endif
+		// Por sobre la mitad de la pendiente -> uso pasto
+		if (vPos.y >= uMaxHeight) {
+			textureColor = texture2D(uSamplerGrass, vUV);
+			normalMap=  texture2D(uSamplerGrassNorm, vUV);
+		} else {	// Uso arena
+			textureColor = texture2D(uSamplerSand, vUV);
+			normalMap = texture2D(uSamplerSandNorm, vUV);
+		}
 		
 		normalMap = normalMap * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
 		
@@ -123,9 +134,6 @@ void main(void) {
 		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 		gl_FragColor = vec4(textureColor.rgb * lightColor, textureColor.a);
-				
-		//gl_FragColor = vec4(lightDir_ts/2.0+0.5, textureColor.a);
-		//gl_FragColor = vec4(vTangent/2.0+0.5, textureColor.a);
 		
 }
 #endif

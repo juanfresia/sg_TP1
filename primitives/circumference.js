@@ -4,6 +4,7 @@ function Circumference() {
 	// Colección de puntos y cantidad de puntos		
 	this.grid = null;
 	this.radio = null;
+	this.binormal_vector = vec3.fromValues(0.0, 0.0, 1.0);
 	
 	// Longitud de la curva, es decir el valor máximo que puede adoptar
 	// el parámetro u en C(u)
