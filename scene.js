@@ -5,7 +5,7 @@
 
 function Scene() {
 	
-	const LIGHT_POS = [100.0, 100.0, 100.0];
+	const LIGHT_POS = [0.0, 20.0, 0.0];
 	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();
@@ -189,13 +189,13 @@ function Scene() {
 		terreno.draw(view_matrix, model_matrix);
 		
 		// Dibujo el barco
-		mat4.identity(model_matrix);
-		mat4.translate(model_matrix, model_matrix, this.ship_pos);
-		if (this.ship_angle != 0) {
-			mat4.rotate(model_matrix, model_matrix, this.ship_angle, [0.0, 1.0, 0.0]);
-		}
+		//mat4.identity(model_matrix);
+		//mat4.translate(model_matrix, model_matrix, this.ship_pos);
+		//if (this.ship_angle != 0) {
+		//	mat4.rotate(model_matrix, model_matrix, this.ship_angle, [0.0, 1.0, 0.0]);
+		//}
 			
-		barco.draw(view_matrix, model_matrix);
+		//barco.draw(view_matrix, model_matrix);
 		
 		for (var i = 0; i < arboles_pos.length; i++) {
 			mat4.identity(model_matrix);
@@ -209,6 +209,3 @@ function Scene() {
 		terna.draw(view_matrix, model_matrix);
 	}
 }
-	
-		
-		

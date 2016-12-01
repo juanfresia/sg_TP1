@@ -82,42 +82,29 @@ function Surface() {
 			var path_tan = this.pathCurve.tan_at(u1);
 			var path_norm = this.pathCurve.norm_at(u1);
 			
-			var base_tan = vec3.fromValues(0, 0, 1);
-			var base_up = vec3.fromValues(0, 1, 0);
+			var path_binorm = vec3.create();
+			vec3.cross(path_binorm, path_tan, path_norm);
+			
+			vec3.normalize(path_binorm, path_binorm);
+			vec3.normalize(path_tan, path_tan);
+			vec3.normalize(path_norm, path_norm);
 			
 			var translate_mat = mat4.create();
-			var rotate_mat = mat4.create();
 			mat4.identity(translate_mat);
-			mat4.identity(rotate_mat);
-						
-			// Obtengo la tangente del camino normalizada
-			vec3.normalize(path_tan, path_tan);
-			// El ángulo y la dirección.
-			var axis = vec3.create();
-			vec3.cross(axis, path_tan, base_tan);
-			var angle = Math.acos(vec3.dot(base_tan, path_tan));
-									
 			mat4.translate(translate_mat, translate_mat, path_point);
-			if (this.follow_normal && angle != 0) {			
-				mat4.rotate(rotate_mat, rotate_mat, angle, axis);
-				
-				var tmp = vec3.create();
-				vec3.transformMat4(tmp, base_up, rotate_mat);
-				vec3.normalize(tmp, tmp);
-				
-				vec3.cross(axis, path_norm, tmp);
-				var cos = vec3.dot(tmp, path_norm);
-				if (cos > 1)
-					cos = 1;
-				angle = Math.acos(cos);
-				if (angle != 0) {
-					var segunda_rotacion = mat4.create();
-					mat4.identity(segunda_rotacion);
-					mat4.rotate(segunda_rotacion, segunda_rotacion, -angle, axis);
-					
-					mat4.mul(rotate_mat, segunda_rotacion, rotate_mat);
+			
+			if (this.follow_normal) {
+				var rotate_mat = mat3.create();
+				for (var k = 0; k < 3; k++) {
+					rotate_mat[k + 0] = path_binorm[k];
+					rotate_mat[k + 3] = path_norm[k];
+					rotate_mat[k + 6] = path_tan[k];
 				}
+			} else {
+				var rotate_mat = mat3.create();
+				mat3.identity(rotate_mat);
 			}
+			
 			
 			for (j = 0; j < this.cols; j++) {
 				var u2 = j*len_c2/(this.cols-1);
@@ -126,12 +113,14 @@ function Surface() {
 				var base_norm = this.baseCurve.norm_at(u2);
 				vec3.normalize(base_norm, base_norm);
 
-				vec3.transformMat4(base_point, base_point, rotate_mat);
-				vec3.transformMat4(base_point, base_point, translate_mat);
-				vec3.transformMat4(base_norm, base_norm, rotate_mat);
-												
 				var base_tan = vec3.create();
-				vec3.cross(base_tan, base_norm, path_tan);
+				vec3.cross(base_tan, vec3.fromValues(0.0, 0.0, 1.0), base_norm);
+				
+				vec3.transformMat3(base_point, base_point, rotate_mat);
+				vec3.transformMat4(base_point, base_point, translate_mat);
+				vec3.transformMat3(base_norm, base_norm, rotate_mat);
+				vec3.transformMat3(base_tan, base_tan, rotate_mat);
+												
 				
 				this.push_point(this.grid.normal_buffer, base_norm);
 				this.push_point(this.grid.position_buffer, base_point);
@@ -230,16 +219,16 @@ function Surface() {
 				
 				vec3.normalize(base_norm, base_norm);
 				
-				var tmp = vec3.create();
-				vec3.cross(tmp, vec3.fromValues(0.0, 0.0, 1.0), base_norm);
+				var base_tan = vec3.create();
+				vec3.cross(base_tan, vec3.fromValues(0.0, 0.0, 1.0), base_norm);
 				
 				vec3.transformMat3(base_point, base_point, rotate_mat);
 				vec3.transformMat4(base_point, base_point, translate_mat);
 				
 				vec3.transformMat3(base_norm, base_norm, rotate_mat);
-				vec3.transformMat3(tmp, tmp, rotate_mat);
+				vec3.transformMat3(base_tan, base_tan, rotate_mat);
 								
-				this.push_point(this.grid.tangent_buffer, tmp);
+				this.push_point(this.grid.tangent_buffer, base_tan);
 				this.push_point(this.grid.normal_buffer, base_norm);
 				this.push_point(this.grid.position_buffer, base_point);
 				

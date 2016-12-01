@@ -1,5 +1,7 @@
 
 Tree.prototype.color = [0.5, 0.25, 0.0];
+Tree.prototype.STEP_CIRCLE = 20.0;
+Tree.prototype.STEP_LEAVES = 20.0;
 
 function Tree() {	
 	this.terna = null;
@@ -34,7 +36,7 @@ function Tree() {
 	this.log_shape = null;
 	this.log_shape_norm = null;
 	
-	// Es un semi-rectángulo en el plano xz
+	// Es un semi-rectángulo en el plano xy
 	this.create_log_shape = function() {
 		this.log_shape = [];
 		this.log_shape_norm = [];
@@ -62,7 +64,7 @@ function Tree() {
 	this.create_leaves_curve = function() {
 		this.leaves_curve = new CubicBSpline();
 		var points = [];
-		// Definir la formaaa
+		// Definir la forma
 		points.push([tree_heigth/4, 0.0, 0.0]);
 		points.push([tree_heigth/4, 0.0, 0.0]);
 		points.push([tree_heigth/4, 0.0, 0.0]);
@@ -76,6 +78,16 @@ function Tree() {
 		this.leaves_curve.create(points);
 	}
 	
+	
+	this.texture_function = function(pos, col, row) {
+		var coords = vec2.create();
+		
+		coords[0] = col/Tree.prototype.STEP_LEAVES * 4.0;
+		coords[1] = row/Tree.prototype.STEP_CIRCLE * 4.0;
+
+		return coords;
+	}
+	
 	this.create = function() {
 		// Terna para debug
 		this.debug = false;
@@ -86,22 +98,27 @@ function Tree() {
 		this.tronco = new Surface();
 		this.tronco.set_color(this.color);
 		this.tronco.set_follow_normal(true);
+		
 		this.create_log_shape();
 		this.create_leaves_curve();
 		var revolve = new Circumference();
 		revolve.create(0.0);
-		this.tronco.create_from_shape(revolve, 50, this.log_shape, this.log_shape_norm);
+		
+		this.tronco.create_from_shape(revolve, this.STEP_CIRCLE, this.log_shape, this.log_shape_norm);
 				
 		// La copa
 		this.copa = new Surface();
 		this.copa.set_follow_normal(true);
 		this.copa.set_color([0.6, 0.9, 0.6]);
-		this.copa.create(revolve, 50, this.leaves_curve, 20);
-
-
 		
+		this.copa.set_texture_function(this.texture_function);
+		this.copa.grid.textures = [];
+		this.copa.grid.textures[0] = loadTexture("textures/hojas.jpg");
+		this.copa.grid.textures[1] = loadTexture("textures/uniform.jpg");
+		
+		this.copa.create(revolve, this.STEP_CIRCLE, this.leaves_curve, this.STEP_LEAVES);
+
 	}
-		
 	
 	this.draw = function(view_matrix, model_matrix) {
 		var tmp = mat4.create();
