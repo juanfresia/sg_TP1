@@ -27,6 +27,8 @@ function Terna() {
 	}
 
 	this.draw = function(view_matrix, model_matrix){
+		
+		gl.useProgram(glShaderColor);
 		var tmp = mat4.create();
 		mat4.identity(tmp);
 		var norm_matrix = mat3.create();

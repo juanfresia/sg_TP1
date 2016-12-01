@@ -96,7 +96,7 @@ function VertexGrid() {
 		// Si hay algun array de coordenadas de texturas, creo un bufer
 		if (this.texture_coord_2_buffer) {
 			this.webgl_texture_coord_2_buffer = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_2_coord_buffer);
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_2_buffer);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.texture_coord_2_buffer), gl.STATIC_DRAW);
 		}
 		
@@ -143,6 +143,7 @@ function VertexGrid() {
 	}
 	
 	
+	// Para dibujar cosas con textura única o con un índice de texturas
 	this.draw_textured = function(view_matrix, model_matrix) {
 		if (this.texture_index_buffer)
 			glShaderGeneric = glShaders["multi_texture"];
@@ -219,6 +220,88 @@ function VertexGrid() {
 			gl.disableVertexAttribArray(glShaderGeneric.aTextureIndex);
 		}
 				
+	}
+	
+	
+	
+	
+	
+	// Para dibujar el terreno (shader especial)
+	this.draw_terrain = function(view_matrix, model_matrix) {
+		glShaderGeneric = glShaders["terrain"];
+		
+		gl.useProgram(glShaderGeneric);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexUVBig);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexTangent);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexUV, 2, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_2_buffer);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexUVBig, 2, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexTangent, 3, gl.FLOAT, false, 0, 0);
+
+		var norm_matrix = mat3.create();
+		
+		mat3.fromMat4(norm_matrix, model_matrix);
+		mat3.invert(norm_matrix, norm_matrix);
+		mat3.transpose(norm_matrix, norm_matrix);
+		
+		gl.uniformMatrix4fv(glShaderGeneric.uVMatrix, false, view_matrix);
+		gl.uniformMatrix3fv(glShaderGeneric.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glShaderGeneric.uMMatrix, false, model_matrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexColor, 3, gl.FLOAT, false, 0, 0);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexNormal, 3, gl.FLOAT, false, 0, 0);
+
+
+		// Cargo las texturas
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
+		gl.uniform1i(glShaderGeneric.uSamplerSand, 0);
+		
+		gl.activeTexture(gl.TEXTURE1);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[1]);
+		gl.uniform1i(glShaderGeneric.uSamplerSandNorm, 1);
+		
+		gl.activeTexture(gl.TEXTURE2);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[2]);
+		gl.uniform1i(glShaderGeneric.uSamplerGrass, 2);
+		
+		gl.activeTexture(gl.TEXTURE3);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[3]);
+		gl.uniform1i(glShaderGeneric.uSamplerGrassNorm, 3);
+		
+		gl.activeTexture(gl.TEXTURE4);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[4]);
+		gl.uniform1i(glShaderGeneric.uSamplerStone, 4);
+		
+		gl.activeTexture(gl.TEXTURE5);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[5]);
+		gl.uniform1i(glShaderGeneric.uSamplerStoneNorm, 5);
+		
+		
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+				
+		if (params.line_strip) {
+			gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		} else {
+			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		}
+
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexTangent);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexUV);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexUVBig);
+	
 	}
 	
 	

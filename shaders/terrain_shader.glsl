@@ -109,19 +109,45 @@ void main(void) {
 
 
 	void main(void) {
-		vec4 textureColor = vec4(0.0);
-		vec4 normalMap = vec4(0.0);
 		
-		// Por sobre la mitad de la pendiente -> uso pasto
-		if (vPos.y >= uMaxHeight) {
-			textureColor = texture2D(uSamplerGrass, vUV);
-			normalMap=  texture2D(uSamplerGrassNorm, vUV);
-		} else {	// Uso arena
-			textureColor = texture2D(uSamplerSand, vUV);
-			normalMap = texture2D(uSamplerSandNorm, vUV);
+		highp vec4 tcSand = texture2D(uSamplerSand, vUV);
+		highp vec4 nmSand = texture2D(uSamplerSandNorm, vUV);
+		
+		highp vec4 tcGrass = texture2D(uSamplerGrass, vUV);
+		highp vec4 nmGrass = texture2D(uSamplerGrassNorm, vUV);
+		
+		highp vec4 tcStone = texture2D(uSamplerStone, vUV);
+		highp vec4 nmStone = texture2D(uSamplerStoneNorm, vUV);
+		
+		highp vec4 tcFinal = vec4(0.0);
+		highp vec4 nmFinal = vec4(0.0);
+		
+		if (vNormal.y <= 0.8) {
+			tcFinal = tcStone;
+			nmFinal = nmStone;
+		} else {
+			// Por sobre la mitad de la pendiente -> uso pasto
+			if (vPos.y >= uMaxHeight/2.0) {
+				if (vNormal.y <= 0.98) {
+					highp float aux = (vNormal.y-0.80)/0.18;
+					tcFinal = tcGrass * aux + tcStone * (1.0-aux);
+					nmFinal = nmGrass * aux + nmStone * (1.0-aux);
+				} else {
+					tcFinal = tcGrass;
+					nmFinal = nmGrass;
+				}
+			} else {	// Uso arena
+				if (vNormal.y <= 0.98) {
+					highp float aux = (vNormal.y-0.80)/0.18;
+					tcFinal = tcSand * aux + tcStone * (1.0-aux);
+					nmFinal = tcSand * aux + nmStone * (1.0-aux);
+				} else {
+					tcFinal = tcSand;
+					nmFinal = tcSand;
+				}
+			}
 		}
-		
-		normalMap = normalMap * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
+		nmFinal = nmFinal * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
 		
 		// Calculo la binormal y la matriz de cambio de base. NxB=T
 		vec3 binormal = normalize(cross(vTangent, vNormal));
@@ -131,9 +157,9 @@ void main(void) {
 		vec3 lightDir_ts = normalize(tangent_space * vLightDir);
 		
 		// Calculo el ángulo y aplico el color
-		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
+		highp float directionalLightWeighting = max(dot(nmFinal.rgb, lightDir_ts), 0.0);
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
-		gl_FragColor = vec4(textureColor.rgb * lightColor, textureColor.a);
+		gl_FragColor = vec4(tcFinal.rgb * lightColor, tcFinal.a);
 		
 }
 #endif

@@ -411,6 +411,7 @@
 		// Preparamos una matriz de perspectiva. (FOV, aspectRatio, z_front y z_back).
 		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 1000.0);
 		
+		gl.useProgram(glShaderColor);
 		gl.uniformMatrix4fv(glShaderColor.uPMatrix, false, pMatrix);
 		
 		gl.useProgram(glShaderWater);

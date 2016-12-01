@@ -3,6 +3,8 @@
 function Terrain() {	
 	this.terna = null;
 	this.debug = null;
+	
+	this.altura_maxima = null;
 		
 	this.superficie = null;
 	this.curva_cauce = null;
@@ -134,8 +136,8 @@ function Terrain() {
 	}
 	this.textura_big = function(pos, col, row) {
 		var coords = vec2.create();		
-		//coords[0] = 0.5 * (pos[2] + (semi_ancho - ancho_cordon))/(semi_ancho - ancho_cordon);
-		//coords[1] = pos[0]/20.0;
+		coords[0] = pos[0]/40.0;
+		coords[1] = pos[1]/40.0;
 		return coords;
 	}
 	
@@ -155,6 +157,8 @@ function Terrain() {
 		
 		this.lados[0].texture_coord_buffer = [];
 		this.lados[1].texture_coord_buffer = [];
+		this.lados[0].texture_coord_2_buffer = [];
+		this.lados[1].texture_coord_2_buffer = [];
 		
 		for (var i = 0; i < 100; i++) {
 			var u1 = i*this.curva_costa.length()/(100-1);
@@ -169,6 +173,7 @@ function Terrain() {
 			this.push_point(this.lados[0].normal_buffer, [0.0, 0.0, 1.0]);
 			this.push_point(this.lados[0].tangent_buffer, [-1.0, 0.0, 0.0]);
 			this.push_point(this.lados[0].texture_coord_buffer, this.textura_small(pos, 0, i), 2);
+			this.push_point(this.lados[0].texture_coord_2_buffer, this.textura_big(pos, 0, i), 2);
 			
 			var pos = [-ter_semi_ancho, y, alto];
 			this.push_point(this.lados[0].position_buffer, [-ter_semi_ancho, y, alto]);
@@ -176,6 +181,7 @@ function Terrain() {
 			this.push_point(this.lados[0].normal_buffer, [0.0, 0.0, 1.0]);
 			this.push_point(this.lados[0].tangent_buffer, [-1.0, 0.0, 0.0]);
 			this.push_point(this.lados[0].texture_coord_buffer, this.textura_small(pos, 1, i), 2);
+			this.push_point(this.lados[0].texture_coord_2_buffer, this.textura_big(pos, 1, i), 2);
 			
 			
 			var pos = [ter_semi_ancho, y, alto];
@@ -184,6 +190,7 @@ function Terrain() {
 			this.push_point(this.lados[1].normal_buffer, [0.0, 0.0, 1.0]);
 			this.push_point(this.lados[1].tangent_buffer, [-1.0, 0.0, 0.0]);
 			this.push_point(this.lados[1].texture_coord_buffer, this.textura_small(pos, 0, i), 2);
+			this.push_point(this.lados[1].texture_coord_2_buffer, this.textura_big(pos, 0, i), 2);
 			
 			var pos = [x + semi_ancho, y, alto];
 			this.push_point(this.lados[1].position_buffer, pos);
@@ -191,6 +198,7 @@ function Terrain() {
 			this.push_point(this.lados[1].normal_buffer, [0.0, 0.0, 1.0]);
 			this.push_point(this.lados[1].tangent_buffer, [-1.0, 0.0, 0.0]);
 			this.push_point(this.lados[1].texture_coord_buffer, this.textura_small(pos, 1, i), 2);
+			this.push_point(this.lados[1].texture_coord_2_buffer, this.textura_big(pos, 1, i), 2);
 		}
 		
 		this.lados[0].setupWebGLBuffers();
@@ -198,12 +206,12 @@ function Terrain() {
 		
 		for (var i = 0; i <= 1; i++) {
 			this.lados[i].textures = [];
-			this.lados[i].textures[0] = loadTexture("textures/grass01.jpg");
-			this.lados[i].textures[1] = loadTexture("textures/grass01_norm.jpg");
-			//this.lados[i].textures[2] = loadTexture("textures/rainbow.jpg");
-			//this.lados[i].textures[3] = loadTexture("textures/vereda_norm.jpg");
-			//this.lados[i].textures[4] = loadTexture("textures/orange.jpg");
-			//this.lados[i].textures[5] = loadTexture("textures/lineas_norm.jpg");
+			this.lados[i].textures[0] = loadTexture("textures/oxido.jpg");
+			this.lados[i].textures[1] = loadTexture("textures/normal.jpg");
+			this.lados[i].textures[2] = loadTexture("textures/grass01.jpg");
+			this.lados[i].textures[3] = loadTexture("textures/grass01_norm.jpg");
+			this.lados[i].textures[4] = loadTexture("textures/orange.jpg");
+			this.lados[i].textures[5] = loadTexture("textures/lineas_norm.jpg");
 		}
 	}
 	
@@ -213,7 +221,7 @@ function Terrain() {
 		this.debug = false;
 		this.terna = new Terna();
 		this.terna.create();
-		
+				
 		// Creo las curvas para el cause y la costa
 		this.crear_curva_cauce(params.rio_ancho, params.ter_alto);		
 		this.curva_cauce.rotate(Math.PI/2, [1.0, 0.0, 0.0]);
@@ -228,24 +236,25 @@ function Terrain() {
 		this.superficie.set_color_function(this.pick_color);
 		this.superficie.set_follow_normal(false);
 		this.superficie.set_texture_function(this.textura_small);
+		this.superficie.set_texture_function_2(this.textura_big);
 		
 		// Cargo las texturas
 		this.superficie.grid.textures = [];
-		this.superficie.grid.textures[0] = loadTexture("textures/grass01.jpg");
-		this.superficie.grid.textures[1] = loadTexture("textures/grass01_norm.jpg");
-		//this.superficie.grid.textures[2] = loadTexture("textures/rainbow.jpg");
-		//this.superficie.grid.textures[3] = loadTexture("textures/vereda_norm.jpg");
-		//this.superficie.grid.textures[4] = loadTexture("textures/orange.jpg");
-		//this.superficie.grid.textures[5] = loadTexture("textures/lineas_norm.jpg");
+		this.superficie.grid.textures[0] = loadTexture("textures/oxido.jpg");
+		this.superficie.grid.textures[1] = loadTexture("textures/normal.jpg");
+		this.superficie.grid.textures[2] = loadTexture("textures/grass01.jpg");
+		this.superficie.grid.textures[3] = loadTexture("textures/grass01_norm.jpg");
+		this.superficie.grid.textures[4] = loadTexture("textures/orange.jpg");
+		this.superficie.grid.textures[5] = loadTexture("textures/lineas_norm.jpg");
 		
 		this.superficie.create(this.curva_costa, 100, this.curva_cauce, 50);
 	}
 		
 	
 	this.draw = function(view_matrix, model_matrix) {
-		this.superficie.grid.draw_textured(view_matrix, model_matrix);
-		this.lados[0].draw_textured(view_matrix, model_matrix);
-		this.lados[1].draw_textured(view_matrix, model_matrix);
+		this.superficie.grid.draw_terrain(view_matrix, model_matrix);
+		this.lados[0].draw_terrain(view_matrix, model_matrix);
+		this.lados[1].draw_terrain(view_matrix, model_matrix);
 		if (this.debug) {
 			this.terna.draw(view_matrix, model_matrix);
 		}

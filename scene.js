@@ -5,7 +5,7 @@
 
 function Scene() {
 	
-	const LIGHT_POS = [0.0, 20.0, 0.0];
+	const LIGHT_POS = [0.0, 10.0, 50.0];
 	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();
@@ -124,6 +124,10 @@ function Scene() {
 			gl.uniform3fv(shader.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
 		}
 		
+		var shader = glShaders["terrain"];
+		gl.useProgram(shader);
+		gl.uniform1f(shader.uMaxHeight, params.ter_alto);
+		
 		gl.useProgram(glShaderColor);
 	}
 	
@@ -185,7 +189,7 @@ function Scene() {
 		
 		mat4.identity(model_matrix);
 		mat4.rotate(model_matrix, model_matrix, Math.PI/2, [-1.0, 0.0, 0.0]);
-		agua.draw(view_matrix, model_matrix);
+		//agua.draw(view_matrix, model_matrix);
 		terreno.draw(view_matrix, model_matrix);
 		
 		// Dibujo el barco
