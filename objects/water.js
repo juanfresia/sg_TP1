@@ -31,7 +31,7 @@ function Water() {
 		this.terna = new Terna();
 		this.terna.create();
 		
-		this.color = [1.0, 1.0, 1.0];
+		this.color = Water.prototype.color;
 		
 		var granularidad = 100;
 		var ter_semi_ancho = params.ter_ancho/2.0;

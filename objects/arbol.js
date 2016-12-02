@@ -33,32 +33,19 @@ function Tree() {
 	var leave_min_width = log_width+0.2;
 	var tree_heigth = 1.0;
 	
-	this.log_shape = null;
-	this.log_shape_norm = null;
+	this.log_curve = null;
 	
 	// Es un semi-rectángulo en el plano xy
-	this.create_log_shape = function() {
-		this.log_shape = [];
-		this.log_shape_norm = [];
-		
-		this.log_shape.push([0.0, 0.0, 0.0]);
-		this.log_shape_norm.push([0.0, -1.0, 0.0]);
-		
-		this.log_shape.push([0.0, log_width, 0.0]);
-		this.log_shape_norm.push([0.0, -1.0, 0.0]);
-		this.log_shape.push([0.0, log_width, 0.0]);
-		this.log_shape_norm.push([1.0, 0.0, 0.0]);
-				
-		this.log_shape.push([tree_heigth/2, log_width, 0.0]);
-		this.log_shape_norm.push([1.0, 0.0, 0.0]);
-		
-		this.log_shape.push([tree_heigth, log_width, 0.0]);
-		this.log_shape_norm.push([1.0, 0.0, 0.0]);
-		this.log_shape.push([tree_heigth, log_width, 0.0]);
-		this.log_shape_norm.push([0.0, 1.0, 0.0]);
-				
-		this.log_shape.push([tree_heigth, 0.0, 0.0]);
-		this.log_shape_norm.push([0.0, 1.0, 0.0]);
+	this.create_log_curve = function() {
+		this.log_curve = new CubicBSpline();
+		var points = [];
+		points.push([0.0, 0.0, 0.0]);
+		points.push([0.0, 0.0, 0.0]);
+		points.push([0.0, 0.0, 0.0]);
+		points.push([0.0, tree_heigth, 0.0]);
+		points.push([0.0, tree_heigth, 0.0]);
+		points.push([0.0, tree_heigth, 0.0]);
+		this.log_curve.create(points);
 	}
 	
 		
@@ -102,12 +89,15 @@ function Tree() {
 		this.tronco.set_color(this.color);
 		this.tronco.set_follow_normal(true);
 		
-		this.create_log_shape();
+		this.create_log_curve();
 		this.create_leaves_curve();
+		
 		var revolve = new Circumference();
 		revolve.create(0.0);
 		
-		this.tronco.create_from_shape(revolve, this.STEP_CIRCLE, this.log_shape, this.log_shape_norm);
+		var circle = new Circumference();
+		circle.create(log_width);
+		this.tronco.create(this.log_curve, 10, circle, this.STEP_CIRCLE);
 				
 		// La copa
 		this.copa = new Surface();
@@ -126,8 +116,8 @@ function Tree() {
 	this.draw = function(view_matrix, model_matrix) {
 		var tmp = mat4.create();
 		mat4.copy(tmp, model_matrix);
-		mat4.rotate(tmp, tmp, Math.PI/2, [1.0, 0.0, 0.0]);
 		this.tronco.draw(view_matrix, tmp);
+		mat4.rotate(tmp, tmp, Math.PI/2, [1.0, 0.0, 0.0]);
 		this.copa.draw(view_matrix, tmp);
 		if (this.debug) {
 			this.terna.draw(view_matrix, tmp);
