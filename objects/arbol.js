@@ -69,11 +69,21 @@ function Tree() {
 	}
 	
 	
-	this.texture_function = function(pos, col, row) {
+	this.texture_leaves = function(pos, col, row) {
 		var coords = vec2.create();
 		
 		coords[0] = col/Tree.prototype.STEP_LEAVES * 4.0;
 		coords[1] = row/Tree.prototype.STEP_CIRCLE * 4.0;
+
+		return coords;
+	}
+	
+		
+	this.texture_tronco = function(pos, col, row) {
+		var coords = vec2.create();
+		
+		coords[0] = 1.0 - row/10.0;
+		coords[1] = 1.0 - col/Tree.prototype.STEP_CIRCLE * 10.0;
 
 		return coords;
 	}
@@ -97,6 +107,12 @@ function Tree() {
 		
 		var circle = new Circumference();
 		circle.create(log_width);
+		
+		
+		this.tronco.set_texture_function(this.texture_tronco);
+		this.tronco.grid.textures = [];
+		this.tronco.grid.textures[0] = loadTexture("textures/bark.jpg");
+		this.tronco.grid.textures[1] = loadTexture("textures/bark_norm.jpg");
 		this.tronco.create(this.log_curve, 10, circle, this.STEP_CIRCLE);
 				
 		// La copa
@@ -104,7 +120,7 @@ function Tree() {
 		this.copa.set_follow_normal(true);
 		this.copa.set_color([0.6, 0.9, 0.6]);
 		
-		this.copa.set_texture_function(this.texture_function);
+		this.copa.set_texture_function(this.texture_leaves);
 		this.copa.grid.textures = [];
 		this.copa.grid.textures[0] = loadTexture("textures/hojas.jpg");
 		this.copa.grid.textures[1] = loadTexture("textures/uniform.jpg");
