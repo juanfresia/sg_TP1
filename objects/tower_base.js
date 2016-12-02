@@ -216,8 +216,8 @@ function TowerBase() {
 		}
 		
 		this.grid.textures = [];
-		this.grid.textures[0] = loadTexture("textures/oxido.jpg");
-		this.grid.textures[1] = loadTexture("textures/oxido_norm.jpg");
+		this.grid.textures[0] = loadTexture("textures/viga.jpg");
+		this.grid.textures[1] = loadTexture("textures/viga_norm.jpg");
 				
 		this.grid.setupWebGLBuffers();
 	}

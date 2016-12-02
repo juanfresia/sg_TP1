@@ -16,6 +16,7 @@ attribute vec3 aVertexTangent;
 	varying float vtextureIndex;
 #endif
 
+
 uniform mat4 uVMatrix;
 uniform mat4 uMMatrix;
 uniform mat4 uPMatrix;
@@ -27,6 +28,9 @@ varying highp vec4 vColor;
 varying highp vec3 vNormal;
 varying highp vec3 vTangent; 
 
+#ifdef SPECULAR
+	varying highp vec3 vPos;
+#endif
 
 varying highp vec3 vLightDir;
 varying vec2 vUV;
@@ -52,6 +56,11 @@ void main(void) {
 	#ifdef MULTIPLE_TEXTURA
 		vtextureIndex = aTextureIndex;
 	#endif
+	
+	#ifdef SPECULAR
+		vPos = normalize(model_world_pos.xyz/model_world_pos.w);
+	#endif
+	
 }
 
 #endif
@@ -79,6 +88,12 @@ void main(void) {
 		varying float vtextureIndex;
 		uniform sampler2D uSampler3;	// Textura 2
 		uniform sampler2D uSampler4;	// Mapa de normales 2
+	#endif
+	
+	
+	#ifdef SPECULAR
+		varying highp vec3 vPos;
+		uniform vec3 uCameraPos;
 	#endif
 	
 	// Funcion transponer auxiliar
@@ -119,9 +134,20 @@ void main(void) {
 		// Convierto el vector dirección al espacio de la tangente
 		vec3 lightDir_ts = normalize(tangent_space * vLightDir);
 		
+		
+		
 		// Calculo el ángulo y aplico el color
 		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+		
+		
+		#ifdef SPECULAR
+			vec3 eyeDir_ts = normalize(tangent_space * -(uCameraPos-vPos));
+			vec3 reflectDir_ts = normalize(reflect(-lightDir_ts, normalMap.rgb));
+			highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 30.0);
+			lightColor += vec3(0.6, 0.6, 0.6) * specularLightWeighting;
+		#endif
+		
 		gl_FragColor = vec4(textureColor.rgb * lightColor, textureColor.a);
 				
 		//gl_FragColor = vec4(lightDir_ts/2.0+0.5, textureColor.a);

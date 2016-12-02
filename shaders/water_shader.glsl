@@ -123,7 +123,7 @@ void main(void) {
 		// Calculo el ángulo y aplico el color
 		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
 		
-		highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 30.0);
+		highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 62.0);
 		
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting + vec3(0.6, 0.6, 0.6) * specularLightWeighting;
 		gl_FragColor = vec4(vColor.rgb * lightColor, 0.6);

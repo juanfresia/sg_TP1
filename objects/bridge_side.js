@@ -69,6 +69,7 @@ function BridgeSide() {
 		
 		
 		this.cable.set_texture_function(this.textura_cable);
+		this.cable.grid.specular = true;
 		this.cable.grid.textures = [];
 		this.cable.grid.textures[0] = loadTexture("textures/cable2.jpg");
 		this.cable.grid.textures[1] = loadTexture("textures/cable2_norm.jpg");

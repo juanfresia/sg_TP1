@@ -27,6 +27,8 @@ function VertexGrid() {
 	
 	this.textures = null;
 	
+	this.specular = null;
+	
 	
 	// Plot en 2D
 	this.position_buffer_2D = null;
@@ -151,6 +153,10 @@ function VertexGrid() {
 		else
 			glShaderGeneric = glShaders["single_texture"];
 		
+		if (this.specular && params.specular) {
+			glShaderGeneric = glShaders["specular"];
+		}
+		
 		gl.useProgram(glShaderGeneric);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexTangent);
@@ -222,8 +228,6 @@ function VertexGrid() {
 		}
 				
 	}
-	
-	
 	
 	
 	

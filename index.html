@@ -354,12 +354,11 @@
 	
 	var params = {
 		// Terreno
-		ter_ancho:260,
-		ter_alto:10,
-		rio_ancho:120,
-		agua_alto:8,
+		ter_ancho:400,
+		ter_alto:16,
+		rio_ancho:200,
+		agua_alto:2,
 		puente_pos:0.5,
-		ship_speed:50,
 	
 		// Torres
 		ancho_corte:0.2,
@@ -379,6 +378,7 @@
 	
 		line_strip:false,
 		debug_mode:true,
+		specular:true,
 		reiniciar:loadScene,
 		reset_curve:clear_points
 	};
@@ -393,7 +393,6 @@
 		group_terrain.add(params, 'rio_ancho', 10.0, 200.0).name('Ancho del rio').step(1);
 		group_terrain.add(params, 'agua_alto', 1.0, 8.0).name('Altura del agua').step(1);
 		group_terrain.add(params, 'puente_pos', 0.1, 0.9).name('Posicion del puente').step(0.1);
-		group_terrain.add(params, 'ship_speed', 1, 100).name('Veloc. barco').step(1);
 
 		var group_puente = gui.addFolder('Puente');
 		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elevación de la carretera').step(0.1);
@@ -413,6 +412,7 @@
 		var group2 = gui.addFolder('General');
 		group2.add(params, 'debug_mode').name('Debug');
 		group2.add(params, 'line_strip').name('LINE_STRIP?');
+		group2.add(params, 'specular').name('Cable especular?');
 		group2.add(params, 'reiniciar').name("Reiniciar");
 		group2.add(params, 'reset_curve').name("Limpiar curva");
 

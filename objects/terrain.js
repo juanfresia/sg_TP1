@@ -210,8 +210,8 @@ function Terrain() {
 			this.lados[i].textures[1] = loadTexture("textures/sand_norm.jpg");
 			this.lados[i].textures[2] = loadTexture("textures/grass01.jpg");
 			this.lados[i].textures[3] = loadTexture("textures/grass01_norm.jpg");
-			this.lados[i].textures[4] = loadTexture("textures/stone.jpg");
-			this.lados[i].textures[5] = loadTexture("textures/stone_norm.jpg");
+			this.lados[i].textures[4] = loadTexture("textures/stone2.jpg");
+			this.lados[i].textures[5] = loadTexture("textures/stone2_norm.jpg");
 			this.lados[i].textures[6] = loadTexture("textures/blend.jpg");
 		}
 	}
@@ -245,8 +245,8 @@ function Terrain() {
 		this.superficie.grid.textures[1] = loadTexture("textures/sand_norm.jpg");
 		this.superficie.grid.textures[2] = loadTexture("textures/grass01.jpg");
 		this.superficie.grid.textures[3] = loadTexture("textures/grass01_norm.jpg");
-		this.superficie.grid.textures[4] = loadTexture("textures/stone.jpg");
-		this.superficie.grid.textures[5] = loadTexture("textures/stone_norm.jpg");
+		this.superficie.grid.textures[4] = loadTexture("textures/stone2.jpg");
+		this.superficie.grid.textures[5] = loadTexture("textures/stone2_norm.jpg");
 		this.superficie.grid.textures[6] = loadTexture("textures/blend.jpg");
 		
 		this.superficie.create(this.curva_costa, 100, this.curva_cauce, 50);

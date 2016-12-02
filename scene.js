@@ -6,8 +6,8 @@
 function Scene() {
 	
 	const LIGHT_POS = [-1.2, 1.2, -1.2];
-	const AMBIENT_LIGHT = [0.2, 0.2, 0.2];
-	const SUN_LIGHT = [0.7, 0.7, 0.5];
+	const AMBIENT_LIGHT = [0.15, 0.15, 0.15];
+	const SUN_LIGHT = [0.8, 0.8, 0.6];
 	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();
@@ -182,6 +182,10 @@ function Scene() {
 		mat4.identity(tmp);
 		
 		var my_shader = glShaders["water"];
+		gl.useProgram(my_shader);
+		gl.uniform3fv(my_shader.uCameraPos, camera_pos);
+		
+		my_shader = glShaders["specular"];
 		gl.useProgram(my_shader);
 		gl.uniform3fv(my_shader.uCameraPos, camera_pos);
 		

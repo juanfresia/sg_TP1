@@ -75,7 +75,7 @@ function Tower() {
 		
 		mat4.identity(tmp);
 		this.segmentos[5] = new TowerBase();
-		this.segmentos[5].create(ant.x_out, ant.y_out, ant.x_in, ant.y_in, 0, 0);
+		this.segmentos[5].create(ant.x_out, ant.y_out, ant.x_in, ant.y_in, 0, 0.5);
 		mat4.translate(tmp, tmp, [0.0, 0.0, height]);
 		this.matrices[5] = mat4.create();
 		mat4.copy(this.matrices[5], tmp);

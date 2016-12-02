@@ -54,6 +54,7 @@ function Tensor() {
 		
 		
 		this.superficie.set_texture_function(this.textura_tensor);
+		this.superficie.grid.specular = true;
 		this.superficie.grid.textures = [];
 		this.superficie.grid.textures[0] = loadTexture("textures/tensor.jpg");
 		this.superficie.grid.textures[1] = loadTexture("textures/tensor_norm.jpg");

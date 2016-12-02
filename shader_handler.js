@@ -120,6 +120,16 @@ function ShaderHandler() {
 		
 		glShaders["multi_texture"] = shader;
 		
+		
+		var shader = this.crearPrograma("shaders/texturas_simples.glsl", "#define SPECULAR\n");
+		gl.linkProgram(shader);
+		this.setupCommons(shader);
+		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
+		shader.uSampler1 = gl.getUniformLocation(shader, "uSampler1");
+		shader.uSampler2 = gl.getUniformLocation(shader, "uSampler2");
+		shader.uCameraPos = gl.getUniformLocation(shader, "uCameraPos");
+		
+		glShaders["specular"] = shader;
 	}
 	
 	
