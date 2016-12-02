@@ -5,11 +5,15 @@
 
 function Scene() {
 	
-	const LIGHT_POS = [200.0, 100.0, 200.0];
+	const LIGHT_POS = [-1.2, 1.2, -1.2];
+	const AMBIENT_LIGHT = [0.2, 0.2, 0.2];
+	const SUN_LIGHT = [0.7, 0.7, 0.5];
 	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();
 	var norm_matrix = mat3.create();
+
+	var skybox = null;
 
 	var terreno = null;
 	var puente = null;
@@ -32,7 +36,10 @@ function Scene() {
 	this.init = function() {
 		terna = new Terna();
 		terna.create();
-				
+		
+		skybox = new SkyBox();
+		skybox.create(params.ter_ancho + 200.0);
+		
 		puente = new Bridge();
 		puente.create();
 		
@@ -103,19 +110,24 @@ function Scene() {
 	this.init_shader = function() {
 		// Configurar iluminación
 		
+		var light_position = [0.0, 0.0, 0.0];
+		for (var i = 0; i <= 2; i++) {
+			light_position[i]  = LIGHT_POS[i] * params.ter_ancho/2.0;
+		}
+		
 		gl.useProgram(glShaderColor);
 		gl.uniform1i(glShaderColor.uUseLighting, true);
-		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
-		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
-		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(AMBIENT_LIGHT[0], AMBIENT_LIGHT[1], AMBIENT_LIGHT[2]));
+		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(light_position[0], light_position[1], light_position[2]));
+		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(SUN_LIGHT[0], SUN_LIGHT[1], SUN_LIGHT[2]));
 		
 		
 		for (var elem in glShaders) {
 			var shader = glShaders[elem];
 			gl.useProgram(shader);
-			gl.uniform3fv(shader.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
-			gl.uniform3fv(shader.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
-			gl.uniform3fv(shader.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
+			gl.uniform3fv(shader.uAmbientColor, vec3.fromValues(AMBIENT_LIGHT[0], AMBIENT_LIGHT[1], AMBIENT_LIGHT[2]));
+			gl.uniform3fv(shader.uLightPosition, vec3.fromValues(light_position[0], light_position[1], light_position[2]));
+			gl.uniform3fv(shader.uDirectionalColor, vec3.fromValues(SUN_LIGHT[0], SUN_LIGHT[1], SUN_LIGHT[2]));
 		}
 		
 		var shader = glShaders["terrain"];
@@ -179,6 +191,7 @@ function Scene() {
 		// Preparamos una matriz de modelo y de vista.
 		
 		mat4.identity(model_matrix);
+		skybox.draw(view_matrix, model_matrix);
 		terna.draw(view_matrix, model_matrix);
 		carreteras[0].draw(view_matrix, model_matrix);
 		carreteras[1].draw(view_matrix, model_matrix);

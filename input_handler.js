@@ -13,7 +13,7 @@ function InputHandler() {
 		pre_x:0.0,
 		pre_y:0.0,
 		speed_factor:0.01,
-		zoom_speed:2.5
+		zoom_speed:7.5
 	};
 	
 	this.orbit_cam = {

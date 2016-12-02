@@ -1,4 +1,3 @@
-// Define la pieza que compondrá las torres del puente. Resulta de una interpolación lineal de puntos en forma de hache.
 
 Tensor.prototype.color = [0.9,0.9,0.9];
 
