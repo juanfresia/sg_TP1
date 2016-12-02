@@ -355,6 +355,14 @@ function InputHandler() {
 	this.get_camera_pos = function() {
 		if (this.mode == "free") {
 			return this.free_cam.pos;
+		}
+		if (this.mode == "orbit") {
+			var pos = vec3.create();
+			
+			pos[2] -= this.orbit_cam.radius * Math.cos(this.orbit_cam.theta) * Math.sin(this.orbit_cam.phi);
+			pos[0] -= this.orbit_cam.radius * Math.sin(this.orbit_cam.theta) * Math.sin(this.orbit_cam.phi);
+			pos[1] -= this.orbit_cam.radius * Math.cos(this.orbit_cam.phi);
+			return pos;
 		} else {
 			return [0.0, 0.0, 0.0];
 		}
