@@ -136,8 +136,8 @@ function Terrain() {
 	}
 	this.textura_big = function(pos, col, row) {
 		var coords = vec2.create();		
-		coords[0] = 1.0 - pos[0]/40.0;
-		coords[1] = pos[1]/40.0;
+		coords[0] = 1.0 - pos[0]/3000.0;
+		coords[1] = pos[1]/4000.0;
 		return coords;
 	}
 	

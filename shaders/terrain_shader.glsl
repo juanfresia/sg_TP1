@@ -120,7 +120,7 @@ void main(void) {
 		highp vec4 tcStone = texture2D(uSamplerStone, vUV);
 		highp vec4 nmStone = texture2D(uSamplerStoneNorm, vUV);
 		
-		highp vec4 tcBlend = texture2D(uSamplerBlend, vUV);
+		highp vec4 tcBlend = texture2D(uSamplerBlend, vUVBig);
 		
 		highp vec4 tcFinal = vec4(0.0);
 		highp vec4 nmFinal = vec4(0.0);
@@ -133,11 +133,14 @@ void main(void) {
 			if (vPos.y >= uMaxHeight/2.0) {
 				if (vNormal.y <= 0.98) {
 					highp float aux = (vNormal.y-0.80)/0.18;
-					tcFinal = tcGrass * aux + tcStone * (1.0-aux);
-					nmFinal = nmGrass * aux + nmStone * (1.0-aux);
+					tcFinal = tcGrass * (1.0 - tcBlend.x) + tcBlend.x * tcStone;
+					nmFinal = nmGrass * (1.0 - tcBlend.x) + tcBlend.x * nmStone;
+					
+					tcFinal = tcFinal * aux + tcStone * (1.0-aux);
+					nmFinal = nmFinal * aux + nmStone * (1.0-aux);
 				} else {
-					tcFinal = tcGrass;
-					nmFinal = nmGrass;
+					tcFinal = tcGrass * (1.0 - tcBlend.x) + tcBlend.x * tcStone;
+					nmFinal = nmGrass * (1.0 - tcBlend.x) + tcBlend.x * nmStone;
 				}
 			} else {	// Uso arena
 				if (vNormal.y <= 0.98) {
