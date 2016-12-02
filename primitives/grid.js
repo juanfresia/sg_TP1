@@ -296,7 +296,15 @@ function VertexGrid() {
 		
 		gl.activeTexture(gl.TEXTURE6);
 		gl.bindTexture(gl.TEXTURE_2D, this.textures[6]);
-		gl.uniform1i(glShaderGeneric.uSamplerBlend, 6);
+		gl.uniform1i(glShaderGeneric.uSamplerAlt, 6);
+		
+		gl.activeTexture(gl.TEXTURE7);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[7]);
+		gl.uniform1i(glShaderGeneric.uSamplerAltNorm, 7);
+		
+		gl.activeTexture(gl.TEXTURE8);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[8]);
+		gl.uniform1i(glShaderGeneric.uSamplerBlend, 8);
 		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 				

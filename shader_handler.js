@@ -147,7 +147,9 @@ function ShaderHandler() {
 		shader.uSamplerGrassNorm = gl.getUniformLocation(shader, "uSamplerGrassNorm");
 		shader.uSamplerStone = gl.getUniformLocation(shader, "uSamplerStone");
 		shader.uSamplerStoneNorm = gl.getUniformLocation(shader, "uSamplerStoneNorm");
-		shader.uSamplerStoneNorm = gl.getUniformLocation(shader, "uSamplerBlend");
+		shader.uSamplerAlt = gl.getUniformLocation(shader, "uSamplerAlt");
+		shader.uSamplerAltNorm = gl.getUniformLocation(shader, "uSamplerAltNorm");
+		shader.uSamplerBlend = gl.getUniformLocation(shader, "uSamplerBlend");
 		shader.uMaxHeight = gl.getUniformLocation(shader, "uMaxHeight");
 		
 		glShaders["terrain"] = shader;

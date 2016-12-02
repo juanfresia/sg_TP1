@@ -88,6 +88,10 @@ void main(void) {
 	uniform sampler2D uSamplerGrassNorm;
 	uniform sampler2D uSamplerStone;
 	uniform sampler2D uSamplerStoneNorm;
+	
+	uniform sampler2D uSamplerAlt;
+	uniform sampler2D uSamplerAltNorm;
+	
 	uniform sampler2D uSamplerBlend;
 	
 	// Funcion transponer auxiliar
@@ -120,6 +124,9 @@ void main(void) {
 		highp vec4 tcStone = texture2D(uSamplerStone, vUV);
 		highp vec4 nmStone = texture2D(uSamplerStoneNorm, vUV);
 		
+		highp vec4 tcAlt = texture2D(uSamplerAlt, vUV);
+		highp vec4 nmAlt = texture2D(uSamplerAltNorm, vUV);
+		
 		highp vec4 tcBlend = texture2D(uSamplerBlend, vUVBig);
 		
 		highp vec4 tcFinal = vec4(0.0);
@@ -133,14 +140,14 @@ void main(void) {
 			if (vPos.y >= uMaxHeight/2.0) {
 				if (vNormal.y <= 0.98) {
 					highp float aux = (vNormal.y-0.80)/0.18;
-					tcFinal = tcGrass * (1.0 - tcBlend.x) + tcBlend.x * tcStone;
-					nmFinal = nmGrass * (1.0 - tcBlend.x) + tcBlend.x * nmStone;
+					tcFinal = tcGrass * (1.0 - tcBlend.x) + tcBlend.x * tcAlt;
+					nmFinal = nmGrass * (1.0 - tcBlend.x) + tcBlend.x * nmAlt;
 					
 					tcFinal = tcFinal * aux + tcStone * (1.0-aux);
 					nmFinal = nmFinal * aux + nmStone * (1.0-aux);
 				} else {
-					tcFinal = tcGrass * (1.0 - tcBlend.x) + tcBlend.x * tcStone;
-					nmFinal = nmGrass * (1.0 - tcBlend.x) + tcBlend.x * nmStone;
+					tcFinal = tcGrass * (1.0 - tcBlend.x) + tcBlend.x * tcAlt;
+					nmFinal = nmGrass * (1.0 - tcBlend.x) + tcBlend.x * nmAlt;
 				}
 			} else {	// Uso arena
 				if (vNormal.y <= 0.98) {
