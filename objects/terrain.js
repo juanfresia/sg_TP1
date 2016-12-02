@@ -130,13 +130,13 @@ function Terrain() {
 	// Funciones para determinar las coordenadas samll y big
 	this.textura_small = function(pos, col, row) {
 		var coords = vec2.create();		
-		coords[0] = pos[0]/40.0;
+		coords[0] = 1.0 - pos[0]/40.0;
 		coords[1] = pos[1]/40.0;
 		return coords;
 	}
 	this.textura_big = function(pos, col, row) {
 		var coords = vec2.create();		
-		coords[0] = pos[0]/40.0;
+		coords[0] = 1.0 - pos[0]/40.0;
 		coords[1] = pos[1]/40.0;
 		return coords;
 	}
@@ -206,12 +206,13 @@ function Terrain() {
 		
 		for (var i = 0; i <= 1; i++) {
 			this.lados[i].textures = [];
-			this.lados[i].textures[0] = loadTexture("textures/oxido.jpg");
-			this.lados[i].textures[1] = loadTexture("textures/normal.jpg");
+			this.lados[i].textures[0] = loadTexture("textures/sand.jpg");
+			this.lados[i].textures[1] = loadTexture("textures/sand_norm.jpg");
 			this.lados[i].textures[2] = loadTexture("textures/grass01.jpg");
 			this.lados[i].textures[3] = loadTexture("textures/grass01_norm.jpg");
-			this.lados[i].textures[4] = loadTexture("textures/orange.jpg");
-			this.lados[i].textures[5] = loadTexture("textures/lineas_norm.jpg");
+			this.lados[i].textures[4] = loadTexture("textures/stone.jpg");
+			this.lados[i].textures[5] = loadTexture("textures/stone_norm.jpg");
+			this.lados[i].textures[6] = loadTexture("textures/blend.jpg");
 		}
 	}
 	
@@ -240,12 +241,13 @@ function Terrain() {
 		
 		// Cargo las texturas
 		this.superficie.grid.textures = [];
-		this.superficie.grid.textures[0] = loadTexture("textures/oxido.jpg");
-		this.superficie.grid.textures[1] = loadTexture("textures/normal.jpg");
+		this.superficie.grid.textures[0] = loadTexture("textures/sand.jpg");
+		this.superficie.grid.textures[1] = loadTexture("textures/sand_norm.jpg");
 		this.superficie.grid.textures[2] = loadTexture("textures/grass01.jpg");
 		this.superficie.grid.textures[3] = loadTexture("textures/grass01_norm.jpg");
-		this.superficie.grid.textures[4] = loadTexture("textures/orange.jpg");
-		this.superficie.grid.textures[5] = loadTexture("textures/lineas_norm.jpg");
+		this.superficie.grid.textures[4] = loadTexture("textures/stone.jpg");
+		this.superficie.grid.textures[5] = loadTexture("textures/stone_norm.jpg");
+		this.superficie.grid.textures[6] = loadTexture("textures/blend.jpg");
 		
 		this.superficie.create(this.curva_costa, 100, this.curva_cauce, 50);
 	}

@@ -137,18 +137,48 @@ function ShaderHandler() {
 		shader.uSamplerGrassNorm = gl.getUniformLocation(shader, "uSamplerGrassNorm");
 		shader.uSamplerStone = gl.getUniformLocation(shader, "uSamplerStone");
 		shader.uSamplerStoneNorm = gl.getUniformLocation(shader, "uSamplerStoneNorm");
+		shader.uSamplerStoneNorm = gl.getUniformLocation(shader, "uSamplerBlend");
 		shader.uMaxHeight = gl.getUniformLocation(shader, "uMaxHeight");
 		
 		glShaders["terrain"] = shader;
 	}
 	
 	
+	this.loadWaterShader = function() {
+		var shader = this.crearPrograma("shaders/water_shader.glsl", "");
+
+		gl.linkProgram(shader);
+		
+		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
+		gl.enableVertexAttribArray(shader.aVertexPosition);
+		
+		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
+		gl.enableVertexAttribArray(shader.aVertexColor);
+		
+		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
+		shader.uMMatrix = gl.getUniformLocation(shader, "uMMatrix");
+		shader.uPMatrix = gl.getUniformLocation(shader, "uPMatrix");
+		shader.uNMatrix = gl.getUniformLocation(shader, "uNMatrix");
+		
+		shader.uAmbientColor = gl.getUniformLocation(shader, "uAmbientColor");
+		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
+		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
+		shader.uCameraPos = gl.getUniformLocation(shader, "uCameraPos");
+		
+		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
+		shader.uSampler1 = gl.getUniformLocation(shader, "uSamplerNormal");
+		
+		shader.uTime = gl.getUniformLocation(shader, "uTime");
+		
+		glShaders["water"] = shader;
+	}
 	
 	
 	
 	this.load = function() {
 		this.loadTextureShader();
 		this.loadTerrainShader();
+		this.loadWaterShader();
 	}
 	
 }

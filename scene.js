@@ -5,7 +5,7 @@
 
 function Scene() {
 	
-	const LIGHT_POS = [0.0, 10.0, 50.0];
+	const LIGHT_POS = [200.0, 100.0, 200.0];
 	
 	var model_matrix = mat4.create();
 	var view_matrix = mat4.create();
@@ -108,12 +108,6 @@ function Scene() {
 		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
 		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
 		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
-
-		gl.useProgram(glShaderWater);
-		gl.uniform1i(glShaderWater.uUseLighting, true);
-		gl.uniform3fv(glShaderWater.uAmbientColor, vec3.fromValues(0.3, 0.3, 0.3));
-		gl.uniform3fv(glShaderWater.uLightPosition, vec3.fromValues(LIGHT_POS[0], LIGHT_POS[1], LIGHT_POS[2]));
-		gl.uniform3fv(glShaderWater.uDirectionalColor, vec3.fromValues(0.5, 0.5, 0.5));
 		
 		
 		for (var elem in glShaders) {
@@ -171,10 +165,15 @@ function Scene() {
 	}
 	
 	// Dibuja las estructuras una por una, teniendo en cuenta parámetros externos como el tiempo o la matriz de vista (o lo que sea que se necesite, puede que tengamos que pasar directamente los shaders para agregar las deformaciones al agua por ejemplo.
-	this.draw = function(time, view_matrix) {
+	this.draw = function(time, view_matrix, camera_pos) {
 		var tmp = mat4.create();
 		mat4.identity(tmp);
 		
+		var my_shader = glShaders["water"];
+		gl.useProgram(my_shader);
+		gl.uniform3fv(my_shader.uCameraPos, camera_pos);
+		
+		gl.useProgram(glShaderColor);
 		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
 				
 		// Preparamos una matriz de modelo y de vista.
@@ -187,10 +186,6 @@ function Scene() {
 		mat4.translate(model_matrix, model_matrix, desplazamiento_puente);
 		puente.draw(view_matrix, model_matrix);
 		
-		mat4.identity(model_matrix);
-		mat4.rotate(model_matrix, model_matrix, Math.PI/2, [-1.0, 0.0, 0.0]);
-		//agua.draw(view_matrix, model_matrix);
-		terreno.draw(view_matrix, model_matrix);
 		
 		// Dibujo el barco
 		//mat4.identity(model_matrix);
@@ -211,5 +206,18 @@ function Scene() {
 		mat4.identity(model_matrix);
 		mat4.translate(model_matrix, model_matrix, LIGHT_POS);
 		terna.draw(view_matrix, model_matrix);
+				
+		mat4.identity(model_matrix);
+		mat4.rotate(model_matrix, model_matrix, Math.PI/2, [-1.0, 0.0, 0.0]);
+		terreno.draw(view_matrix, model_matrix);
+		
+		
+		gl.enable(gl.BLEND);
+		gl.blendEquationSeparate(gl.FUNC_ADD, gl.FUNC_ADD);
+		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ZERO);
+		agua.draw(view_matrix, model_matrix);
+		gl.disable(gl.BLEND);
+		
+		
 	}
 }

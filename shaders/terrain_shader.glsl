@@ -87,7 +87,8 @@ void main(void) {
 	uniform sampler2D uSamplerGrass;
 	uniform sampler2D uSamplerGrassNorm;
 	uniform sampler2D uSamplerStone;
-	uniform sampler2D uSamplerStoneNorm;	
+	uniform sampler2D uSamplerStoneNorm;
+	uniform sampler2D uSamplerBlend;
 	
 	// Funcion transponer auxiliar
 	mat3 transpose(mat3 m) {
@@ -119,6 +120,8 @@ void main(void) {
 		highp vec4 tcStone = texture2D(uSamplerStone, vUV);
 		highp vec4 nmStone = texture2D(uSamplerStoneNorm, vUV);
 		
+		highp vec4 tcBlend = texture2D(uSamplerBlend, vUV);
+		
 		highp vec4 tcFinal = vec4(0.0);
 		highp vec4 nmFinal = vec4(0.0);
 		
@@ -140,17 +143,17 @@ void main(void) {
 				if (vNormal.y <= 0.98) {
 					highp float aux = (vNormal.y-0.80)/0.18;
 					tcFinal = tcSand * aux + tcStone * (1.0-aux);
-					nmFinal = tcSand * aux + nmStone * (1.0-aux);
+					nmFinal = nmSand * aux + nmStone * (1.0-aux);
 				} else {
 					tcFinal = tcSand;
-					nmFinal = tcSand;
+					nmFinal = nmSand;
 				}
 			}
 		}
 		nmFinal = nmFinal * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
 		
 		// Calculo la binormal y la matriz de cambio de base. NxB=T
-		vec3 binormal = normalize(cross(vTangent, vNormal));
+		vec3 binormal = normalize(cross(vNormal, vTangent));
 		mat3 tangent_space = transpose(mat3(vTangent, binormal, vNormal));
 		
 		// Convierto el vector dirección al espacio de la tangente
@@ -161,6 +164,8 @@ void main(void) {
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 		gl_FragColor = vec4(tcFinal.rgb * lightColor, tcFinal.a);
 		
+		
+		//gl_FragColor = vec4(vNormal.xyz/2.0 + 0.5, 1.0);
 }
 #endif
 

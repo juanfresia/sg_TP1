@@ -13,7 +13,7 @@ function InputHandler() {
 		pre_x:0.0,
 		pre_y:0.0,
 		speed_factor:0.01,
-		zoom_speed:10
+		zoom_speed:2.5
 	};
 	
 	this.orbit_cam = {
@@ -350,6 +350,14 @@ function InputHandler() {
 	
 	this.get_view_matrix = function() {
 		return this.view_mat;
+	}
+	
+	this.get_camera_pos = function() {
+		if (this.mode == "free") {
+			return this.free_cam.pos;
+		} else {
+			return [0.0, 0.0, 0.0];
+		}
 	}
 	
 }

@@ -123,7 +123,6 @@ function Surface() {
 				var base_tan = vec3.create();
 				vec3.cross(base_tan, this.baseCurve.binormal_vector, base_norm);
 				
-				
 				vec3.transformMat3(base_point, base_point, rotate_mat);
 				vec3.transformMat4(base_point, base_point, translate_mat);
 				vec3.transformMat3(base_norm, base_norm, rotate_mat);

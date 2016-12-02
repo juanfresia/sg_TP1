@@ -106,10 +106,10 @@ function BridgeBase() {
 		
 		
 		if (row == 6 || row == 7) {
-			coords[0] = 0.5 * (pos[2] + (semi_ancho - ancho_cordon))/(semi_ancho - ancho_cordon);
-			coords[1] = pos[0]/20.0;
+			coords[0] = 1.0 - 0.5 * (pos[2] + (semi_ancho - ancho_cordon))/(semi_ancho - ancho_cordon);
+			coords[1] = pos[0]/10.0;
 		} else {
-			coords[0] = 0.5 * (pos[2] + semi_ancho) + 0.5 * pos[1]; 
+			coords[0] = 1.0 - 0.5 * (pos[2] + semi_ancho) + 0.5 * pos[1]; 
 			coords[1] = pos[0]/5.0;
 		}
 		return coords;

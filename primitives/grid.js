@@ -74,10 +74,11 @@ function VertexGrid() {
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), gl.STATIC_DRAW);
 		
-		this.webgl_normal_buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
-		
+		if (this.normal_buffer) {
+			this.webgl_normal_buffer = gl.createBuffer();
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_normal_buffer);
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normal_buffer), gl.STATIC_DRAW);
+		}
 		
 		// Si hay array de tangentes, creo un buffer para las tangentes
 		if (this.tangent_buffer) {
@@ -289,6 +290,9 @@ function VertexGrid() {
 		gl.bindTexture(gl.TEXTURE_2D, this.textures[5]);
 		gl.uniform1i(glShaderGeneric.uSamplerStoneNorm, 5);
 		
+		gl.activeTexture(gl.TEXTURE6);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[6]);
+		gl.uniform1i(glShaderGeneric.uSamplerBlend, 6);
 		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 				
@@ -341,16 +345,22 @@ function VertexGrid() {
 				
 	}
 	
+	
+	
 	this.draw_water = function(view_matrix, model_matrix){
+		glShaderWater = glShaders["water"];
 		
 		gl.useProgram(glShaderWater);
 		gl.uniformMatrix4fv(glShaderWater.uVMatrix, false, view_matrix);
 		var norm_matrix = mat3.create();
 		
 		//mat4.mul(tmp, model_matrix, view_matrix);
+		
+		var tmp = mat4.create();
+		
 		mat3.fromMat4(norm_matrix, model_matrix);
 		mat3.invert(norm_matrix, norm_matrix);
-		mat3.transpose(norm_matrix, norm_matrix);	
+		mat3.transpose(norm_matrix, norm_matrix);
 		
 		gl.uniformMatrix3fv(glShaderWater.uNMatrix, false, norm_matrix);
 		gl.uniformMatrix4fv(glShaderWater.uMMatrix, false, model_matrix);
@@ -361,6 +371,14 @@ function VertexGrid() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
 		gl.vertexAttribPointer(glShaderWater.aVertexColor, 3, gl.FLOAT, false, 0, 0);
 
+		gl.enableVertexAttribArray(glShaderWater.aVertexUV);
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+		gl.vertexAttribPointer(glShaderWater.aVertexUV, 2, gl.FLOAT, false, 0, 0);
+		
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
+		gl.uniform1i(glShaderWater.uSamplerNormal, 0);
+
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
 		// Dibujamos.
@@ -369,6 +387,8 @@ function VertexGrid() {
 		} else {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
+		
+		//gl.disableVertexAttribArray(glShaderWater.aVertexUV);
 	}
 
 	
