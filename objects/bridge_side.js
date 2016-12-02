@@ -19,6 +19,18 @@ function BridgeSide() {
 		this.debug = debug;
 	}
 	
+		
+	this.textura_cable = function(pos, col, row) {
+		var coords = vec2.create();
+	
+		coords[0] = 1.0 - row/20.0;
+		coords[1] = 1.0 - col;
+		
+		return coords;
+	}
+	
+	
+	
 	this.create = function(curva_cables, torre_pos, torre_alt, tensor_alt) {
 		
 		var puente_ph1 = params.ter_alto;
@@ -53,8 +65,15 @@ function BridgeSide() {
 		this.cable.set_follow_normal(true);
 		this.cable.set_color([0.5, 0.5, 0.5]);
 		var circulo = new Circumference();
-		circulo.create(0.1);		
-		this.cable.create(curva_cables, 500, circulo, 20);		
+		circulo.create(0.1);
+		
+		
+		this.cable.set_texture_function(this.textura_cable);
+		this.cable.grid.textures = [];
+		this.cable.grid.textures[0] = loadTexture("textures/cable2.jpg");
+		this.cable.grid.textures[1] = loadTexture("textures/cable2_norm.jpg");
+		
+		this.cable.create(curva_cables, 500, circulo, 20);
 		
 		
 		// Los tirantes
