@@ -186,7 +186,12 @@ void main(void) {
 		
 		#ifdef REFLECTION
 			if (uUseReflection) {
-				vec3 eyeDir_ref = normalize(reflect(-normalize(-uCameraPos-vPos), normalMap.rgb));
+				vec3 eyeDir_ref;
+				if (uUseNormals) {
+					eyeDir_ref = normalize(reflect(-normalize(-uCameraPos-vPos), normalMap.rgb));
+				} else {
+					eyeDir_ref = normalize(reflect(-normalize(-uCameraPos-vPos), vec3(0.0, 0.0, 1.0)));
+				}
 				vec4 reflectMap = textureCube(uSamplerReflection, eyeDir_ref);
 				float reflectiveness = 0.2;
 				finalColor = (1.0-reflectiveness) * finalColor + reflectiveness * reflectMap.rgb;

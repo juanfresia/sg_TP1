@@ -412,6 +412,7 @@ function VertexGrid() {
 	
 	// Exactamente que la funcion draw, pero fuerza a graficar una línea (usar para ver las curvas de las superficies de barrido)
 	this.draw_line = function(view_matrix, model_matrix){
+		glShaderColor = glShader["color"];
 		
 		gl.useProgram(glShaderColor);
 		
@@ -459,7 +460,6 @@ function VertexGrid() {
 		gl.useProgram(glShaderWater);
 		gl.uniformMatrix4fv(glShaderWater.uVMatrix, false, view_matrix);
 		var norm_matrix = mat3.create();
-				
 		
 		gl.enableVertexAttribArray(glShaderWater.aVertexPosition);
 		gl.enableVertexAttribArray(glShaderWater.aVertexNormal);
@@ -531,10 +531,14 @@ function VertexGrid() {
 		curve_gl.bufferData(curve_gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.index_buffer), curve_gl.STATIC_DRAW);
 		
 	}
+	
 	this.draw_2D = function() {
 		if (this.position_buffer_2D == null) {
 			this.setup2Dbuffers();
 		}
+		
+		gl.enableVertexAttribArray(curve_shader.aVertexPosition);
+		
 		curve_gl.bindBuffer(curve_gl.ARRAY_BUFFER, this.position_buffer_2D);
 		curve_gl.vertexAttribPointer(curve_shader.aVertexPosition, 3, curve_gl.FLOAT, false, 0, 0);
 		
@@ -542,5 +546,8 @@ function VertexGrid() {
 
 		// Dibujamos.
 		curve_gl.drawElements(curve_gl.LINE_STRIP, this.index_buffer.length, curve_gl.UNSIGNED_SHORT, 0);
+		
+		
+		gl.disableVertexAttribArray(curve_shader.aVertexPosition);
 	}
 }

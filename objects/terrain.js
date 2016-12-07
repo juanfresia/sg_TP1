@@ -214,7 +214,7 @@ function Terrain() {
 			this.lados[i].textures[5] = glTextures["stone_norm"];
 			this.lados[i].textures[6] = glTextures["grass2"];
 			this.lados[i].textures[7] = glTextures["grass2_norm"];
-			this.lados[i].textures[8] = glTextures["blend"];
+			this.lados[i].textures[8] = glTextures["blend_map"];
 		}
 	}
 	
@@ -251,7 +251,7 @@ function Terrain() {
 		this.superficie.grid.textures[5] = glTextures["stone_norm"];
 		this.superficie.grid.textures[6] = glTextures["grass2"];
 		this.superficie.grid.textures[7] = glTextures["grass2_norm"];
-		this.superficie.grid.textures[8] = glTextures["blend"];
+		this.superficie.grid.textures[8] = glTextures["blend_map"];
 		
 		this.superficie.create(this.curva_costa, 100, this.curva_cauce, 50);
 	}
