@@ -218,6 +218,7 @@ function TowerBase() {
 		this.grid.textures = [];
 		this.grid.textures[0] = glTextures["tower"];
 		this.grid.textures[1] = glTextures["tower_norm"];
+		this.grid.specular = true;
 				
 		this.grid.setupWebGLBuffers();
 	}

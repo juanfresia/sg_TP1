@@ -113,7 +113,12 @@ function VertexGrid() {
 
 	this.draw = function(view_matrix, model_matrix){
 		gl.useProgram(glShaderColor);
-		
+
+
+		gl.enableVertexAttribArray(glShaderColor.aVertexPosition);
+		gl.enableVertexAttribArray(glShaderColor.aVertexNormal);
+		gl.enableVertexAttribArray(glShaderColor.aVertexColor);
+
 		var norm_matrix = mat3.create();
 		
 		//mat4.mul(tmp, model_matrix, view_matrix);
@@ -124,7 +129,8 @@ function VertexGrid() {
 		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
 		gl.uniformMatrix3fv(glShaderColor.uNMatrix, false, norm_matrix);
 		gl.uniformMatrix4fv(glShaderColor.uMMatrix, false, model_matrix);
-		
+
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
 		gl.vertexAttribPointer(glShaderColor.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 
@@ -143,6 +149,10 @@ function VertexGrid() {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
 		
+		
+		gl.disableVertexAttribArray(glShaderColor.aVertexPosition);
+		gl.disableVertexAttribArray(glShaderColor.aVertexNormal);
+		gl.disableVertexAttribArray(glShaderColor.aVertexColor);
 	}
 	
 	
@@ -157,7 +167,11 @@ function VertexGrid() {
 			glShaderGeneric = glShaders["specular"];
 		}
 		
+		
 		gl.useProgram(glShaderGeneric);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexPosition);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexNormal);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexColor);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexTangent);
 
@@ -226,6 +240,10 @@ function VertexGrid() {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
 
+		
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexPosition);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexNormal);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexColor);
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexTangent);
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexUV);
 		
@@ -242,6 +260,9 @@ function VertexGrid() {
 		glShaderGeneric = glShaders["terrain"];
 		
 		gl.useProgram(glShaderGeneric);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexPosition);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexNormal);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexColor);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexUVBig);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexTangent);
@@ -320,6 +341,9 @@ function VertexGrid() {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
 
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexPosition);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexNormal);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexColor);
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexTangent);
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexUV);
 		gl.disableVertexAttribArray(glShaderGeneric.aVertexUVBig);
@@ -329,36 +353,41 @@ function VertexGrid() {
 	
 	this.draw_skybox = function(view_matrix, model_matrix, skyboxLight) {
 		
-		glGenericShader = glShaders["skybox"];
+		glShaderGeneric = glShaders["skybox"];
 		
-		gl.useProgram(glGenericShader);
-		gl.uniformMatrix4fv(glGenericShader.uVMatrix, false, view_matrix);
+		gl.useProgram(glShaderGeneric);
+		gl.uniformMatrix4fv(glShaderGeneric.uVMatrix, false, view_matrix);
 		var norm_matrix = mat3.create();
 				
 		var tmp = mat4.create();
+		
+		
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexPosition);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexNormal);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexColor);
+		gl.enableVertexAttribArray(glShaderGeneric.aVertexUV);
 		
 		mat3.fromMat4(norm_matrix, model_matrix);
 		mat3.invert(norm_matrix, norm_matrix);
 		mat3.transpose(norm_matrix, norm_matrix);
 		
-		gl.uniformMatrix3fv(glGenericShader.uNMatrix, false, norm_matrix);
-		gl.uniformMatrix4fv(glGenericShader.uMMatrix, false, model_matrix);
+		gl.uniformMatrix3fv(glShaderGeneric.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glShaderGeneric.uMMatrix, false, model_matrix);
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
-		gl.vertexAttribPointer(glGenericShader.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
-		gl.vertexAttribPointer(glGenericShader.aVertexColor, 3, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexColor, 3, gl.FLOAT, false, 0, 0);
 
-		gl.enableVertexAttribArray(glGenericShader.aVertexUV);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
-		gl.vertexAttribPointer(glGenericShader.aVertexUV, 2, gl.FLOAT, false, 0, 0);
+		gl.vertexAttribPointer(glShaderGeneric.aVertexUV, 2, gl.FLOAT, false, 0, 0);
 		
-		gl.uniform3fv(glGenericShader.uSkyboxLight, skyboxLight)
+		gl.uniform3fv(glShaderGeneric.uSkyboxLight, skyboxLight)
 		
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
-		gl.uniform1i(glGenericShader.uSampler1, 0);
+		gl.uniform1i(glShaderGeneric.uSampler1, 0);
 		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
@@ -369,7 +398,10 @@ function VertexGrid() {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
 		
-		gl.disableVertexAttribArray(glGenericShader.aVertexUV);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexPosition);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexNormal);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexColor);
+		gl.disableVertexAttribArray(glShaderGeneric.aVertexUV);
 	}
 	
 	
@@ -388,6 +420,10 @@ function VertexGrid() {
 		mat3.invert(norm_matrix, norm_matrix);
 		mat3.transpose(norm_matrix, norm_matrix);	
 		
+		gl.enableVertexAttribArray(glShaderColor.aVertexPosition);
+		gl.enableVertexAttribArray(glShaderColor.aVertexNormal);
+		gl.enableVertexAttribArray(glShaderColor.aVertexColor);
+		
 		gl.uniformMatrix3fv(glShaderColor.uNMatrix, false, norm_matrix);
 		gl.uniformMatrix4fv(glShaderColor.uMMatrix, false, model_matrix);
 		
@@ -404,7 +440,11 @@ function VertexGrid() {
 
 		// Dibujamos.
 		gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
-				
+		
+		
+		gl.disableVertexAttribArray(glShaderColor.aVertexPosition);
+		gl.disableVertexAttribArray(glShaderColor.aVertexNormal);
+		gl.disableVertexAttribArray(glShaderColor.aVertexColor);
 	}
 	
 	
@@ -415,8 +455,12 @@ function VertexGrid() {
 		gl.useProgram(glShaderWater);
 		gl.uniformMatrix4fv(glShaderWater.uVMatrix, false, view_matrix);
 		var norm_matrix = mat3.create();
+				
 		
-		//mat4.mul(tmp, model_matrix, view_matrix);
+		gl.enableVertexAttribArray(glShaderWater.aVertexPosition);
+		gl.enableVertexAttribArray(glShaderWater.aVertexNormal);
+		gl.enableVertexAttribArray(glShaderWater.aVertexColor);
+		gl.enableVertexAttribArray(glShaderWater.aVertexUV);
 		
 		var tmp = mat4.create();
 		
@@ -433,7 +477,6 @@ function VertexGrid() {
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
 		gl.vertexAttribPointer(glShaderWater.aVertexColor, 3, gl.FLOAT, false, 0, 0);
 
-		gl.enableVertexAttribArray(glShaderWater.aVertexUV);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
 		gl.vertexAttribPointer(glShaderWater.aVertexUV, 2, gl.FLOAT, false, 0, 0);
 		
@@ -454,6 +497,9 @@ function VertexGrid() {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
 		
+		gl.disableVertexAttribArray(glShaderWater.aVertexPosition);
+		gl.disableVertexAttribArray(glShaderWater.aVertexNormal);
+		gl.disableVertexAttribArray(glShaderWater.aVertexColor);
 		gl.disableVertexAttribArray(glShaderWater.aVertexUV);
 	}
 

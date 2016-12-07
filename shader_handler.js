@@ -76,13 +76,10 @@ function ShaderHandler() {
 	
 	this.setupCommons = function(shader) {
 		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
-		gl.enableVertexAttribArray(shader.aVertexPosition);
 		
 		shader.aVertexNormal = gl.getAttribLocation(shader, "aVertexNormal");
-		gl.enableVertexAttribArray(shader.aVertexNormal);
 		
 		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
-		gl.enableVertexAttribArray(shader.aVertexColor);
 		
 		shader.aVertexTangent = gl.getAttribLocation(shader, "aVertexTangent");
 		
@@ -162,10 +159,8 @@ function ShaderHandler() {
 		gl.linkProgram(shader);
 		
 		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
-		gl.enableVertexAttribArray(shader.aVertexPosition);
 		
 		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
-		gl.enableVertexAttribArray(shader.aVertexColor);
 		
 		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
 		shader.uMMatrix = gl.getUniformLocation(shader, "uMMatrix");
@@ -192,10 +187,8 @@ function ShaderHandler() {
 		gl.linkProgram(shader);
 		
 		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
-		gl.enableVertexAttribArray(shader.aVertexPosition);
 		
 		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
-		gl.enableVertexAttribArray(shader.aVertexColor);
 		
 		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
 		shader.uMMatrix = gl.getUniformLocation(shader, "uMMatrix");

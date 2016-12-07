@@ -59,17 +59,17 @@ function Scene() {
 				
 		// Creo las calles para completar el puente
 		for (var i = 0; i < 3; i++) {
-			path_carretera_izq.push([-borde, params.ter_alto, desplazamiento_puente[2]]);
-			path_carretera_der.push([fin_puente_der, params.ter_alto, desplazamiento_puente[2]]);
+			path_carretera_izq.push([-borde, params.ter_alto, 0.0]);
+			path_carretera_der.push([fin_puente_der, params.ter_alto, 0.0]);
 		}
 		for (var i = 0; i < 3; i++) {
-			path_carretera_izq.push([fin_puente_izq, params.ter_alto, desplazamiento_puente[2]]);
-			path_carretera_der.push([borde, params.ter_alto, desplazamiento_puente[2]]);
+			path_carretera_izq.push([fin_puente_izq, params.ter_alto, 0.0]);
+			path_carretera_der.push([borde, params.ter_alto, 0.0]);
 		}
 		
 		carreteras = [];
 		var curva_tmp = new CubicBSpline();
-		curva_tmp.create(path_carretera_izq);		
+		curva_tmp.create(path_carretera_izq);
 		carreteras[0] = new BridgeBase();
 		carreteras[0].create(curva_tmp);
 		
@@ -139,7 +139,7 @@ function Scene() {
 			return false;
 		}
 		
-		var rio_x = terreno.curva_at_y(y)[0];
+		var rio_x = terreno.curva_at_y(-y)[0];
 		if ((rio_x + params.rio_ancho/2 > x) && (rio_x - params.rio_ancho/2 < x)) {
 			return false;
 		}
@@ -169,12 +169,15 @@ function Scene() {
 		mat4.identity(model_matrix);
 		skybox.draw(view_matrix, model_matrix, params.sky_light);
 		terna.draw(view_matrix, model_matrix);
-		carreteras[0].draw(view_matrix, model_matrix);
-		carreteras[1].draw(view_matrix, model_matrix);
 				
 		mat4.translate(model_matrix, model_matrix, desplazamiento_puente);
 		puente.draw(view_matrix, model_matrix);
-
+		
+		mat4.identity(model_matrix);
+		mat4.translate(model_matrix, model_matrix, [0.0, 0.0, desplazamiento_puente[2]]);		
+		carreteras[0].draw(view_matrix, model_matrix);
+		carreteras[1].draw(view_matrix, model_matrix);
+		
 		for (var i = 0; i < arboles_pos.length; i++) {
 			mat4.identity(model_matrix);
 			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], altura_terreno, arboles_pos[i][1]]);
