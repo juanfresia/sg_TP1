@@ -6,7 +6,6 @@
 function Scene() {
 	
 	const LIGHT_POS = [-1.2, 1.2, -1.2];
-	//const LIGHT_POS = [0.0, 1, -0.0];
 	const AMBIENT_LIGHT = [0.4, 0.4, 0.4];
 	const SUN_LIGHT = [0.8, 0.8, 0.6];
 	
@@ -21,9 +20,7 @@ function Scene() {
 	var terna = null;
 	var agua = null;
 	var carreteras = null;
-	
-	var barco = null;
-	
+		
 	var arboles = null;
 	
 	var ship_angle = null;
@@ -80,10 +77,6 @@ function Scene() {
 		curva_tmp.create(path_carretera_der);
 		carreteras[1] = new BridgeBase();
 		carreteras[1].create(curva_tmp);
-		
-		// Creo el barco
-		barco = new Ship();
-		barco.create();
 		
 		arboles = [];
 		arboles_pos = [];
@@ -152,31 +145,7 @@ function Scene() {
 		}
 		return true;
 	}
-	
-	// Funcion auxiliar para obtener la posición del barco en un dado tiempo
-	this.get_ship_pos = function(t) {
-		var u = (t * params.ship_speed/1000) % 1;
-		var costa_pos = terreno.curva_at_y(-u * params.ter_ancho + params.ter_ancho/2);
-		var pos = [0.0, params.ter_alto, 0.0];
-		pos[2] = -costa_pos[1];
-		pos[0] = costa_pos[0];
-		if (params.puente_num_torres % 2 == 1) 
-			pos[0] += params.rio_ancho/8;
 		
-		this.ship_pos = pos;
-		return pos;
-	}
-	
-	this.get_ship_angle = function(t) {
-		var u = (t * params.ship_speed/1000) % 1;
-		var costa_tan = terreno.curva_tan_at_y(-u * params.ter_ancho + params.ter_ancho/2);
-		vec3.normalize(costa_tan, costa_tan);
-		var foward = vec3.fromValues(1.0, 0.0, 0.0);
-		var angle = Math.acos(vec3.dot(foward, costa_tan));
-		this.ship_angle = angle;
-		return angle;
-	}
-	
 	// Dibuja las estructuras una por una, teniendo en cuenta parámetros externos como el tiempo o la matriz de vista (o lo que sea que se necesite, puede que tengamos que pasar directamente los shaders para agregar las deformaciones al agua por ejemplo.
 	this.draw = function(time, view_matrix, camera_pos) {
 		var tmp = mat4.create();
@@ -203,17 +172,7 @@ function Scene() {
 				
 		mat4.translate(model_matrix, model_matrix, desplazamiento_puente);
 		puente.draw(view_matrix, model_matrix);
-		
-		
-		// Dibujo el barco
-		//mat4.identity(model_matrix);
-		//mat4.translate(model_matrix, model_matrix, this.ship_pos);
-		//if (this.ship_angle != 0) {
-		//	mat4.rotate(model_matrix, model_matrix, this.ship_angle, [0.0, 1.0, 0.0]);
-		//}
-			
-		//barco.draw(view_matrix, model_matrix);
-		
+
 		for (var i = 0; i < arboles_pos.length; i++) {
 			mat4.identity(model_matrix);
 			mat4.translate(model_matrix, model_matrix, [arboles_pos[i][0], altura_terreno, arboles_pos[i][1]]);
