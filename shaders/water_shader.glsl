@@ -133,7 +133,7 @@ void main(void) {
 		// Reflexión
 		vec3 eyeDir_ref = normalize(reflect(-eyeDir, normalMap.rgb));
 		vec4 reflectMap = textureCube(uSamplerReflection, -eyeDir_ref);
-		float reflectiveness = 0.7;
+		float reflectiveness = 0.6;
 		vec3 finalColor = (1.0-reflectiveness) * vColor.rgb + reflectiveness * reflectMap.rgb;
 		
 		gl_FragColor = vec4(finalColor * lightColor, 0.9);

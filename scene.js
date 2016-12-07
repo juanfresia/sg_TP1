@@ -5,7 +5,7 @@
 
 function Scene() {
 	
-	const LIGHT_POS = [-1.2, 1.2, -1.2];
+	const LIGHT_POS = [-0.8, 1.2, 1.2];
 	const AMBIENT_LIGHT = [0.4, 0.4, 0.4];
 	const SUN_LIGHT = [0.8, 0.8, 0.6];
 	
@@ -145,7 +145,8 @@ function Scene() {
 		}
 		return true;
 	}
-		
+
+
 	// Dibuja las estructuras una por una, teniendo en cuenta parámetros externos como el tiempo o la matriz de vista (o lo que sea que se necesite, puede que tengamos que pasar directamente los shaders para agregar las deformaciones al agua por ejemplo.
 	this.draw = function(time, view_matrix, camera_pos) {
 		var tmp = mat4.create();
@@ -161,11 +162,12 @@ function Scene() {
 		
 		gl.useProgram(glShaderColor);
 		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
-				
+		
+		
 		// Preparamos una matriz de modelo y de vista.
 		
 		mat4.identity(model_matrix);
-		skybox.draw(view_matrix, model_matrix);
+		skybox.draw(view_matrix, model_matrix, params.sky_light);
 		terna.draw(view_matrix, model_matrix);
 		carreteras[0].draw(view_matrix, model_matrix);
 		carreteras[1].draw(view_matrix, model_matrix);
@@ -183,7 +185,7 @@ function Scene() {
 		mat4.identity(model_matrix);
 		mat4.translate(model_matrix, model_matrix, LIGHT_POS);
 		terna.draw(view_matrix, model_matrix);
-				
+		
 		mat4.identity(model_matrix);
 		mat4.rotate(model_matrix, model_matrix, Math.PI/2, [-1.0, 0.0, 0.0]);
 		terreno.draw(view_matrix, model_matrix);

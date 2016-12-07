@@ -20,10 +20,11 @@
 	
 	<script type="text/javascript" src="primitives/grid.js"></script>
 	<script type="text/javascript" src="primitives/surfaces.js"></script>
-	<script type="text/javascript" src="primitives/segment_curve.js"></script>
 	<script type="text/javascript" src="primitives/bspline.js"></script>
 	<script type="text/javascript" src="primitives/terna.js"></script>
 	<script type="text/javascript" src="primitives/circumference.js"></script>
+	<script type="text/javascript" src="primitives/copa.js"></script>
+	
 	<script type="text/javascript" src="objects/tower_base.js"></script>
 	<script type="text/javascript" src="objects/skybox.js"></script>
 	<script type="text/javascript" src="objects/water.js"></script>
@@ -32,7 +33,6 @@
 	<script type="text/javascript" src="objects/tower.js"></script>
 	<script type="text/javascript" src="objects/bridge_base.js"></script>
 	<script type="text/javascript" src="objects/arbol.js"></script>
-	<script type="text/javascript" src="primitives/copa.js"></script>
 	<script type="text/javascript" src="objects/bridge_side.js"></script>
 	<script type="text/javascript" src="objects/bridge.js"></script>
 	
@@ -240,6 +240,8 @@
 			imageCount = 0;
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 			gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
 		}
 		gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -262,21 +264,25 @@
 		return cubeMap;
 	}
 	
-	function handleLoadedTexture(image, texture) {
+	function handleLoadedTexture(image, texture, clamp_edges) {
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+		if (clamp_edges) {
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+		}
 		gl.generateMipmap(gl.TEXTURE_2D);
 		gl.bindTexture(gl.TEXTURE_2D, null);
 	}
 	
 	
-	function loadTexture(path) {
+	function loadTexture(path, clamp_edges) {
 		var texture = gl.createTexture();
 		var image = new Image();
 		image.onload = function() {
-			handleLoadedTexture(image, texture);
+			handleLoadedTexture(image, texture, clamp_edges);
 		}
 		image.src = path;
 		
@@ -296,8 +302,14 @@
 			"textures/siege_dn.jpg",
 			"textures/siege_rt.jpg",
 			"textures/siege_lf.jpg"];
-			
 		glTextures["skyboxCM"] = loadCubeMap(paths);
+		
+		glTextures["sky_ft"] = loadTexture("textures/siege_ft.jpg", true);
+		glTextures["sky_bk"] = loadTexture("textures/siege_bk.jpg", true);
+		glTextures["sky_up"] = loadTexture("textures/siege_up.jpg", true);
+		glTextures["sky_dn"] = loadTexture("textures/siege_dn.jpg", true);
+		glTextures["sky_rt"] = loadTexture("textures/siege_rt.jpg", true);
+		glTextures["sky_lf"] = loadTexture("textures/siege_lf.jpg", true);
 		
 		// Para el agua
 		glTextures["water_norm"] = loadTexture("textures/water_norm.jpg");
@@ -308,10 +320,10 @@
 		
 		// Para los tensores y los cables
 		glTextures["tensor"] = loadTexture("textures/tensor.jpg");
-		glTextures["tensor_norm"] = loadTexture("textures/tensor_norm.jpg");
+		glTextures["tensor_norm"] = loadTexture("textures/uniform.jpg");
 		
 		glTextures["cable"] = loadTexture("textures/tensor.jpg");
-		glTextures["cable_norm"] = loadTexture("textures/tensor_norm.jpg");
+		glTextures["cable_norm"] = loadTexture("textures/uniform.jpg");
 		
 		// Para la calle		
 		glTextures["road"] = loadTexture("textures/camino.jpg");
@@ -330,14 +342,17 @@
 		glTextures["grass2_norm"] = loadTexture("textures/pine_norm.jpg");
 		glTextures["blend_map"] = loadTexture("textures/stone2_norm.jpg");
 		
-		
 		// Para el arbol
-		
 		glTextures["leaves"] = loadTexture("textures/hojas.jpg");
 		glTextures["leaves_norm"] = loadTexture("textures/uniform.jpg");
 		glTextures["bark"] = loadTexture("textures/bark.jpg");
 		glTextures["bark_norm"] = loadTexture("textures/bark_norm.jpg");
 		
+		// Auxiliares & debug
+		glTextures["orange"] = loadTexture("textures/orange.jpg");
+		glTextures["uniform"] = loadTexture("textures/uniform.jpg");
+		glTextures["grid1"] = loadTexture("textures/uv_grid1.jpg");
+		glTextures["grid2"] = loadTexture("textures/uv_grid2.jpg");
 	}
 	
 		
@@ -398,7 +413,7 @@
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		
 		// Preparamos una matriz de perspectiva. (FOV, aspectRatio, z_front y z_back).
-		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 1000.0);
+		mat4.perspective(pMatrix, 45, 1280.0/768.0, 0.1, 2000.0);
 		
 		gl.useProgram(glShaderColor);
 		gl.uniformMatrix4fv(glShaderColor.uPMatrix, false, pMatrix);
@@ -414,9 +429,6 @@
 		}
 		
 		gl.useProgram(glShaderColor);
-		
-		//handler.set_ship_pos(my_scene.get_ship_pos(time));
-		//handler.set_ship_angle(my_scene.get_ship_angle(time));
 		
 		my_scene.draw(time, handler.get_view_matrix(), handler.get_camera_pos());
 		time += 0.02;

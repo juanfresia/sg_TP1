@@ -327,6 +327,50 @@ function VertexGrid() {
 	}
 	
 	
+	this.draw_skybox = function(view_matrix, model_matrix, skyboxLight) {
+		
+		glGenericShader = glShaders["skybox"];
+		
+		gl.useProgram(glGenericShader);
+		gl.uniformMatrix4fv(glGenericShader.uVMatrix, false, view_matrix);
+		var norm_matrix = mat3.create();
+				
+		var tmp = mat4.create();
+		
+		mat3.fromMat4(norm_matrix, model_matrix);
+		mat3.invert(norm_matrix, norm_matrix);
+		mat3.transpose(norm_matrix, norm_matrix);
+		
+		gl.uniformMatrix3fv(glGenericShader.uNMatrix, false, norm_matrix);
+		gl.uniformMatrix4fv(glGenericShader.uMMatrix, false, model_matrix);
+		
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_position_buffer);
+		gl.vertexAttribPointer(glGenericShader.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_color_buffer);
+		gl.vertexAttribPointer(glGenericShader.aVertexColor, 3, gl.FLOAT, false, 0, 0);
+
+		gl.enableVertexAttribArray(glGenericShader.aVertexUV);
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_texture_coord_buffer);
+		gl.vertexAttribPointer(glGenericShader.aVertexUV, 2, gl.FLOAT, false, 0, 0);
+		
+		gl.uniform3fv(glGenericShader.uSkyboxLight, skyboxLight)
+		
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
+		gl.uniform1i(glGenericShader.uSampler1, 0);
+		
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
+
+		// Dibujamos.
+		if (params.line_strip) {
+			gl.drawElements(gl.LINE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		} else {
+			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
+		}
+		
+		gl.disableVertexAttribArray(glGenericShader.aVertexUV);
+	}
 	
 	
 	
@@ -410,7 +454,7 @@ function VertexGrid() {
 			gl.drawElements(gl.TRIANGLE_STRIP, this.index_buffer.length, gl.UNSIGNED_SHORT, 0);
 		}
 		
-		//gl.disableVertexAttribArray(glShaderWater.aVertexUV);
+		gl.disableVertexAttribArray(glShaderWater.aVertexUV);
 	}
 
 	

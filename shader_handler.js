@@ -96,7 +96,6 @@ function ShaderHandler() {
 		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
 	}
 	
-	
 	this.loadTextureShader = function() {
 		var shader = this.crearPrograma("shaders/texturas_simples.glsl", "");
 
@@ -187,12 +186,35 @@ function ShaderHandler() {
 		glShaders["water"] = shader;
 	}
 	
-	
+	this.loadSkyBoxShader = function() {
+		var shader = this.crearPrograma("shaders/skybox_shader.glsl", "");
+
+		gl.linkProgram(shader);
+		
+		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
+		gl.enableVertexAttribArray(shader.aVertexPosition);
+		
+		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
+		gl.enableVertexAttribArray(shader.aVertexColor);
+		
+		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
+		shader.uMMatrix = gl.getUniformLocation(shader, "uMMatrix");
+		shader.uPMatrix = gl.getUniformLocation(shader, "uPMatrix");
+		shader.uNMatrix = gl.getUniformLocation(shader, "uNMatrix");
+		
+		shader.uSkyboxLight = gl.getUniformLocation(shader, "uSkyboxLight");
+		
+		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
+		shader.uSampler1 = gl.getUniformLocation(shader, "uSampler1");
+		
+		glShaders["skybox"] = shader;
+	}
 	
 	this.load = function() {
 		this.loadTextureShader();
 		this.loadTerrainShader();
 		this.loadWaterShader();
+		this.loadSkyBoxShader();
 	}
 	
 }
