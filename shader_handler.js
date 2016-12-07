@@ -92,6 +92,10 @@ function ShaderHandler() {
 		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
 		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
 		
+		shader.uUseSpecular = gl.getUniformLocation(shader, "uUseSpecular");
+		shader.uUseReflection = gl.getUniformLocation(shader, "uUseReflection");
+		shader.uUseNormals = gl.getUniformLocation(shader, "uUseNormals");
+		shader.uUseTexture = gl.getUniformLocation(shader, "uUseTexture");
 	}
 	
 	this.loadColorShader = function() {
@@ -115,6 +119,11 @@ function ShaderHandler() {
 		shader.uAmbientColor = gl.getUniformLocation(shader, "uAmbientColor");
 		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
 		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
+		
+		shader.uUseSpecular = gl.getUniformLocation(shader, "uUseSpecular");
+		shader.uUseReflection = gl.getUniformLocation(shader, "uUseReflection");
+		shader.uUseNormals = gl.getUniformLocation(shader, "uUseNormals");
+		shader.uUseTexture = gl.getUniformLocation(shader, "uUseTexture");
 		
 		glShaders["color"] = shader;
 	}
@@ -200,6 +209,11 @@ function ShaderHandler() {
 		shader.uSampler1 = gl.getUniformLocation(shader, "uSamplerNormal");
 		shader.uSamplerReflection = gl.getUniformLocation(shader, "uSamplerReflection");
 		
+		shader.uUseSpecular = gl.getUniformLocation(shader, "uUseSpecular");
+		shader.uUseReflection = gl.getUniformLocation(shader, "uUseReflection");
+		shader.uUseNormals = gl.getUniformLocation(shader, "uUseNormals");
+		shader.uUseTexture = gl.getUniformLocation(shader, "uUseTexture");
+		
 		shader.uTime = gl.getUniformLocation(shader, "uTime");
 		
 		glShaders["water"] = shader;
@@ -223,6 +237,11 @@ function ShaderHandler() {
 		
 		shader.aVertexUV = gl.getAttribLocation(shader, "aVertexUV");
 		shader.uSampler1 = gl.getUniformLocation(shader, "uSampler1");
+		
+		shader.uUseSpecular = gl.getUniformLocation(shader, "uUseSpecular");
+		shader.uUseReflection = gl.getUniformLocation(shader, "uUseReflection");
+		shader.uUseNormals = gl.getUniformLocation(shader, "uUseNormals");
+		shader.uUseTexture = gl.getUniformLocation(shader, "uUseTexture");
 		
 		glShaders["skybox"] = shader;
 	}

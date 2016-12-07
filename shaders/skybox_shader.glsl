@@ -33,7 +33,8 @@ void main(void) {
 
 // Shader de fragmentos
 #ifdef FRAGMENTOS
-	precision mediump float;	
+	precision mediump float;
+	
 
 	varying highp vec4 vColor;
 	uniform vec3 uSkyboxLight;
@@ -42,6 +43,8 @@ void main(void) {
 	varying vec2 vUV;
 	
 	uniform sampler2D uSampler1;	// Textura 1
+	
+	uniform bool uUseTexture;
 	
 	// Funcion transponer auxiliar
 	mat3 transpose(mat3 m) {
@@ -62,7 +65,13 @@ void main(void) {
 	}
 
 	void main(void) {
-		vec4 textureColor = texture2D(uSampler1, vec2(vUV.s, vUV.t));
+		vec4 textureColor;
+		
+		if (uUseTexture) {
+			textureColor = texture2D(uSampler1, vec2(vUV.s, vUV.t));
+		} else {
+			textureColor = vColor;
+		}
 		
 		gl_FragColor = vec4(textureColor.rgb * uSkyboxLight, 1.0);
 }

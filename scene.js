@@ -154,7 +154,16 @@ function Scene() {
 		my_shader = glShaders["specular"];
 		gl.useProgram(my_shader);
 		gl.uniform3fv(my_shader.uCameraPos, camera_pos);
-				
+		
+		for (var elem in glShaders) {
+			my_shader = glShaders[elem];
+			gl.useProgram(my_shader);
+			gl.uniform1i(my_shader.uUseSpecular, params.specular);
+			gl.uniform1i(my_shader.uUseReflection, params.reflect);
+			gl.uniform1i(my_shader.uUseNormals, params.normals);
+			gl.uniform1i(my_shader.uUseTexture, params.textures);
+		}
+		
 		// Preparamos una matriz de modelo y de vista.
 		
 		mat4.identity(model_matrix);
@@ -165,7 +174,7 @@ function Scene() {
 		puente.draw(view_matrix, model_matrix);
 		
 		mat4.identity(model_matrix);
-		mat4.translate(model_matrix, model_matrix, [0.0, 0.0, desplazamiento_puente[2]]);		
+		mat4.translate(model_matrix, model_matrix, [0.0, 0.0, desplazamiento_puente[2]]);
 		carreteras[0].draw(view_matrix, model_matrix);
 		carreteras[1].draw(view_matrix, model_matrix);
 		

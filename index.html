@@ -335,6 +335,7 @@
 		ancho_corte:0.2,
 		prof_corte:0.7,
 		reduccion:0.8,
+		tower_reflect:true,
 		
 		// Puente
 		puente_ph2:2,
@@ -348,8 +349,10 @@
 		
 	
 		line_strip:false,
-		debug_mode:true,
+		normals:true,
 		specular:true,
+		reflect:true,
+		textures:true,
 		reiniciar:loadScene,
 		reset_curve:clear_points
 	};
@@ -380,11 +383,14 @@
 		group1.add(params, 'ancho_corte', 0.1, 0.9).name('Ancho corte').step(0.05);
 		group1.add(params, 'prof_corte', 0.1, 1.0).name('Prof. corte').step(0.05);
 		group1.add(params, 'reduccion', 0.5, 1.0).name('Reduccion').step(0.05);
+		group1.add(params, 'tower_reflect').name('Reflexión?');
 		
 		var group2 = gui.addFolder('General');
-		group2.add(params, 'debug_mode').name('Debug');
 		group2.add(params, 'line_strip').name('LINE_STRIP?');
-		group2.add(params, 'specular').name('Cable especular?');
+		group2.add(params, 'normals').name('Normales?');
+		group2.add(params, 'textures').name('Texturas?');
+		group2.add(params, 'specular').name('Especular?');
+		group2.add(params, 'reflect').name('Reflexiones?');
 		group2.add(params, 'reiniciar').name("Reiniciar");
 		group2.add(params, 'reset_curve').name("Limpiar curva");
 

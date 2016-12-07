@@ -87,6 +87,10 @@ void main(void) {
 	uniform sampler2D uSamplerNormal;	// Normales
 	uniform samplerCube uSamplerReflection;
 	
+	uniform bool uUseNormals;
+	uniform bool uUseSpecular;
+	uniform bool uUseReflection;
+	
 	// Funcion transponer auxiliar
 	mat3 transpose(mat3 m) {
 		mat3 aux = mat3(0.0);
@@ -107,8 +111,12 @@ void main(void) {
 
 	void main(void) {
 		vec4 normalMap = texture2D(uSamplerNormal, vec2(vUV.s, vUV.t));
-				
-		normalMap = normalMap * 2.0 - vec4(1.0, 1.0, 1.0, 1.0);
+		
+		if (uUseNormals) {
+			normalMap = normalMap * 2.0 - vec4(1.0, 1.0, 1.0, 1.0);
+		} else {
+			normalMap = vec4(0.0, 0.0, 1.0, 1.0);
+		}
 		
 		// Calculo la binormal y la matriz de cambio de base. NxB=T
 		vec3 binormal = normalize(cross(vNormal, vTangent));
@@ -124,17 +132,23 @@ void main(void) {
 		
 		// Calculo el ángulo y aplico el color
 		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
-		
 		highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 15.0);
+		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 		
-		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting + vec3(0.9, 0.9, 0.9) * specularLightWeighting;
+		if (uUseSpecular) {
+			lightColor += vec3(0.9, 0.9, 0.9) * specularLightWeighting;
+		}
 		
-		
+		vec3 finalColor;
 		// Reflexión
-		vec3 eyeDir_ref = normalize(reflect(-eyeDir, normalMap.rgb));
-		vec4 reflectMap = textureCube(uSamplerReflection, -eyeDir_ref);
-		float reflectiveness = 0.6;
-		vec3 finalColor = (1.0-reflectiveness) * vColor.rgb + reflectiveness * reflectMap.rgb;
+		if (uUseReflection) {
+			vec3 eyeDir_ref = normalize(reflect(-eyeDir, normalMap.rgb));
+			vec4 reflectMap = textureCube(uSamplerReflection, -eyeDir_ref);
+			float reflectiveness = 0.6;
+			finalColor = (1.0-reflectiveness) * vColor.rgb + reflectiveness * reflectMap.rgb;
+		} else {
+			finalColor = vColor.rgb;
+		}
 		
 		gl_FragColor = vec4(finalColor * lightColor, 0.9);
 		

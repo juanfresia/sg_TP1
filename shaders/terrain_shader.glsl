@@ -93,6 +93,9 @@ void main(void) {
 	uniform sampler2D uSamplerAltNorm;
 	
 	uniform sampler2D uSamplerBlend;
+		
+	uniform bool uUseNormals;
+	uniform bool uUseTexture;
 	
 	// Funcion transponer auxiliar
 	mat3 transpose(mat3 m) {
@@ -160,8 +163,16 @@ void main(void) {
 				}
 			}
 		}
-		nmFinal = nmFinal * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
 		
+		if (!uUseTexture) {
+			tcFinal = vColor;
+		}
+		
+		if (uUseNormals) {
+			nmFinal = nmFinal * 2.0 - vec4(1.0, 1.0, 1.0, 0.0);
+		} else {
+			nmFinal = vec4(0.0, 0.0, 1.0, 1.0);
+		}
 		// Calculo la binormal y la matriz de cambio de base. NxB=T
 		vec3 binormal = normalize(cross(vNormal, vTangent));
 		mat3 tangent_space = transpose(mat3(vTangent, binormal, vNormal));

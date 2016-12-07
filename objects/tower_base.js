@@ -215,6 +215,10 @@ function TowerBase() {
 			this.push_point(this.grid.color_buffer, this.color);
 		}
 		
+		if (params.tower_reflect) {
+			this.grid.cubemap = glTextures["skyboxCM"];
+		}
+		
 		this.grid.textures = [];
 		this.grid.textures[0] = glTextures["tower"];
 		this.grid.textures[1] = glTextures["tower_norm"];

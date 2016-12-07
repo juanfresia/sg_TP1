@@ -2,6 +2,7 @@
 // mapas de normales.
 
 
+
 // Shader de vértices
 #ifdef VERTICES
 attribute vec3 aVertexPosition;
@@ -65,9 +66,13 @@ void main(void) {
 
 #endif
 
+
+
+
+
 // Shader de fragmentos
 #ifdef FRAGMENTOS
-	precision mediump float;	
+	precision mediump float;
 
 	varying highp vec4 vColor;
 	varying highp vec3 vLightDir;
@@ -91,13 +96,19 @@ void main(void) {
 	#endif
 	
 	#ifdef REFLECTION
+		uniform bool uUseReflection;
 		uniform samplerCube uSamplerReflection;
 	#endif
 	
 	#ifdef SPECULAR
 		varying highp vec3 vPos;
 		uniform vec3 uCameraPos;
+		uniform bool uUseSpecular;
 	#endif
+	
+	uniform bool uUseNormals;
+	uniform bool uUseTexture;
+	
 	
 	// Funcion transponer auxiliar
 	mat3 transpose(mat3 m) {
@@ -121,6 +132,7 @@ void main(void) {
 		vec4 textureColor = texture2D(uSampler1, vec2(vUV.s, vUV.t));
 		vec4 normalMap = texture2D(uSampler2, vec2(vUV.s, vUV.t));
 		
+		
 		#ifdef MULTIPLE_TEXTURA
 			if (vtextureIndex >= 1.5) {
 				textureColor = texture2D(uSampler3, vec2(vUV.s, vUV.t));
@@ -137,30 +149,55 @@ void main(void) {
 		// Convierto el vector dirección al espacio de la tangente
 		vec3 lightDir_ts = normalize(tangent_space * vLightDir);
 		
-				
 		// Calculo el ángulo y aplico el color
-		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
+		highp float directionalLightWeighting;
+		
+		if (uUseNormals) {
+			directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
+		} else {
+			directionalLightWeighting = max(dot(vec3(0.0, 0.0, 1.0), lightDir_ts), 0.0);
+		}
+		
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 		
 		
 		#ifdef SPECULAR
-			vec3 eyeDir_ts = normalize(tangent_space * (-uCameraPos-vPos));
-			vec3 reflectDir_ts = normalize(reflect(-lightDir_ts, normalMap.rgb));
-			highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 30.0);
-			lightColor += vec3(0.9, 0.9, 0.9) * specularLightWeighting;
+			if (uUseSpecular) {
+				vec3 eyeDir_ts = normalize(tangent_space * (-uCameraPos-vPos));
+				
+				vec3 reflectDir_ts;
+				if (uUseNormals) {
+					reflectDir_ts = normalize(reflect(-lightDir_ts, normalMap.rgb));
+				} else {
+					reflectDir_ts = normalize(reflect(-lightDir_ts, vec3(0.0, 0.0, 1.0)));
+				}
+				
+				highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 30.0);
+				lightColor += vec3(0.9, 0.9, 0.9) * specularLightWeighting;
+			}
 		#endif
 		
-		vec3 finalColor = textureColor.rgb;
+		vec3 finalColor;
+		if (uUseTexture) {
+			finalColor = textureColor.rgb;
+		} else {
+			finalColor = vColor.rgb;
+		}
 		
 		#ifdef REFLECTION
-			vec3 eyeDir_ref = normalize(reflect(-normalize(-uCameraPos-vPos), normalMap.rgb));
-			vec4 reflectMap = textureCube(uSamplerReflection, eyeDir_ref);
-			float reflectiveness = 0.2;
-			finalColor = (1.0-reflectiveness) * finalColor + reflectiveness * reflectMap.rgb;
+			if (uUseReflection) {
+				vec3 eyeDir_ref = normalize(reflect(-normalize(-uCameraPos-vPos), normalMap.rgb));
+				vec4 reflectMap = textureCube(uSamplerReflection, eyeDir_ref);
+				float reflectiveness = 0.2;
+				finalColor = (1.0-reflectiveness) * finalColor + reflectiveness * reflectMap.rgb;
+			}
 		#endif
-			
+		
+		
+		
 		gl_FragColor = vec4(finalColor * lightColor, 1.0);
-				
+		
+		
 		//gl_FragColor = vec4(lightDir_ts/2.0+0.5, textureColor.a);
 		//gl_FragColor = vec4(vTangent/2.0+0.5, textureColor.a);
 		

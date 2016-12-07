@@ -163,10 +163,14 @@ function VertexGrid() {
 		else
 			glShaderGeneric = glShaders["single_texture"];
 		
-		if (this.specular && params.specular) {
+		if (this.specular) {
 			glShaderGeneric = glShaders["specular"];
+			if (this.cubemap && params.reflect) {
+				gl.uniform1i(glShaderGeneric.uUseReflection, params.reflect);
+			} else {
+				gl.uniform1i(glShaderGeneric.uUseReflection, false);
+			}
 		}
-		
 		
 		gl.useProgram(glShaderGeneric);
 		gl.enableVertexAttribArray(glShaderGeneric.aVertexPosition);
