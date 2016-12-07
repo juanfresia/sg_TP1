@@ -27,6 +27,7 @@ function Terna() {
 	}
 
 	this.draw = function(view_matrix, model_matrix){
+		glShaderColor = glShaders["color"];
 		
 		gl.useProgram(glShaderColor);
 		var tmp = mat4.create();

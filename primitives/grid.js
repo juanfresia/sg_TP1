@@ -112,8 +112,8 @@ function VertexGrid() {
 	}
 
 	this.draw = function(view_matrix, model_matrix){
+		glShaderColor = glShaders["color"];
 		gl.useProgram(glShaderColor);
-
 
 		gl.enableVertexAttribArray(glShaderColor.aVertexPosition);
 		gl.enableVertexAttribArray(glShaderColor.aVertexNormal);

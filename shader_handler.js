@@ -91,6 +91,32 @@ function ShaderHandler() {
 		shader.uAmbientColor = gl.getUniformLocation(shader, "uAmbientColor");
 		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
 		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
+		
+	}
+	
+	this.loadColorShader = function() {
+		var shader = this.crearPrograma("shaders/color_shader.glsl", "");
+		
+		gl.linkProgram(shader);
+
+		// Punteros a los atributos del shader
+		shader.aVertexPosition = gl.getAttribLocation(shader, "aVertexPosition");
+		shader.aVertexNormal = gl.getAttribLocation(shader, "aVertexNormal");
+		shader.aVertexColor = gl.getAttribLocation(shader, "aVertexColor");
+				
+		// Punteros a las matrices y parámetros uniform
+		shader.uVMatrix = gl.getUniformLocation(shader, "uVMatrix");
+		shader.uMMatrix = gl.getUniformLocation(shader, "uMMatrix");
+		shader.uPMatrix = gl.getUniformLocation(shader, "uPMatrix");
+		shader.uNMatrix = gl.getUniformLocation(shader, "uNMatrix");
+		
+		// Parámetros de iluminación
+		shader.uUseLighting = gl.getUniformLocation(shader, "uUseLighting");
+		shader.uAmbientColor = gl.getUniformLocation(shader, "uAmbientColor");
+		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
+		shader.uDirectionalColor = gl.getUniformLocation(shader, "uDirectionalColor");
+		
+		glShaders["color"] = shader;
 	}
 	
 	this.loadTextureShader = function() {
@@ -129,7 +155,6 @@ function ShaderHandler() {
 		glShaders["specular"] = shader;
 	}
 	
-	
 	this.loadTerrainShader = function() {
 		var shader = this.crearPrograma("shaders/terrain_shader.glsl", "");
 
@@ -151,7 +176,6 @@ function ShaderHandler() {
 		
 		glShaders["terrain"] = shader;
 	}
-	
 	
 	this.loadWaterShader = function() {
 		var shader = this.crearPrograma("shaders/water_shader.glsl", "");
@@ -204,6 +228,7 @@ function ShaderHandler() {
 	}
 	
 	this.load = function() {
+		this.loadColorShader();
 		this.loadTextureShader();
 		this.loadTerrainShader();
 		this.loadWaterShader();

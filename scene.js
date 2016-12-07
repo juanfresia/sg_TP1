@@ -109,13 +109,6 @@ function Scene() {
 			light_position[i]  = LIGHT_POS[i] * params.ter_ancho/2.0;
 		}
 		
-		gl.useProgram(glShaderColor);
-		gl.uniform1i(glShaderColor.uUseLighting, true);
-		gl.uniform3fv(glShaderColor.uAmbientColor, vec3.fromValues(AMBIENT_LIGHT[0], AMBIENT_LIGHT[1], AMBIENT_LIGHT[2]));
-		gl.uniform3fv(glShaderColor.uLightPosition, vec3.fromValues(light_position[0], light_position[1], light_position[2]));
-		gl.uniform3fv(glShaderColor.uDirectionalColor, vec3.fromValues(SUN_LIGHT[0], SUN_LIGHT[1], SUN_LIGHT[2]));
-		
-		
 		for (var elem in glShaders) {
 			var shader = glShaders[elem];
 			gl.useProgram(shader);
@@ -128,7 +121,9 @@ function Scene() {
 		gl.useProgram(shader);
 		gl.uniform1f(shader.uMaxHeight, params.ter_alto);
 		
-		gl.useProgram(glShaderColor);
+		shader = glShaders["color"];
+		gl.useProgram(shader);
+		gl.uniform1i(shader.uUseLighting, true);
 	}
 	
 	
@@ -159,11 +154,7 @@ function Scene() {
 		my_shader = glShaders["specular"];
 		gl.useProgram(my_shader);
 		gl.uniform3fv(my_shader.uCameraPos, camera_pos);
-		
-		gl.useProgram(glShaderColor);
-		gl.uniformMatrix4fv(glShaderColor.uVMatrix, false, view_matrix);
-		
-		
+				
 		// Preparamos una matriz de modelo y de vista.
 		
 		mat4.identity(model_matrix);

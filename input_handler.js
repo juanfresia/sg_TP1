@@ -170,10 +170,23 @@ function InputHandler() {
 	//			  usar la rueda del mouse para acercarse o alejarse.
 	
 	this.on_key_down_orbit = function(e) {
+		console.log(e.keyCode);
 		switch (e.keyCode) {
 		case 49:		// '1'
 			this.handler.set_free();
 			alert("Camara en modo libre");
+			break;
+		case 107:		// '+'
+			this.handler.orbit_cam.radius -= params.velocidad_mov/10.0;
+			if (this.handler.orbit_cam.radius < 0)
+				this.handler.orbit_cam.radius = 0;
+			this.handler.recalculate_matrix();
+			break;
+		case 109:		// '-'
+			this.handler.orbit_cam.radius += params.velocidad_mov/10.0;
+			if (this.handler.orbit_cam.radius < 0)
+				this.handler.orbit_cam.radius = 0;
+			this.handler.recalculate_matrix();
 			break;
 		} 
 	}
