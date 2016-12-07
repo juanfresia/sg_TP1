@@ -12,8 +12,8 @@ function InputHandler() {
 		cur_y:0.0,
 		pre_x:0.0,
 		pre_y:0.0,
-		speed_factor:0.01,
-		zoom_speed:1.2
+		speed_factor:0.01
+		//zoom_speed:1.2
 	};
 	
 	this.orbit_cam = {
@@ -119,29 +119,29 @@ function InputHandler() {
 		switch (e.keyCode) {
 		case 87:
 		case 38:			// 'w' o 'ArrowUp'
-			this.handler.free_cam.pos[2] += Math.cos(this.handler.free_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.free_cam.pos[0] += Math.sin(this.handler.free_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.free_cam.pos[2] += Math.cos(this.handler.free_cam.theta) * params.velocidad_mov / 10;
+			this.handler.free_cam.pos[0] += Math.sin(this.handler.free_cam.theta) * params.velocidad_mov / 10;
 			break;
 		case 65:
 		case 37:			// 'a' o 'ArrowLeft'
-			this.handler.free_cam.pos[2] += Math.cos(this.handler.free_cam.theta + Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.free_cam.pos[0] += Math.sin(this.handler.free_cam.theta + Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.free_cam.pos[2] += Math.cos(this.handler.free_cam.theta + Math.PI/2) * params.velocidad_mov / 10;
+			this.handler.free_cam.pos[0] += Math.sin(this.handler.free_cam.theta + Math.PI/2) * params.velocidad_mov / 10;
 			break;
 		case 83:
 		case 40:			// 's' o 'ArrowDown'
-			this.handler.free_cam.pos[2] -= Math.cos(this.handler.free_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.free_cam.pos[0] -= Math.sin(this.handler.free_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.free_cam.pos[2] -= Math.cos(this.handler.free_cam.theta) * params.velocidad_mov / 10;
+			this.handler.free_cam.pos[0] -= Math.sin(this.handler.free_cam.theta) * params.velocidad_mov / 10;
 			break;
 		case 68:
 		case 39:			// 'd' o 'ArrowRight'
-			this.handler.free_cam.pos[2] += Math.cos(this.handler.free_cam.theta - Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.free_cam.pos[0] += Math.sin(this.handler.free_cam.theta - Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.free_cam.pos[2] += Math.cos(this.handler.free_cam.theta - Math.PI/2) * params.velocidad_mov / 10;
+			this.handler.free_cam.pos[0] += Math.sin(this.handler.free_cam.theta - Math.PI/2) * params.velocidad_mov / 10;
 			break;
 		case 81:			// 'q'
-			this.handler.free_cam.pos[1] -= this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.free_cam.pos[1] -= params.velocidad_mov / 10;
 			break;
 		case 69:			// 'e'
-			this.handler.free_cam.pos[1] += this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.free_cam.pos[1] += params.velocidad_mov / 10;
 			break;
 			
 		case 50:			// '2'
@@ -235,7 +235,7 @@ function InputHandler() {
 		this.handler.mouse_down = true;
 	};	
 	this.on_mouse_wheel_orbit = function(e) {
-		this.handler.orbit_cam.radius += e.deltaY * Math.sign(this.handler.mouse_coord.zoom_speed);
+		this.handler.orbit_cam.radius += e.deltaY * Math.sign(params.velocidad_mov);
 		if (this.handler.orbit_cam.radius < 0)
 			this.handler.orbit_cam.radius = 0;
 		
@@ -255,23 +255,23 @@ function InputHandler() {
 		switch (e.keyCode) {
 		case 87:
 		case 38:			// 'w' o 'ArrowUp'
-			this.handler.ship_cam.pos[2] += Math.cos(this.handler.ship_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.ship_cam.pos[0] += Math.sin(this.handler.ship_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.ship_cam.pos[2] += Math.cos(this.handler.ship_cam.theta) * params.velocidad_mov / 10;
+			this.handler.ship_cam.pos[0] += Math.sin(this.handler.ship_cam.theta) * params.velocidad_mov / 10;
 			break;
 		case 65:
 		case 37:			// 'a' o 'ArrowLeft'
-			this.handler.ship_cam.pos[2] += Math.cos(this.handler.ship_cam.theta + Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.ship_cam.pos[0] += Math.sin(this.handler.ship_cam.theta + Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.ship_cam.pos[2] += Math.cos(this.handler.ship_cam.theta + Math.PI/2) * params.velocidad_mov / 10;
+			this.handler.ship_cam.pos[0] += Math.sin(this.handler.ship_cam.theta + Math.PI/2) * params.velocidad_mov / 10;
 			break;
 		case 83:
 		case 40:			// 's' o 'ArrowDown'
-			this.handler.ship_cam.pos[2] -= Math.cos(this.handler.ship_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.ship_cam.pos[0] -= Math.sin(this.handler.ship_cam.theta) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.ship_cam.pos[2] -= Math.cos(this.handler.ship_cam.theta) * params.velocidad_mov / 10;
+			this.handler.ship_cam.pos[0] -= Math.sin(this.handler.ship_cam.theta) * params.velocidad_mov / 10;
 			break;
 		case 68:
 		case 39:			// 'd' o 'ArrowRight'
-			this.handler.ship_cam.pos[2] += Math.cos(this.handler.ship_cam.theta - Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
-			this.handler.ship_cam.pos[0] += Math.sin(this.handler.ship_cam.theta - Math.PI/2) * this.handler.mouse_coord.zoom_speed / 10;
+			this.handler.ship_cam.pos[2] += Math.cos(this.handler.ship_cam.theta - Math.PI/2) * params.velocidad_mov / 10;
+			this.handler.ship_cam.pos[0] += Math.sin(this.handler.ship_cam.theta - Math.PI/2) * params.velocidad_mov / 10;
 			break;
 		case 50:			// '2'
 			this.handler.set_orbit();

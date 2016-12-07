@@ -111,8 +111,8 @@ function Tree() {
 		
 		this.tronco.set_texture_function(this.texture_tronco);
 		this.tronco.grid.textures = [];
-		this.tronco.grid.textures[0] = loadTexture("textures/bark.jpg");
-		this.tronco.grid.textures[1] = loadTexture("textures/bark_norm.jpg");
+		this.tronco.grid.textures[0] = glTextures["bark"];
+		this.tronco.grid.textures[1] = glTextures["bark_norm"];
 		this.tronco.create(this.log_curve, 10, circle, this.STEP_CIRCLE);
 				
 		// La copa
@@ -122,8 +122,8 @@ function Tree() {
 		
 		this.copa.set_texture_function(this.texture_leaves);
 		this.copa.grid.textures = [];
-		this.copa.grid.textures[0] = loadTexture("textures/hojas.jpg");
-		this.copa.grid.textures[1] = loadTexture("textures/uniform.jpg");
+		this.copa.grid.textures[0] = glTextures["leaves"];
+		this.copa.grid.textures[1] = glTextures["leaves_norm"];
 		
 		this.copa.create(revolve, this.STEP_CIRCLE, this.leaves_curve, this.STEP_LEAVES);
 

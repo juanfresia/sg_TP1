@@ -216,8 +216,8 @@ function TowerBase() {
 		}
 		
 		this.grid.textures = [];
-		this.grid.textures[0] = loadTexture("textures/viga.jpg");
-		this.grid.textures[1] = loadTexture("textures/viga_norm.jpg");
+		this.grid.textures[0] = glTextures["tower"];
+		this.grid.textures[1] = glTextures["tower_norm"];
 				
 		this.grid.setupWebGLBuffers();
 	}

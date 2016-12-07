@@ -304,6 +304,13 @@
 			
 		glTextures["skyboxCM"] = loadCubeMap(paths);
 		
+		// Para el agua
+		glTextures["water_norm"] = loadTexture("textures/water_norm.jpg");
+		
+		// Para las torres
+		glTextures["tower"] = loadTexture("textures/viga.jpg");
+		glTextures["tower_norm"] = loadTexture("textures/viga_norm.jpg");
+		
 		// Para los tensores y los cables
 		glTextures["tensor"] = loadTexture("textures/tensor.jpg");
 		glTextures["tensor_norm"] = loadTexture("textures/tensor_norm.jpg");
@@ -311,11 +318,34 @@
 		glTextures["cable"] = loadTexture("textures/tensor.jpg");
 		glTextures["cable_norm"] = loadTexture("textures/tensor_norm.jpg");
 		
+		// Para la calle		
+		glTextures["road"] = loadTexture("textures/camino.jpg");
+		glTextures["road_norm"] = loadTexture("textures/uniform.jpg");
+		glTextures["street"] = loadTexture("textures/vereda.jpg");
+		glTextures["street_norm"] = loadTexture("textures/vereda_norm.jpg");
+		
+		// Para el terreno
+		glTextures["sand"] = loadTexture("textures/sand.jpg");
+		glTextures["sand_norm"] = loadTexture("textures/sand_norm.jpg");
+		glTextures["grass1"] = loadTexture("textures/grass01.jpg");
+		glTextures["grass1_norm"] = loadTexture("textures/grass01_norm.jpg");
+		glTextures["stone"] = loadTexture("textures/stone2.jpg");
+		glTextures["stone_norm"] = loadTexture("textures/stone2_norm.jpg");
+		glTextures["grass2"] = loadTexture("textures/pine.jpg");
+		glTextures["grass2_norm"] = loadTexture("textures/pine_norm.jpg");
+		glTextures["blend_map"] = loadTexture("textures/stone2_norm.jpg");
+		
+		
+		// Para el arbol
+		
+		glTextures["leaves"] = loadTexture("textures/hojas.jpg");
+		glTextures["leaves_norm"] = loadTexture("textures/uniform.jpg");
+		glTextures["bark"] = loadTexture("textures/bark.jpg");
+		glTextures["bark_norm"] = loadTexture("textures/bark_norm.jpg");
 		
 	}
 	
-	
-	
+		
 	function initShaders() {
 		// Creo el programa con los shaders para objetos coloreados
 		var fragmentShader = getShader(gl, "shader-fs");
@@ -422,6 +452,7 @@
 		rio_ancho:200,
 		agua_alto:2,
 		puente_pos:0.5,
+		velocidad_mov:10.0,
 	
 		// Torres
 		ancho_corte:0.2,
@@ -456,6 +487,7 @@
 		group_terrain.add(params, 'rio_ancho', 10.0, 200.0).name('Ancho del rio').step(1);
 		group_terrain.add(params, 'agua_alto', 1.0, 8.0).name('Altura del agua').step(1);
 		group_terrain.add(params, 'puente_pos', 0.1, 0.9).name('Posicion del puente').step(0.1);
+		group_terrain.add(params, 'velocidad_mov', 0.1, 10.0).name('Velocidad de mov.').step(0.1);
 
 		var group_puente = gui.addFolder('Puente');
 		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elevación de la carretera').step(0.1);

@@ -135,10 +135,10 @@ function BridgeBase() {
 		this.surface.set_texture_function(this.textura_carretera);
 		this.surface.set_texture_index_function(this.textura_indice_carretera);
 		this.surface.grid.textures = [];
-		this.surface.grid.textures[0] = loadTexture("textures/camino.jpg");
-		this.surface.grid.textures[1] = loadTexture("textures/uniform.jpg");
-		this.surface.grid.textures[2] = loadTexture("textures/vereda.jpg");
-		this.surface.grid.textures[3] = loadTexture("textures/vereda_norm.jpg");
+		this.surface.grid.textures[0] = glTextures["road"];
+		this.surface.grid.textures[1] = glTextures["road_norm"];
+		this.surface.grid.textures[2] = glTextures["street"];
+		this.surface.grid.textures[3] = glTextures["street_norm"];
 		
 		this.path = path;
 		

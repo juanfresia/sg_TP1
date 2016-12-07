@@ -206,15 +206,15 @@ function Terrain() {
 		
 		for (var i = 0; i <= 1; i++) {
 			this.lados[i].textures = [];
-			this.lados[i].textures[0] = loadTexture("textures/sand.jpg");
-			this.lados[i].textures[1] = loadTexture("textures/sand_norm.jpg");
-			this.lados[i].textures[2] = loadTexture("textures/grass01.jpg");
-			this.lados[i].textures[3] = loadTexture("textures/grass01_norm.jpg");
-			this.lados[i].textures[4] = loadTexture("textures/stone2.jpg");
-			this.lados[i].textures[5] = loadTexture("textures/stone2_norm.jpg");
-			this.lados[i].textures[6] = loadTexture("textures/pine.jpg");
-			this.lados[i].textures[7] = loadTexture("textures/pine_norm.jpg");
-			this.lados[i].textures[8] = loadTexture("textures/stone2_norm.jpg");
+			this.lados[i].textures[0] = glTextures["sand"];
+			this.lados[i].textures[1] = glTextures["sand_norm"];
+			this.lados[i].textures[2] = glTextures["grass1"];
+			this.lados[i].textures[3] = glTextures["grass1_norm"];
+			this.lados[i].textures[4] = glTextures["stone"];
+			this.lados[i].textures[5] = glTextures["stone_norm"];
+			this.lados[i].textures[6] = glTextures["grass2"];
+			this.lados[i].textures[7] = glTextures["grass2_norm"];
+			this.lados[i].textures[8] = glTextures["blend"];
 		}
 	}
 	
@@ -243,15 +243,15 @@ function Terrain() {
 		
 		// Cargo las texturas
 		this.superficie.grid.textures = [];
-		this.superficie.grid.textures[0] = loadTexture("textures/sand.jpg");
-		this.superficie.grid.textures[1] = loadTexture("textures/sand_norm.jpg");
-		this.superficie.grid.textures[2] = loadTexture("textures/grass01.jpg");
-		this.superficie.grid.textures[3] = loadTexture("textures/grass01_norm.jpg");
-		this.superficie.grid.textures[4] = loadTexture("textures/stone2.jpg");
-		this.superficie.grid.textures[5] = loadTexture("textures/stone2_norm.jpg");
-		this.superficie.grid.textures[6] = loadTexture("textures/pine.jpg");
-		this.superficie.grid.textures[7] = loadTexture("textures/pine_norm.jpg");
-		this.superficie.grid.textures[8] = loadTexture("textures/stone2_norm.jpg");
+		this.superficie.grid.textures[0] = glTextures["sand"];
+		this.superficie.grid.textures[1] = glTextures["sand_norm"];
+		this.superficie.grid.textures[2] = glTextures["grass1"];
+		this.superficie.grid.textures[3] = glTextures["grass1_norm"];
+		this.superficie.grid.textures[4] = glTextures["stone"];
+		this.superficie.grid.textures[5] = glTextures["stone_norm"];
+		this.superficie.grid.textures[6] = glTextures["grass2"];
+		this.superficie.grid.textures[7] = glTextures["grass2_norm"];
+		this.superficie.grid.textures[8] = glTextures["blend"];
 		
 		this.superficie.create(this.curva_costa, 100, this.curva_cauce, 50);
 	}

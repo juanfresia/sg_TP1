@@ -54,7 +54,7 @@ function Water() {
 		this.grid.cubemap = glTextures["skyboxCM"];
 		
 		this.grid.textures = [];
-		this.grid.textures[0] = loadTexture("textures/water_norm.jpg");
+		this.grid.textures[0] = glTextures["water_norm"];
 		
 		this.grid.setupWebGLBuffers();
 	}
