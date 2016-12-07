@@ -201,6 +201,12 @@ function VertexGrid() {
 		gl.bindTexture(gl.TEXTURE_2D, this.textures[1]);
 		gl.uniform1i(glShaderGeneric.uSampler2, 1);
 		
+		if (this.cubemap) {
+			gl.activeTexture(gl.TEXTURE4);
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.cubemap);
+			gl.uniform1i(glShaderGeneric.uSamplerReflection, 4);
+		}
+		
 		if (this.texture_index_buffer) {
 			gl.activeTexture(gl.TEXTURE2);
 			gl.bindTexture(gl.TEXTURE_2D, this.textures[2]);
@@ -390,7 +396,11 @@ function VertexGrid() {
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.textures[0]);
 		gl.uniform1i(glShaderWater.uSamplerNormal, 0);
-
+		
+		gl.activeTexture(gl.TEXTURE1);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.cubemap);
+		gl.uniform1i(glShaderWater.uSamplerReflection, 1);
+		
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.webgl_index_buffer);
 
 		// Dibujamos.

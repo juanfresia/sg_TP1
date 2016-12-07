@@ -52,12 +52,13 @@ function Tensor() {
 		points.push([0.0, 1.0, 0.0]);
 		this.path.create(points);
 		
+		this.superficie.grid.cubemap = glTextures["skyboxCM"];
 		
 		this.superficie.set_texture_function(this.textura_tensor);
 		this.superficie.grid.specular = true;
 		this.superficie.grid.textures = [];
-		this.superficie.grid.textures[0] = loadTexture("textures/tensor.jpg");
-		this.superficie.grid.textures[1] = loadTexture("textures/tensor_norm.jpg");
+		this.superficie.grid.textures[0] = glTextures["tensor"];
+		this.superficie.grid.textures[1] = glTextures["tensor_norm"];
 		
 		this.superficie.create(this.path, 5, this.base, 20);				
 	}

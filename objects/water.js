@@ -1,6 +1,6 @@
 
 //Water.prototype.color = [85/255, 223/255, 245/255];
-Water.prototype.color = [1.0, 1.0, 1.0];
+Water.prototype.color = [0.8, 0.8, 1.0];
 
 function Water() {	
 	this.terna = null;
@@ -48,6 +48,10 @@ function Water() {
 				this.push_point(this.grid.texture_coord_buffer, [1.0 - x/ter_semi_ancho, y/ter_semi_ancho], 2);	
 			}
 		}
+		
+
+					
+		this.grid.cubemap = glTextures["skyboxCM"];
 		
 		this.grid.textures = [];
 		this.grid.textures[0] = loadTexture("textures/water_norm.jpg");

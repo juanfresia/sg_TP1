@@ -58,7 +58,7 @@ void main(void) {
 	#endif
 	
 	#ifdef SPECULAR
-		vPos = normalize(model_world_pos.xyz/model_world_pos.w);
+		vPos = model_world_pos.xyz/model_world_pos.w;
 	#endif
 	
 }
@@ -90,6 +90,9 @@ void main(void) {
 		uniform sampler2D uSampler4;	// Mapa de normales 2
 	#endif
 	
+	#ifdef REFLECTION
+		uniform samplerCube uSamplerReflection;
+	#endif
 	
 	#ifdef SPECULAR
 		varying highp vec3 vPos;
@@ -134,21 +137,29 @@ void main(void) {
 		// Convierto el vector dirección al espacio de la tangente
 		vec3 lightDir_ts = normalize(tangent_space * vLightDir);
 		
-		
-		
+				
 		// Calculo el ángulo y aplico el color
 		highp float directionalLightWeighting = max(dot(normalMap.rgb, lightDir_ts), 0.0);
 		vec3 lightColor = uAmbientColor + uDirectionalColor * directionalLightWeighting;
 		
 		
 		#ifdef SPECULAR
-			vec3 eyeDir_ts = normalize(tangent_space * -(uCameraPos-vPos));
+			vec3 eyeDir_ts = normalize(tangent_space * (-uCameraPos-vPos));
 			vec3 reflectDir_ts = normalize(reflect(-lightDir_ts, normalMap.rgb));
 			highp float specularLightWeighting = pow(max(dot(eyeDir_ts, reflectDir_ts), 0.0), 30.0);
-			lightColor += vec3(0.6, 0.6, 0.6) * specularLightWeighting;
+			lightColor += vec3(0.9, 0.9, 0.9) * specularLightWeighting;
 		#endif
 		
-		gl_FragColor = vec4(textureColor.rgb * lightColor, textureColor.a);
+		vec3 finalColor = textureColor.rgb;
+		
+		#ifdef REFLECTION
+			vec3 eyeDir_ref = normalize(reflect(-normalize(-uCameraPos-vPos), normalMap.rgb));
+			vec4 reflectMap = textureCube(uSamplerReflection, eyeDir_ref);
+			float reflectiveness = 0.2;
+			finalColor = (1.0-reflectiveness) * finalColor + reflectiveness * reflectMap.rgb;
+		#endif
+			
+		gl_FragColor = vec4(finalColor * lightColor, 1.0);
 				
 		//gl_FragColor = vec4(lightDir_ts/2.0+0.5, textureColor.a);
 		//gl_FragColor = vec4(vTangent/2.0+0.5, textureColor.a);

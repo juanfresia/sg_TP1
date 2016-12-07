@@ -13,7 +13,7 @@ function InputHandler() {
 		pre_x:0.0,
 		pre_y:0.0,
 		speed_factor:0.01,
-		zoom_speed:7.5
+		zoom_speed:1.2
 	};
 	
 	this.orbit_cam = {
@@ -143,6 +143,7 @@ function InputHandler() {
 		case 69:			// 'e'
 			this.handler.free_cam.pos[1] += this.handler.mouse_coord.zoom_speed / 10;
 			break;
+			
 		case 50:			// '2'
 			this.handler.set_orbit();
 			alert("Camara en modo orbita");
