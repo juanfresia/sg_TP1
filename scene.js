@@ -168,7 +168,7 @@ function Scene() {
 		
 		mat4.identity(model_matrix);
 		skybox.draw(view_matrix, model_matrix, params.sky_light);
-		terna.draw(view_matrix, model_matrix);
+		//terna.draw(view_matrix, model_matrix);
 				
 		mat4.translate(model_matrix, model_matrix, desplazamiento_puente);
 		puente.draw(view_matrix, model_matrix);
@@ -187,7 +187,7 @@ function Scene() {
 		
 		mat4.identity(model_matrix);
 		mat4.translate(model_matrix, model_matrix, LIGHT_POS);
-		terna.draw(view_matrix, model_matrix);
+		//terna.draw(view_matrix, model_matrix);
 		
 		mat4.identity(model_matrix);
 		mat4.rotate(model_matrix, model_matrix, Math.PI/2, [-1.0, 0.0, 0.0]);

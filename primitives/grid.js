@@ -165,11 +165,6 @@ function VertexGrid() {
 		
 		if (this.specular) {
 			glShaderGeneric = glShaders["specular"];
-			if (this.cubemap && params.reflect) {
-				gl.uniform1i(glShaderGeneric.uUseReflection, params.reflect);
-			} else {
-				gl.uniform1i(glShaderGeneric.uUseReflection, false);
-			}
 		}
 		
 		gl.useProgram(glShaderGeneric);
@@ -184,7 +179,13 @@ function VertexGrid() {
 		
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.webgl_tangent_buffer);
 		gl.vertexAttribPointer(glShaderGeneric.aVertexTangent, 3, gl.FLOAT, false, 0, 0);
-		
+		if (this.specular) {
+			if (this.cubemap && params.reflect) {
+				gl.uniform1i(glShaderGeneric.uUseReflection, params.reflect);
+			} else {
+				gl.uniform1i(glShaderGeneric.uUseReflection, false);
+			}
+		}
 		if (this.texture_index_buffer) {
 			gl.enableVertexAttribArray(glShaderGeneric.aTextureIndex);
 			

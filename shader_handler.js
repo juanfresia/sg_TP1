@@ -93,7 +93,6 @@ function ShaderHandler() {
 		shader.uLightPosition = gl.getUniformLocation(shader, "uLightPosition");
 		
 		shader.uUseSpecular = gl.getUniformLocation(shader, "uUseSpecular");
-		shader.uUseReflection = gl.getUniformLocation(shader, "uUseReflection");
 		shader.uUseNormals = gl.getUniformLocation(shader, "uUseNormals");
 		shader.uUseTexture = gl.getUniformLocation(shader, "uUseTexture");
 	}
@@ -160,6 +159,7 @@ function ShaderHandler() {
 		shader.uSampler2 = gl.getUniformLocation(shader, "uSampler2");
 		shader.uCameraPos = gl.getUniformLocation(shader, "uCameraPos");
 		shader.uSamplerReflection = gl.getUniformLocation(shader, "uSamplerReflection");
+		shader.uUseReflection = gl.getUniformLocation(shader, "uUseReflection");
 		
 		glShaders["specular"] = shader;
 	}
