@@ -8,7 +8,7 @@ function ShaderHandler() {
 	// Para leer un archivo
 	this.cargarArchivo = function(path) {
 		var request = new XMLHttpRequest();
-		request.open('POST', path, false);
+		request.open('GET', path, false);
 		request.addEventListener('load', function() {
 			lastRead = request.responseText;
 		});
