@@ -23,10 +23,11 @@ function InputHandler() {
 		theta:0.0
 	};	
 	
+	// Los valores iniciales están hardcodeados para que empiece mirando al puente.
 	this.free_cam = {
-		pos:[10.0, -20.0, 0.0],		// Posicion del observador
-		theta:0,					// Angulo en el plano xz que indica hacia donde se está mirando
-		phi:0.0						// Angulo en el plano xy que indica si se esta mirando hacia arriba o hacia abajo
+		pos:[25.0, -45.0, -40.0],		// Posicion del observador
+		theta:-0.82,					// Angulo en el plano xz que indica hacia donde se está mirando
+		phi:0.42						// Angulo en el plano xy que indica si se esta mirando hacia arriba o hacia abajo
 	};
 	
 		

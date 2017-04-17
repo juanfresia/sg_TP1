@@ -34,7 +34,7 @@ void main(void) {
 	float kz = 0.1;
 	float wx = 0.5;
 	float wz = 2.0;
-	float amp = 0.01;
+	float amp = 0.4;
 	
 	// Consigo la posición proyectada del punto multiplicando por todas las matrices.
 	vec4 model_world_pos = uMMatrix * vec4(aVertexPosition, 1.0);

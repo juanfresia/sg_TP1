@@ -325,7 +325,7 @@
 		ter_ancho:400,
 		ter_alto:16,
 		rio_ancho:200,
-		agua_alto:2,
+		agua_alto:6,
 		puente_pos:0.5,
 		velocidad_mov:10.0,
 	
@@ -360,37 +360,36 @@
 		var gui = new dat.GUI();
 		
 		var group_terrain = gui.addFolder('Terreno');
-		group_terrain.add(params, 'ter_ancho', 200.0, 500.0).name('Tamaño del mapa').step(10);
-		group_terrain.add(params, 'ter_alto', 2.0, 20.0).name('Elevacion del terreno').step(1);
-		group_terrain.add(params, 'rio_ancho', 10.0, 200.0).name('Ancho del rio').step(1);
-		group_terrain.add(params, 'agua_alto', 1.0, 8.0).name('Altura del agua').step(1);
-		group_terrain.add(params, 'puente_pos', 0.1, 0.9).name('Posicion del puente').step(0.1);
-		group_terrain.add(params, 'velocidad_mov', 0.1, 10.0).name('Velocidad de mov.').step(0.1);
+		group_terrain.add(params, 'ter_ancho', 200.0, 500.0).name('Tam. mapa').step(10);
+		group_terrain.add(params, 'ter_alto', 2.0, 20.0).name('Elev. terreno').step(1);
+		group_terrain.add(params, 'rio_ancho', 10.0, 200.0).name('Ancho rio').step(1);
+		group_terrain.add(params, 'agua_alto', 1.0, 12.0).name('Nivel del agua').step(1);
+		group_terrain.add(params, 'puente_pos', 0.1, 0.9).name('Pos. del puente').step(0.1);
 
 		var group_puente = gui.addFolder('Puente');
-		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elevación de la carretera').step(0.1);
-		group_puente.add(params, 'puente_ph3', 10.0, 50.0).name('Altura de las torres').step(1.0);
-		group_puente.add(params, 'puente_num_torres', 2.0, 6.0).name('Cantidad de torres').step(1.0);
-		group_puente.add(params, 'puente_largo', 50.0, 500.0).name('Largo del puente').step(10.0);
-		group_puente.add(params, 'puente_cur', 0.2, 0.8).name('Curvatura de la carretera').step(0.05);
-		group_puente.add(params, 'puente_sep', 1.0, 3.0).name('Separacion de los tirantes').step(0.2);
-		group_puente.add(params, 'puente_ancho', 8.0, 10.0).name('Ancho del puente').step(0.5);
+		group_puente.add(params, 'puente_ph2', 0.0, 8.0).name('Elev. calle').step(0.1);
+		group_puente.add(params, 'puente_ph3', 10.0, 50.0).name('Alt. torres').step(1.0);
+		group_puente.add(params, 'puente_num_torres', 2.0, 6.0).name('Cant. torres').step(1.0);
+		group_puente.add(params, 'puente_largo', 50.0, 500.0).name('Largo puente').step(10.0);
+		group_puente.add(params, 'puente_cur', 0.2, 0.8).name('Curv. calle').step(0.05);
+		group_puente.add(params, 'puente_sep', 1.0, 3.0).name('Dist. entre tirantes').step(0.2);
+		group_puente.add(params, 'puente_ancho', 8.0, 10.0).name('Ancho puente').step(0.5);
 		group_puente.add(params, 'puente_nivel').name('Nivelar altura máxima?');
 		
-		var group1 = group_puente.addFolder('Torre');
-		group1.add(params, 'ancho_corte', 0.1, 0.9).name('Ancho corte').step(0.05);
-		group1.add(params, 'prof_corte', 0.1, 1.0).name('Prof. corte').step(0.05);
-		group1.add(params, 'reduccion', 0.5, 1.0).name('Reduccion').step(0.05);
-		group1.add(params, 'tower_reflect').name('Reflexión?');
+		var group_torre = group_puente.addFolder('Torre');
+		group_torre.add(params, 'ancho_corte', 0.1, 0.9).name('Ancho corte').step(0.05);
+		group_torre.add(params, 'prof_corte', 0.1, 1.0).name('Prof. corte').step(0.05);
+		group_torre.add(params, 'reduccion', 0.5, 1.0).name('Reduccion').step(0.05);
 		
-		var group2 = gui.addFolder('General');
-		group2.add(params, 'line_strip').name('LINE_STRIP?');
-		group2.add(params, 'normals').name('Normales?');
-		group2.add(params, 'textures').name('Texturas?');
-		group2.add(params, 'specular').name('Especular?');
-		group2.add(params, 'reflect').name('Reflexiones?');
-		group2.add(params, 'reiniciar').name("Reiniciar");
-		group2.add(params, 'reset_curve').name("Limpiar curva");
+		var group_general = gui.addFolder('General');
+		group_general.add(params, 'velocidad_mov', 0.1, 10.0).name('Veloc. de mov.').step(0.1);
+		group_general.add(params, 'line_strip').name('LINE_STRIP?');
+		group_general.add(params, 'normals').name('Normales?');
+		group_general.add(params, 'textures').name('Texturas?');
+		group_general.add(params, 'specular').name('Especular?');
+		group_general.add(params, 'reflect').name('Reflexiones?');
+		group_general.add(params, 'reiniciar').name("Reiniciar");
+		group_general.add(params, 'reset_curve').name("Limpiar curva");
 
 	}
 	
