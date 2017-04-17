@@ -2,7 +2,7 @@
 
 <head lang="en">
 	<meta charset="UTF-8">
-	<title>Prueba de sg</title>
+	<title>TP de Sistemas Gráficos (66.71) - "El puente"</title>
 	
 	<style>
 		body{ background-color: #00E676; }
@@ -35,8 +35,6 @@
 	<script type="text/javascript" src="objects/arbol.js"></script>
 	<script type="text/javascript" src="objects/bridge_side.js"></script>
 	<script type="text/javascript" src="objects/bridge.js"></script>
-	
-	
 	
 	
 	<!-- Shader de vértices para las curvas 2D -->
@@ -422,14 +420,34 @@
 <!-- El cuerpo con el canvas definido -->
 <body onload="main()" id="my_body">
 	<center>
-		<!--<h1> Esto es una prueba </h1>-->
-		<canvas id="my_canvas" width="1280" height="720"></canvas>
-		
+		<h1> TP Sistemas Gráficos (66.71) - "El puente"</h1>
+
 		<div align="right">
-			<canvas id="curve_canvas" width="400" height="400"></canvas>
+			<canvas id="my_canvas" width="1060" height="650"></canvas>
+			<canvas id="curve_canvas" width="200" height="200"></canvas>
 		</div>
-		
 	</center>
+	<h1> Controles </h1>
+	Cámara y movimiento
+	<ul>
+		<li> W - Mover hacia adelante </li>	
+		<li> S - Mover hacia atrás</li>	
+		<li> A - Mover a la izquierda</li>	
+		<li> S - Mover a la derecha</li>	
+		<li> Q - Mover hacia arriba</li>	
+		<li> E - Mover hacia abajo</li>	
+		<li> 1 - Cámara en modo libre</li>	
+		<li> 2 - Cámara en modo órbita</li>	
+		<li> Mouse - Controlar órbita/dirección de la cámara</li>	
+	</ul>
+	Opciones de terreno
+	<ul>
+		<li> Usar el panel lateral para parametrizar el terreno y luego usar Reiniciar para regenerar el nuevo mundo</li>
+		<li> El panel blanco deja configurar la forma de la curva del río </li>
+		<li> Click - Genera un punto de control para la curva</li>	
+		<li> Shift-Click - Elimina el punto de control más cercano al cursor</li>
+		<li> Usar la opción Limpiar para eliminar todos los puntos de control</li>	
+	</ul>
 	
 </body>
 
