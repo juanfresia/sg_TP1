@@ -110,15 +110,15 @@ function clear_points() {
 // El handler de click
 function on_mouse_click_curve_input(e) {
 	if (e.buttons == 1 && e.shiftKey == false) {	// Click izquierdo
-		var x = 2*(e.layerX-curve_canvas.offsetLeft)/curve_canvas.width - 1.0;
-		var y = -2*(e.layerY-curve_canvas.offsetTop)/curve_canvas.height + 1.0;
+		var x = 2*(e.clientX-curve_canvas.offsetLeft)/curve_canvas.width - 1.0;
+		var y = -2*(e.clientY-curve_canvas.offsetTop)/curve_canvas.height + 1.0;
 		curve_points.push([x, y, 0.0]);
 		curve_points.sort(comparator);
 		curve_update();
 		
 	} else if (e.buttons == 1 && e.shiftKey == true) {	// Shift-click
-		var x = 2*(e.layerX-curve_canvas.offsetLeft)/curve_canvas.width - 1.0;
-		var y = -2*(e.layerY-curve_canvas.offsetTop)/curve_canvas.height + 1.0;
+		var x = 2*(e.clientX-curve_canvas.offsetLeft)/curve_canvas.width - 1.0;
+		var y = -2*(e.clientY-curve_canvas.offsetTop)/curve_canvas.height + 1.0;
 		if (curve_points.length > 0) {
 			var index = get_closest_point_index(x, y);
 			curve_points.splice(index, 1);
